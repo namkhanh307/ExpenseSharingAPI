@@ -9,4 +9,7 @@ public class Person
     public required string Name {get; set;}
     public required string Phone {get; set;}
     public required string Password {get; set;}
+    public virtual required ICollection<Expense> Expenses {get; set;}
+    public virtual required ICollection<Record> Records {get; set;}
+    public virtual required ICollection<PersonGroup> PersonGroups {get; set;}
 }

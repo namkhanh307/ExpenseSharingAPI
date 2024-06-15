@@ -6,5 +6,5 @@ public class Group : BaseEntity
     public int Size {get; set;}
     public int Type {get; set;}
     public virtual required ICollection<Report> Reports {get; set;}
-
+    public virtual required ICollection<PersonGroup> PersonGroups { get; set; }
 }

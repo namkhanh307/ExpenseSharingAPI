@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "3WbR9pFTLEZm3vOZtynKc5S4D2O/6yGywkKBAKciMb42q77UIbJ+8UC3jZbM9JsNBDqVSD24Jq8BCjbrRJifTg==",
+  "dgSpecHash": "zu+txQNlVAMQBQy1nFnN5qTHSxtV52blBVIvo3BIiXpQ3IaUKpWkazV+bddiWdCT7/XBZkLziR8q5bYgEte0cg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseShairngAPI\\Core\\Core.csproj",
+  "projectFilePath": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Core\\Core.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

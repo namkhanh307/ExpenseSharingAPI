@@ -17,5 +17,4 @@ public abstract class BaseEntity{
     public DateTime CreatedTime { get; set; }
     public DateTime LastUpdatedTime { get; set; }
     public DateTime? DeletedTime { get; set; }
-
 }
