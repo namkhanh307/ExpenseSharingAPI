@@ -18,6 +18,7 @@ public class ESDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
         //PersonGroup
         modelBuilder.Entity<PersonGroup>().HasKey(pg => new {pg.PersonId, pg.GroupId});
         modelBuilder.Entity<PersonGroup>().HasOne(pg => pg.Person).WithMany(p => p.PersonGroups).HasForeignKey(pg => pg.PersonId);
