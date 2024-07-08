@@ -1,5 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Repositories.Entities;
+using Repositories.IRepositories;
+using Repositories.Repositories;
+using Services.IServices;
+using Services.Services;
 
 namespace API
 {
@@ -15,10 +19,11 @@ namespace API
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            builder.Services.AddDbContext<ESDbContext>(options => {
+            builder.Services.AddDbContext<ExpenseSharingContext>(options => {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
-
+            builder.Services.AddScoped<IGroupService, GroupService>();
+            builder.Services.AddScoped<IGroupRepository, GroupRepository>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

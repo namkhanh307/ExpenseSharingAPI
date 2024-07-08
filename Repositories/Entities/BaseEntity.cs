@@ -2,7 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Repositories.Entities;
 
-public abstract class BaseEntity{
+public abstract class BaseEntity
+{
     protected BaseEntity()
     {
         Id = Guid.NewGuid().ToString("N");
@@ -16,5 +17,5 @@ public abstract class BaseEntity{
     public string? DeletedBy { get; set; }
     public DateTime CreatedTime { get; set; }
     public DateTime LastUpdatedTime { get; set; }
-    public DateTime? DeletedTime { get; set; }  
+    public DateTime? DeletedTime { get; set; }
 }

@@ -1,16 +1,23 @@
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Repositories.Entities;
 
-public class Record : BaseEntity
+public partial class Record : BaseEntity
 {
-    public required string PersonId {get;set;}
-    [ForeignKey("PersonID")]
-    public virtual required Person Person{get; set;}
-    public required string ExpenseId {get; set;}
-    [ForeignKey("ExpenseID")]
-    public virtual required Expense Expense {get; set;}
-    public required string ReportId {get; set;} 
-    [ForeignKey("ReportID")]
-    public virtual required Report Report {get; set;}
+    public string PersonId { get; set; }
+
+    public string ExpenseId { get; set; }
+
+    public string ReportId { get; set; }
+
+    public double? Amount { get; set; }
+
+    public bool? IsPaid { get; set; }
+
+    public virtual Expense Expense { get; set; } = null!;
+
+    public virtual Person Person { get; set; } = null!;
+
+    public virtual Report Report { get; set; } = null!;
 }

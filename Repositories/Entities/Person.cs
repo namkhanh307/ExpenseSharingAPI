@@ -1,18 +1,16 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Repositories.Entities;
 
-public class Person
+public partial class Person : BaseEntity
 {
-    [Key]
-    public required string Id {get; set;}
-    public required string Name {get; set;}
-    public required string Phone {get; set;}
-    public required string Password {get; set;}
-    public virtual required ICollection<Expense> Expenses {get; set;}
-    public virtual required ICollection<Item>? Items { get; set; }
-    public virtual required ICollection<Record> Records {get; set;}
-    public virtual required ICollection<PersonGroup> PersonGroups {get; set;}
-    public virtual required ICollection<Report>? Reports { get; set; }
-
+    public string? Name { get; set; }
+    public string? Phone { get; set; }
+    public string? Password { get; set; }
+    public virtual ICollection<Expense> Expenses { get; set; } = new List<Expense>();
+    public virtual ICollection<PersonExpense> PersonExpenses { get; set; } = new List<PersonExpense>();
+    public virtual ICollection<PersonGroup> PersonGroups { get; set; } = new List<PersonGroup>();
+    public virtual ICollection<Record> Records { get; set; } = new List<Record>();
+    public virtual ICollection<Report> Reports { get; set; } = new List<Report>();
 }

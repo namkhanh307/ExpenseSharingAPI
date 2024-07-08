@@ -1,19 +1,19 @@
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Repositories.Entities;
 
-public class Expense : BaseEntity
+public partial class Expense : BaseEntity
 {
-    public required string Name  { get; set; }
-    public required string Type {get; set;}
-    public required double Amount {get; set;}
-    public DateTime Time {get; set;}
-    public required string ReportId {get; set;}
-    [ForeignKey("ReportID")]
-    public virtual required Report Report{get; set;}
-    public required string PersonId {get; set;}
+    public string? Name { get; set; }
+    public string? Type { get; set; }
+    public double? Amount { get; set; }
+    public string? PersonId { get; set; }
+    public string? ReportId { get; set; }
+    public string? InvoiceImage { get; set; }
+    public virtual Person Person { get; set; } = null!;
+    public virtual Report Report { get; set; } = null!;
+    public virtual ICollection<PersonExpense> PersonExpenses { get; set; } = new List<PersonExpense>();
+    public virtual ICollection<Record> Records { get; set; } = new List<Record>();
 
-    [ForeignKey("PersonID")]
-    public virtual required Person Person {get; set;}
-    public virtual required ICollection<Record> Records {get; set;}
 }

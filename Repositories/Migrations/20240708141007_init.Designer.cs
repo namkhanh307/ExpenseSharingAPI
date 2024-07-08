@@ -11,8 +11,8 @@ using Repositories.Entities;
 
 namespace Repositories.Migrations
 {
-    [DbContext(typeof(ESDbContext))]
-    [Migration("20240623135208_init")]
+    [DbContext(typeof(ExpenseSharingContext))]
+    [Migration("20240708141007_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -30,8 +30,9 @@ namespace Repositories.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<double>("Amount")
-                        .HasColumnType("float");
+                    b.Property<double?>("Amount")
+                        .HasColumnType("float")
+                        .HasColumnName("amount");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -45,6 +46,10 @@ namespace Repositories.Migrations
                     b.Property<DateTime?>("DeletedTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("InvoiceImage")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("invoiceImage");
+
                     b.Property<string>("LastUpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -52,23 +57,22 @@ namespace Repositories.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("expenseName");
 
                     b.Property<string>("PersonId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("personID");
 
                     b.Property<string>("ReportId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("Time")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("reportID");
 
                     b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("expenseType");
 
                     b.HasKey("Id");
 
@@ -76,13 +80,14 @@ namespace Repositories.Migrations
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("Expenses");
+                    b.ToTable("Expense", (string)null);
                 });
 
             modelBuilder.Entity("Repositories.Entities.Group", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("ID");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -103,66 +108,22 @@ namespace Repositories.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("name");
 
                     b.Property<int>("Size")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("size");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
+                    b.Property<int?>("Type")
+                        .HasColumnType("int")
+                        .HasColumnName("type");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK_Room");
 
-                    b.ToTable("Groups");
-                });
-
-            modelBuilder.Entity("Repositories.Entities.Item", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DeletedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastUpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("LastUpdatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PersonId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
-
-                    b.Property<string>("ReportId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PersonId");
-
-                    b.HasIndex("ReportId");
-
-                    b.ToTable("Items");
+                    b.ToTable("Group", (string)null);
                 });
 
             modelBuilder.Entity("Repositories.Entities.Person", b =>
@@ -170,45 +131,141 @@ namespace Repositories.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
+                    b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastUpdatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("name");
 
                     b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("password");
 
                     b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nchar(10)")
+                        .HasColumnName("phone")
+                        .IsFixedLength();
 
                     b.HasKey("Id");
 
-                    b.ToTable("Persons");
+                    b.ToTable("Person", (string)null);
+                });
+
+            modelBuilder.Entity("Repositories.Entities.PersonExpense", b =>
+                {
+                    b.Property<string>("ExpenseId")
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("ExpenseID");
+
+                    b.Property<string>("PersonId")
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("PersonID");
+
+                    b.Property<string>("GroupId")
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("GroupID");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastUpdatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ExpenseId", "PersonId", "GroupId")
+                        .HasName("PK__PersonEx__35F3AA9E2F5ABE97");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("PersonId");
+
+                    b.ToTable("PersonExpense", (string)null);
                 });
 
             modelBuilder.Entity("Repositories.Entities.PersonGroup", b =>
                 {
                     b.Property<string>("PersonId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("personID");
 
                     b.Property<string>("GroupId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("groupID");
 
-                    b.Property<bool>("IsAdmin")
-                        .HasColumnType("bit");
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("PersonId", "GroupId");
+                    b.Property<DateTime>("CreatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsAdmin")
+                        .HasColumnType("bit")
+                        .HasColumnName("isAdmin");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LastUpdatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("PersonId", "GroupId")
+                        .HasName("PK__PersonRo__290798144CC3970E");
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("PersonGroups");
+                    b.ToTable("PersonGroup", (string)null);
                 });
 
             modelBuilder.Entity("Repositories.Entities.Record", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<double?>("Amount")
+                        .HasColumnType("float")
+                        .HasColumnName("amount");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -224,7 +281,12 @@ namespace Repositories.Migrations
 
                     b.Property<string>("ExpenseId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("expenseID");
+
+                    b.Property<bool?>("IsPaid")
+                        .HasColumnType("bit")
+                        .HasColumnName("isPaid");
 
                     b.Property<string>("LastUpdatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -234,13 +296,16 @@ namespace Repositories.Migrations
 
                     b.Property<string>("PersonId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("personID");
 
                     b.Property<string>("ReportId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("reportID");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__Record__D825197E756EB7D9");
 
                     b.HasIndex("ExpenseId");
 
@@ -248,7 +313,7 @@ namespace Repositories.Migrations
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("Records");
+                    b.ToTable("Record", (string)null);
                 });
 
             modelBuilder.Entity("Repositories.Entities.Report", b =>
@@ -270,7 +335,8 @@ namespace Repositories.Migrations
 
                     b.Property<string>("GroupId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("groupID");
 
                     b.Property<string>("LastUpdatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -279,19 +345,23 @@ namespace Repositories.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("name");
 
                     b.Property<string>("PersonId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("personID");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK__Report__3214EC2761BA3C9B");
 
                     b.HasIndex("GroupId");
 
                     b.HasIndex("PersonId");
 
-                    b.ToTable("Reports");
+                    b.ToTable("Report", (string)null);
                 });
 
             modelBuilder.Entity("Repositories.Entities.Expense", b =>
@@ -299,37 +369,43 @@ namespace Repositories.Migrations
                     b.HasOne("Repositories.Entities.Person", "Person")
                         .WithMany("Expenses")
                         .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasConstraintName("FK_Expense_Person");
 
                     b.HasOne("Repositories.Entities.Report", "Report")
-                        .WithMany()
+                        .WithMany("Expenses")
                         .HasForeignKey("ReportId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasConstraintName("FK_Expense_Report");
 
                     b.Navigation("Person");
 
                     b.Navigation("Report");
                 });
 
-            modelBuilder.Entity("Repositories.Entities.Item", b =>
+            modelBuilder.Entity("Repositories.Entities.PersonExpense", b =>
                 {
-                    b.HasOne("Repositories.Entities.Person", "Person")
-                        .WithMany()
-                        .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Repositories.Entities.Expense", "Expense")
+                        .WithMany("PersonExpenses")
+                        .HasForeignKey("ExpenseId")
+                        .IsRequired()
+                        .HasConstraintName("FK__PersonExp__Expen__32AB8735");
 
-                    b.HasOne("Repositories.Entities.Report", "Report")
-                        .WithMany("Items")
-                        .HasForeignKey("ReportId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Repositories.Entities.Group", "Group")
+                        .WithMany("PersonExpenses")
+                        .HasForeignKey("GroupId")
+                        .IsRequired()
+                        .HasConstraintName("FK__PersonExp__Group__3493CFA7");
+
+                    b.HasOne("Repositories.Entities.Person", "Person")
+                        .WithMany("PersonExpenses")
+                        .HasForeignKey("PersonId")
+                        .IsRequired()
+                        .HasConstraintName("FK__PersonExp__Perso__339FAB6E");
+
+                    b.Navigation("Expense");
+
+                    b.Navigation("Group");
 
                     b.Navigation("Person");
-
-                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Repositories.Entities.PersonGroup", b =>
@@ -337,14 +413,14 @@ namespace Repositories.Migrations
                     b.HasOne("Repositories.Entities.Group", "Group")
                         .WithMany("PersonGroups")
                         .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK__PersonRoo__RoomI__60A75C0F");
 
                     b.HasOne("Repositories.Entities.Person", "Person")
                         .WithMany("PersonGroups")
                         .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK__PersonRoo__Perso__5FB337D6");
 
                     b.Navigation("Group");
 
@@ -356,20 +432,20 @@ namespace Repositories.Migrations
                     b.HasOne("Repositories.Entities.Expense", "Expense")
                         .WithMany("Records")
                         .HasForeignKey("ExpenseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Record_Expense");
 
                     b.HasOne("Repositories.Entities.Person", "Person")
                         .WithMany("Records")
                         .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Record_Person");
 
                     b.HasOne("Repositories.Entities.Report", "Report")
                         .WithMany("Records")
                         .HasForeignKey("ReportId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Record_Report");
 
                     b.Navigation("Expense");
 
@@ -383,14 +459,14 @@ namespace Repositories.Migrations
                     b.HasOne("Repositories.Entities.Group", "Group")
                         .WithMany("Reports")
                         .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Report_Group");
 
                     b.HasOne("Repositories.Entities.Person", "Person")
-                        .WithMany()
+                        .WithMany("Reports")
                         .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Report_Person");
 
                     b.Navigation("Group");
 
@@ -399,11 +475,15 @@ namespace Repositories.Migrations
 
             modelBuilder.Entity("Repositories.Entities.Expense", b =>
                 {
+                    b.Navigation("PersonExpenses");
+
                     b.Navigation("Records");
                 });
 
             modelBuilder.Entity("Repositories.Entities.Group", b =>
                 {
+                    b.Navigation("PersonExpenses");
+
                     b.Navigation("PersonGroups");
 
                     b.Navigation("Reports");
@@ -413,14 +493,18 @@ namespace Repositories.Migrations
                 {
                     b.Navigation("Expenses");
 
+                    b.Navigation("PersonExpenses");
+
                     b.Navigation("PersonGroups");
 
                     b.Navigation("Records");
+
+                    b.Navigation("Reports");
                 });
 
             modelBuilder.Entity("Repositories.Entities.Report", b =>
                 {
-                    b.Navigation("Items");
+                    b.Navigation("Expenses");
 
                     b.Navigation("Records");
                 });
