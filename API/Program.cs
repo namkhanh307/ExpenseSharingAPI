@@ -22,8 +22,16 @@ namespace API
             builder.Services.AddDbContext<ExpenseSharingContext>(options => {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IExpenseService, ExpenseService>();
             builder.Services.AddScoped<IGroupService, GroupService>();
-            builder.Services.AddScoped<IGroupRepository, GroupRepository>();
+            builder.Services.AddScoped<IPersonExpenseService, PersonExpenseService>();
+            builder.Services.AddScoped<IPersonGroupService, PersonGroupService>();
+            builder.Services.AddScoped<IReportService, ReportService>();
+            builder.Services.AddScoped<IRecordService, RecordService>();
+            builder.Services.AddScoped<IPersonService, PersonService>();
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

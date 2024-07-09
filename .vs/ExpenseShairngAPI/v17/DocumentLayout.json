@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{FCBDC3FB-BB45-4BA0-8855-BE63967728AF}|API\\API.csproj|c:\\users\\nobod\\documents\\github\\expensesharingapi\\api\\controllers\\groupscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FCBDC3FB-BB45-4BA0-8855-BE63967728AF}|API\\API.csproj|solutionrelative:api\\controllers\\groupscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{FCBDC3FB-BB45-4BA0-8855-BE63967728AF}|API\\API.csproj|c:\\users\\nobod\\documents\\github\\expensesharingapi\\api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FCBDC3FB-BB45-4BA0-8855-BE63967728AF}|API\\API.csproj|solutionrelative:api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{36C07E13-EBE5-49B9-BF66-29474354F304}|Services\\Services.csproj|c:\\users\\nobod\\documents\\github\\expensesharingapi\\services\\iservices\\igroupservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{36C07E13-EBE5-49B9-BF66-29474354F304}|Services\\Services.csproj|solutionrelative:services\\iservices\\igroupservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|c:\\users\\nobod\\documents\\github\\expensesharingapi\\repositories\\repositories\\personrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|solutionrelative:repositories\\repositories\\personrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{36C07E13-EBE5-49B9-BF66-29474354F304}|Services\\Services.csproj|c:\\users\\nobod\\documents\\github\\expensesharingapi\\services\\services\\groupservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -19,28 +19,24 @@
       "RelativeMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|solutionrelative:repositories\\repositories\\grouprepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|c:\\users\\nobod\\documents\\github\\expensesharingapi\\repositories\\responsemodel\\groupmodel\\putgroupmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|solutionrelative:repositories\\responsemodel\\groupmodel\\putgroupmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|c:\\users\\nobod\\documents\\github\\expensesharingapi\\repositories\\responsemodel\\groupmodel\\postgroupmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|solutionrelative:repositories\\responsemodel\\groupmodel\\postgroupmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|c:\\users\\nobod\\documents\\github\\expensesharingapi\\repositories\\irepositories\\iunitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|solutionrelative:repositories\\irepositories\\iunitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|c:\\users\\nobod\\documents\\github\\expensesharingapi\\repositories\\irepositories\\igrouprepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|solutionrelative:repositories\\irepositories\\igrouprepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|c:\\users\\nobod\\documents\\github\\expensesharingapi\\repositories\\responsemodel\\groupmodel\\getgroupmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|solutionrelative:repositories\\responsemodel\\groupmodel\\getgroupmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|c:\\users\\nobod\\documents\\github\\expensesharingapi\\repositories\\repositories\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|solutionrelative:repositories\\repositories\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|c:\\users\\nobod\\documents\\github\\expensesharingapi\\repositories\\entities\\group.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|solutionrelative:repositories\\entities\\group.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|c:\\users\\nobod\\documents\\github\\expensesharingapi\\repositories\\irepositories\\igenericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|solutionrelative:repositories\\irepositories\\igenericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FCBDC3FB-BB45-4BA0-8855-BE63967728AF}|API\\API.csproj|c:\\users\\nobod\\documents\\github\\expensesharingapi\\api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FCBDC3FB-BB45-4BA0-8855-BE63967728AF}|API\\API.csproj|solutionrelative:api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|c:\\users\\nobod\\documents\\github\\expensesharingapi\\repositories\\repositories\\unitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|solutionrelative:repositories\\repositories\\unitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -50,22 +46,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 185,
-          "SelectedChildIndex": 14,
+          "SelectedChildIndex": 6,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "GetGroupModel.cs",
-              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\ResponseModel\\GroupModel\\GetGroupModel.cs",
-              "RelativeDocumentMoniker": "Repositories\\ResponseModel\\GroupModel\\GetGroupModel.cs",
-              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\ResponseModel\\GroupModel\\GetGroupModel.cs",
-              "RelativeToolTip": "Repositories\\ResponseModel\\GroupModel\\GetGroupModel.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAmAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-08T15:32:13.505Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
@@ -92,80 +74,28 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "PutGroupModel.cs",
-              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\ResponseModel\\GroupModel\\PutGroupModel.cs",
-              "RelativeDocumentMoniker": "Repositories\\ResponseModel\\GroupModel\\PutGroupModel.cs",
-              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\ResponseModel\\GroupModel\\PutGroupModel.cs",
-              "RelativeToolTip": "Repositories\\ResponseModel\\GroupModel\\PutGroupModel.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAmAAAA",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\API\\Program.cs",
+              "RelativeDocumentMoniker": "API\\Program.cs",
+              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\API\\Program.cs",
+              "RelativeToolTip": "API\\Program.cs",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAiwCMAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-08T15:44:06.098Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "PostGroupModel.cs",
-              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\ResponseModel\\GroupModel\\PostGroupModel.cs",
-              "RelativeDocumentMoniker": "Repositories\\ResponseModel\\GroupModel\\PostGroupModel.cs",
-              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\ResponseModel\\GroupModel\\PostGroupModel.cs",
-              "RelativeToolTip": "Repositories\\ResponseModel\\GroupModel\\PostGroupModel.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAFAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-08T15:37:16.855Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "Group.cs",
-              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\Entities\\Group.cs",
-              "RelativeDocumentMoniker": "Repositories\\Entities\\Group.cs",
-              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\Entities\\Group.cs",
-              "RelativeToolTip": "Repositories\\Entities\\Group.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-08T15:32:31.925Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "GroupRepository.cs",
-              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\Repositories\\GroupRepository.cs",
-              "RelativeDocumentMoniker": "Repositories\\Repositories\\GroupRepository.cs",
-              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\Repositories\\GroupRepository.cs",
-              "RelativeToolTip": "Repositories\\Repositories\\GroupRepository.cs",
-              "ViewState": "AQIAAAgAAAAAAAAAAAAQwDQAAAAqAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-08T14:27:19.349Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "IGroupRepository.cs",
-              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\IRepositories\\IGroupRepository.cs",
-              "RelativeDocumentMoniker": "Repositories\\IRepositories\\IGroupRepository.cs",
-              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\IRepositories\\IGroupRepository.cs",
-              "RelativeToolTip": "Repositories\\IRepositories\\IGroupRepository.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAqwAkAAAAuAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-08T14:27:07.59Z",
+              "WhenOpened": "2024-07-09T04:39:45.249Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "IGroupService.cs",
-              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Services\\IServices\\IGroupService.cs",
-              "RelativeDocumentMoniker": "Services\\IServices\\IGroupService.cs",
-              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Services\\IServices\\IGroupService.cs",
-              "RelativeToolTip": "Services\\IServices\\IGroupService.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAqwBIAAAAAAAAA",
+              "Title": "PersonRepository.cs",
+              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\Repositories\\PersonRepository.cs",
+              "RelativeDocumentMoniker": "Repositories\\Repositories\\PersonRepository.cs",
+              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\Repositories\\PersonRepository.cs",
+              "RelativeToolTip": "Repositories\\Repositories\\PersonRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAA1AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-08T14:26:21.735Z",
+              "WhenOpened": "2024-07-09T04:39:28.696Z",
               "EditorCaption": ""
             },
             {
@@ -176,35 +106,87 @@
               "RelativeDocumentMoniker": "Services\\Services\\GroupService.cs",
               "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Services\\Services\\GroupService.cs",
               "RelativeToolTip": "Services\\Services\\GroupService.cs",
-              "ViewState": "AQIAAAcAAAAAAAAAAAAswAwAAAAmAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAADsAAAA0AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-08T14:24:45.092Z",
+              "WhenOpened": "2024-07-09T04:27:30.172Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "GroupsController.cs",
-              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\API\\Controllers\\GroupsController.cs",
-              "RelativeDocumentMoniker": "API\\Controllers\\GroupsController.cs",
-              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\API\\Controllers\\GroupsController.cs",
-              "RelativeToolTip": "API\\Controllers\\GroupsController.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAACMAAAAJAAAA",
+              "DocumentIndex": 5,
+              "Title": "IGroupRepository.cs",
+              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\IRepositories\\IGroupRepository.cs",
+              "RelativeDocumentMoniker": "Repositories\\IRepositories\\IGroupRepository.cs",
+              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\IRepositories\\IGroupRepository.cs",
+              "RelativeToolTip": "Repositories\\IRepositories\\IGroupRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAmAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-08T14:12:10.191Z",
+              "WhenOpened": "2024-07-09T04:27:13.203Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\API\\Program.cs",
-              "RelativeDocumentMoniker": "API\\Program.cs",
-              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\API\\Program.cs",
-              "RelativeToolTip": "API\\Program.cs",
-              "ViewState": "AQIAAAMAAAAAAAAAAAAAAB4AAAANAAAA",
+              "DocumentIndex": 3,
+              "Title": "GroupRepository.cs",
+              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\Repositories\\GroupRepository.cs",
+              "RelativeDocumentMoniker": "Repositories\\Repositories\\GroupRepository.cs",
+              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\Repositories\\GroupRepository.cs",
+              "RelativeToolTip": "Repositories\\Repositories\\GroupRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAABHAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-08T15:11:49.48Z",
+              "WhenOpened": "2024-07-09T04:23:41.788Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "UnitOfWork.cs",
+              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\Repositories\\UnitOfWork.cs",
+              "RelativeDocumentMoniker": "Repositories\\Repositories\\UnitOfWork.cs",
+              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\Repositories\\UnitOfWork.cs",
+              "RelativeToolTip": "Repositories\\Repositories\\UnitOfWork.cs",
+              "ViewState": "AQIAABAAAAAAAAAAAAAgwAoAAAAiAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-09T04:08:46.954Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "GenericRepository.cs",
+              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\Repositories\\GenericRepository.cs",
+              "RelativeDocumentMoniker": "Repositories\\Repositories\\GenericRepository.cs",
+              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\Repositories\\GenericRepository.cs",
+              "RelativeToolTip": "Repositories\\Repositories\\GenericRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAyAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-09T04:08:08.406Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "IGenericRepository.cs",
+              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\IRepositories\\IGenericRepository.cs",
+              "RelativeDocumentMoniker": "Repositories\\IRepositories\\IGenericRepository.cs",
+              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\IRepositories\\IGenericRepository.cs",
+              "RelativeToolTip": "Repositories\\IRepositories\\IGenericRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABAAAAA5AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-09T04:07:50.693Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "IUnitOfWork.cs",
+              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\IRepositories\\IUnitOfWork.cs",
+              "RelativeDocumentMoniker": "Repositories\\IRepositories\\IUnitOfWork.cs",
+              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\IRepositories\\IUnitOfWork.cs",
+              "RelativeToolTip": "Repositories\\IRepositories\\IUnitOfWork.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAqwAsAAABBAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-09T04:07:24.205Z",
               "EditorCaption": ""
             }
           ]
