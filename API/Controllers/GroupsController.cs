@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Repositories.Entities;
 using Repositories.ResponseModel.GroupModel;
 using Services.IServices;
-using Services.Services;
 
 namespace API.Controllers
 {
@@ -19,7 +17,7 @@ namespace API.Controllers
         [HttpGet]
         public List<Group> GetGroups()
         {
-            return _groupService.GetGroup();
+            return _groupService.GetGroups();
         }
         [HttpPost]
         public void PostGroup(PostGroupModel model)

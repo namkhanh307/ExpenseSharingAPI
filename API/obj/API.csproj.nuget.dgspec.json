@@ -133,7 +133,11 @@
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\Repositories.csproj": {
+                "projectPath": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\Repositories.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
@@ -150,6 +154,12 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -300,6 +310,12 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

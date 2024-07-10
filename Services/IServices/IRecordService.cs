@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Repositories.Entities;
+using Repositories.ResponseModel.RecordModel;
 
 namespace Services.IServices
 {
     public interface IRecordService
     {
+        void DeleteRecord(string id);
+        List<Record> GetRecord();
+        void PostRecord(PostRecordModel model);
+        void PutRecord(string id, PutRecordModel model);
     }
 }

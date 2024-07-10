@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "bK9ipj8gSZ/B5evpWWEOFI8/s2h4VpPxTGFqmpyjzL/iCBEFTsGVfKXUtSGx2RMNzlwb00e0KDMXU6ZIPJ41zw==",
+  "dgSpecHash": "Z4Zwrl5T7GnpgKmBzeP7/emG4bDZGhLeL6PncZjmrvU8uIDVOC4km9y60/z08rz9Otqvrio6ifF5RE7Oz4WRnA==",
   "success": true,
   "projectFilePath": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\API\\API.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\nobod\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
     "C:\\Users\\nobod\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\nobod\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",
     "C:\\Users\\nobod\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",

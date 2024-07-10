@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
+﻿
 namespace Repositories.Entities;
 
 public partial class PersonExpense : BaseEntity

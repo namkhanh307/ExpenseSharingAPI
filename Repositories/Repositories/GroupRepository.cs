@@ -1,6 +1,5 @@
 ﻿using Repositories.Entities;
 using Repositories.IRepositories;
-using Repositories.ResponseModel.GroupModel;
 
 namespace Repositories.Repositories
 {

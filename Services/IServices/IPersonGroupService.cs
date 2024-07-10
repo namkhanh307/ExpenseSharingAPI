@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Repositories.Entities;
+using Repositories.ResponseModel.PersonGroupModel;
 
 namespace Services.IServices
 {
     public interface IPersonGroupService
     {
+        void DeletePersonGroup(string id);
+        List<PersonGroup> GetPersonGroups();
+        void PostPersonGroup(PostPersonGroupModel model);
+        void PutPersonGroup(string id, PutPersonGroupModel model);
     }
 }

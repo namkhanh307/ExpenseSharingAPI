@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "7+8INsLRNQJJJg9umI+fmo49aVzzF/Ls0XBQVwxK479gpnU4Hka9Whxr8wOj8sbMcP0PJJHxNHWsFBXzoU1eFg==",
+  "dgSpecHash": "02R9kxeEc8AbpHOLtUE6zFZoAyiKk+6bLoAJ7fQFxPeE37P18q6Kpof2S/i/6q37Z5JinvYBJaGc0ksUdil7Fw==",
   "success": true,
   "projectFilePath": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Services\\Services.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\nobod\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
     "C:\\Users\\nobod\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\nobod\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",
     "C:\\Users\\nobod\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\1.1.1\\microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",
