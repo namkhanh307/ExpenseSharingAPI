@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Repositories.Entities;
 using Repositories.IRepositories;
+using Repositories.ResponseModel.ExpenseModel;
 using Repositories.ResponseModel.PersonGroupModel;
 using Services.IServices;
 
@@ -16,9 +17,9 @@ namespace Services.Services
             _mapper = mapper;
         }
 
-        public List<PersonGroup> GetPersonGroups()
+        public List<GetPersonGroupModel> GetPersonGroups()
         {
-            return _unitOfWork.GetRepository<PersonGroup>().Entities.Where(g => !g.DeletedTime.HasValue).ToList();
+            return _mapper.Map<List<GetPersonGroupModel>>(_unitOfWork.GetRepository<PersonGroup>().Entities.Where(g => !g.DeletedTime.HasValue).ToList());
         }
 
         public void PostPersonGroup(PostPersonGroupModel model)

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Repositories.Entities;
 using Repositories.IRepositories;
+using Repositories.ResponseModel.ExpenseModel;
 using Repositories.ResponseModel.RecordModel;
 using Services.IServices;
 
@@ -16,11 +17,9 @@ namespace Services.Services
             _mapper = mapper;
         }
 
-
-
-        public List<Record> GetRecord()
+        public List<GetRecordModel> GetRecord()
         {
-            return _unitOfWork.GetRepository<Record>().Entities.Where(g => !g.DeletedTime.HasValue).ToList();
+            return _mapper.Map<List<GetRecordModel>>(_unitOfWork.GetRepository<Record>().Entities.Where(g => !g.DeletedTime.HasValue).ToList());
         }
 
         public void PostRecord(PostRecordModel model)

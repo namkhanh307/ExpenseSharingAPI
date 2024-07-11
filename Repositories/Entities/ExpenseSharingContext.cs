@@ -45,14 +45,8 @@ public partial class ExpenseSharingContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("expenseType");
             entity.Property(e => e.InvoiceImage).HasColumnName("invoiceImage");
-            entity.Property(e => e.PersonId).HasColumnName("personID");
             entity.Property(e => e.ReportId).HasColumnName("reportID");
-
-            entity.HasOne(d => d.Person).WithMany(p => p.Expenses)
-                .HasForeignKey(d => d.PersonId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Expense_Person");
-
+        
             entity.HasOne(d => d.Report).WithMany(p => p.Expenses)
                 .HasForeignKey(d => d.ReportId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -174,17 +168,11 @@ public partial class ExpenseSharingContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
                 .HasColumnName("name");
-            entity.Property(e => e.PersonId).HasColumnName("personID");
 
             entity.HasOne(d => d.Group).WithMany(p => p.Reports)
                 .HasForeignKey(d => d.GroupId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Report_Group");
-
-            entity.HasOne(d => d.Person).WithMany(p => p.Reports)
-                .HasForeignKey(d => d.PersonId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Report_Person");
         });
 
         OnModelCreatingPartial(modelBuilder);

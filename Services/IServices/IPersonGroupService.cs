@@ -6,7 +6,7 @@ namespace Services.IServices
     public interface IPersonGroupService
     {
         void DeletePersonGroup(string id);
-        List<PersonGroup> GetPersonGroups();
+        List<GetPersonGroupModel> GetPersonGroups();
         void PostPersonGroup(PostPersonGroupModel model);
         void PutPersonGroup(string id, PutPersonGroupModel model);
     }

@@ -15,7 +15,7 @@ namespace API.Controllers
             _reportService = reportService;
         }
         [HttpGet]
-        public List<Report> GetReports()
+        public List<GetReportModel> GetReports()
         {
             return _reportService.GetReports();
         }

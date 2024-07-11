@@ -16,7 +16,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public List<Expense> GetExpenses()
+        public List<GetExpenseModel> GetExpenses()
         {
             return _expenseService.GetExpenses();
         }

@@ -15,7 +15,7 @@ namespace API.Controllers
             _personGroupService = personGroupService;
         }
         [HttpGet]
-        public List<PersonGroup> GetPersonGroups()
+        public List<GetPersonGroupModel> GetPersonGroups()
         {
             return _personGroupService.GetPersonGroups();
         }

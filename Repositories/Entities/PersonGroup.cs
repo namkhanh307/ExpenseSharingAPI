@@ -3,9 +3,9 @@ namespace Repositories.Entities;
 
 public partial class PersonGroup : BaseEntity
 {
-    public string PersonId { get; set; }
+    public string? PersonId { get; set; }
 
-    public string GroupId { get; set; }
+    public string? GroupId { get; set; }
 
     public bool? IsAdmin { get; set; }
 

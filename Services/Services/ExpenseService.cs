@@ -16,9 +16,9 @@ namespace Services.Services
             _mapper = mapper;
         }
 
-        public List<Expense> GetExpenses()
+        public List<GetExpenseModel> GetExpenses()
         {
-            return _unitOfWork.GetRepository<Expense>().Entities.Where(g => !g.DeletedTime.HasValue).ToList();
+            return _mapper.Map<List<GetExpenseModel>>(_unitOfWork.GetRepository<Expense>().Entities.Where(g => !g.DeletedTime.HasValue).ToList());
         }
         public void PostExpense(PostExpenseModel model)
         {

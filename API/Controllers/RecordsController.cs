@@ -15,7 +15,7 @@ namespace API.Controllers
             _recordService = recordService;
         }
         [HttpGet]
-        public List<Record> GetRecords()
+        public List<GetRecordModel> GetRecords()
         {
             return _recordService.GetRecord();
         }

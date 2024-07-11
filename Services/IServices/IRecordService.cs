@@ -6,7 +6,7 @@ namespace Services.IServices
     public interface IRecordService
     {
         void DeleteRecord(string id);
-        List<Record> GetRecord();
+        List<GetRecordModel> GetRecord();
         void PostRecord(PostRecordModel model);
         void PutRecord(string id, PutRecordModel model);
     }

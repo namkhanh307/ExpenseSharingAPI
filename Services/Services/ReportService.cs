@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Repositories.Entities;
 using Repositories.IRepositories;
+using Repositories.ResponseModel.ExpenseModel;
 using Repositories.ResponseModel.ReportModel;
 using Services.IServices;
 
@@ -16,9 +17,22 @@ namespace Services.Services
             _mapper = mapper;
         }
 
-        public List<Report> GetReports()
+        public List<GetReportModel> GetReports()
         {
-            return _unitOfWork.GetRepository<Report>().Entities.Where(g => !g.DeletedTime.HasValue).ToList();
+            var reports = _unitOfWork.GetRepository<Report>().Entities.Where(g => !g.DeletedTime.HasValue).ToList();
+            List<GetReportModel> result = new List<GetReportModel>();
+            foreach (var report in reports)
+            {
+                GetReportModel response = new()
+                {
+                    Id = report.Id,
+                    GroupId = report.GroupId,
+                    Name = report.Name,
+                    GroupName = _unitOfWork.GetRepository<Group>().GetById(report.GroupId).Name,
+                };
+                result.Add(response);
+            }
+            return result;
         }
 
         public void PostReport(PostReportModel model)

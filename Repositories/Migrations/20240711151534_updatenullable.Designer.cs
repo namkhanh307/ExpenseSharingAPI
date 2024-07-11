@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repositories.Entities;
 
@@ -11,9 +12,11 @@ using Repositories.Entities;
 namespace Repositories.Migrations
 {
     [DbContext(typeof(ExpenseSharingContext))]
-    partial class ExpenseSharingContextModelSnapshot : ModelSnapshot
+    [Migration("20240711151534_updatenullable")]
+    partial class updatenullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -58,6 +61,10 @@ namespace Repositories.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("expenseName");
 
+                    b.Property<string>("PersonId")
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("personID");
+
                     b.Property<string>("ReportId")
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("reportID");
@@ -68,6 +75,8 @@ namespace Repositories.Migrations
                         .HasColumnName("expenseType");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PersonId");
 
                     b.HasIndex("ReportId");
 
@@ -346,10 +355,17 @@ namespace Repositories.Migrations
 
             modelBuilder.Entity("Repositories.Entities.Expense", b =>
                 {
+                    b.HasOne("Repositories.Entities.Person", "Person")
+                        .WithMany("Expenses")
+                        .HasForeignKey("PersonId")
+                        .HasConstraintName("FK_Expense_Person");
+
                     b.HasOne("Repositories.Entities.Report", "Report")
                         .WithMany("Expenses")
                         .HasForeignKey("ReportId")
                         .HasConstraintName("FK_Expense_Report");
+
+                    b.Navigation("Person");
 
                     b.Navigation("Report");
                 });
@@ -452,6 +468,8 @@ namespace Repositories.Migrations
 
             modelBuilder.Entity("Repositories.Entities.Person", b =>
                 {
+                    b.Navigation("Expenses");
+
                     b.Navigation("PersonExpenses");
 
                     b.Navigation("PersonGroups");
