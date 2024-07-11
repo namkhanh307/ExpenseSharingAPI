@@ -16,24 +16,41 @@ namespace Services.Services
             _mapper = mapper;
         }
 
-        public void DeletePersonExpense(string id)
-        {
-            throw new NotImplementedException();
-        }
-
         public List<PersonExpense> GetPersonExpenses()
         {
-            throw new NotImplementedException();
+            return _unitOfWork.GetRepository<PersonExpense>().Entities.Where(g => !g.DeletedTime.HasValue).ToList();
         }
 
         public void PostPersonExpense(PostPersonExpenseModel model)
         {
-            throw new NotImplementedException();
+            var personExpense = _mapper.Map<PersonExpense>(model);
+            personExpense.CreatedTime = DateTime.Now;
+            _unitOfWork.GetRepository<PersonExpense>().Insert(personExpense);
+            _unitOfWork.Save();
         }
 
         public void PutPersonExpense(string id, PutPersonExpenseModel model)
         {
-            throw new NotImplementedException();
+            var existedPersonExpense = _unitOfWork.GetRepository<PersonExpense>().GetById(id);
+            if (existedPersonExpense == null)
+            {
+                throw new Exception($"Group with ID {id} doesn't exist!");
+            }
+            _mapper.Map(model, existedPersonExpense);
+            existedPersonExpense.LastUpdatedTime = DateTime.Now;
+            _unitOfWork.GetRepository<PersonExpense>().Update(existedPersonExpense);
+            _unitOfWork.Save();
+        }
+        public void DeletePersonExpense(string id)
+        {
+            var existedPersonExpense = _unitOfWork.GetRepository<PersonExpense>().GetById(id);
+            if (existedPersonExpense == null)
+            {
+                throw new Exception($"Group with ID {id} doesn't exist!");
+            }
+            existedPersonExpense.DeletedTime = DateTime.Now;
+            _unitOfWork.GetRepository<PersonExpense>().Update(existedPersonExpense);
+            _unitOfWork.Save();
         }
     }
 }

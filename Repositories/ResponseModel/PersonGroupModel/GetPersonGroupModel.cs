@@ -3,8 +3,10 @@ namespace Repositories.ResponseModel.PersonGroupModel
 {
     public class GetPersonGroupModel
     {
-        public string? Name { get; set; }
-        public int Size { get; set; }
-        public int? Type { get; set; }
+        public string PersonId { get; set; }
+
+        public string GroupId { get; set; }
+
+        public bool? IsAdmin { get; set; }
     }
 }

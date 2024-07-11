@@ -16,24 +16,42 @@ namespace Services.Services
             _mapper = mapper;
         }
 
-        public void DeleteReport(string id)
-        {
-            throw new NotImplementedException();
-        }
-
         public List<Report> GetReports()
         {
-            throw new NotImplementedException();
+            return _unitOfWork.GetRepository<Report>().Entities.Where(g => !g.DeletedTime.HasValue).ToList();
         }
 
         public void PostReport(PostReportModel model)
         {
-            throw new NotImplementedException();
+            var report = _mapper.Map<Report>(model);
+            report.CreatedTime = DateTime.Now;
+            _unitOfWork.GetRepository<Report>().Insert(report);
+            _unitOfWork.Save();
         }
 
         public void PutReport(string id, PutReportModel model)
         {
-            throw new NotImplementedException();
+            var existedReport = _unitOfWork.GetRepository<Report>().GetById(id);
+            if (existedReport == null)
+            {
+                throw new Exception($"Group with ID {id} doesn't exist!");
+            }
+            _mapper.Map(model, existedReport);
+            existedReport.LastUpdatedTime = DateTime.Now;
+            _unitOfWork.GetRepository<Report>().Update(existedReport);
+            _unitOfWork.Save();
+        }
+
+        public void DeleteReport(string id)
+        {
+            var existedReport = _unitOfWork.GetRepository<Report>().GetById(id);
+            if (existedReport == null)
+            {
+                throw new Exception($"Group with ID {id} doesn't exist!");
+            }
+            existedReport.DeletedTime = DateTime.Now;
+            _unitOfWork.GetRepository<Report>().Update(existedReport);
+            _unitOfWork.Save();
         }
     }
 }

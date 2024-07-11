@@ -4,8 +4,11 @@ namespace Repositories.ResponseModel.PersonExpenseModel
 {
     public class PutPersonExpenseModel
     {
-        public string? Name { get; set; }
-        public int Size { get; set; }
-        public int? Type { get; set; }
+        public string ExpenseId { get; set; }
+
+        public string PersonId { get; set; }
+
+        public string GroupId { get; set; }
+
     }
 }

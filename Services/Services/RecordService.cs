@@ -16,24 +16,43 @@ namespace Services.Services
             _mapper = mapper;
         }
 
-        public void DeleteRecord(string id)
-        {
-            throw new NotImplementedException();
-        }
+
 
         public List<Record> GetRecord()
         {
-            throw new NotImplementedException();
+            return _unitOfWork.GetRepository<Record>().Entities.Where(g => !g.DeletedTime.HasValue).ToList();
         }
 
         public void PostRecord(PostRecordModel model)
         {
-            throw new NotImplementedException();
+            var record = _mapper.Map<Record>(model);
+            record.CreatedTime = DateTime.Now;
+            _unitOfWork.GetRepository<Record>().Insert(record);
+            _unitOfWork.Save();
         }
 
         public void PutRecord(string id, PutRecordModel model)
         {
-            throw new NotImplementedException();
+            var existedRecord = _unitOfWork.GetRepository<Record>().GetById(id);
+            if (existedRecord == null)
+            {
+                throw new Exception($"Group with ID {id} doesn't exist!");
+            }
+            _mapper.Map(model, existedRecord);
+            existedRecord.LastUpdatedTime = DateTime.Now;
+            _unitOfWork.GetRepository<Record>().Update(existedRecord);
+            _unitOfWork.Save();
+        }
+        public void DeleteRecord(string id)
+        {
+            var existedRecord = _unitOfWork.GetRepository<Record>().GetById(id);
+            if (existedRecord == null)
+            {
+                throw new Exception($"Group with ID {id} doesn't exist!");
+            }
+            existedRecord.DeletedTime = DateTime.Now;
+            _unitOfWork.GetRepository<Record>().Update(existedRecord);
+            _unitOfWork.Save();
         }
     }
 }

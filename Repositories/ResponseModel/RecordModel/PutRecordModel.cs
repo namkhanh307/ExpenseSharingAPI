@@ -3,8 +3,14 @@ namespace Repositories.ResponseModel.RecordModel
 {
     public class PutRecordModel
     {
-        public string? Name { get; set; }
-        public int Size { get; set; }
-        public int? Type { get; set; }
+        public string PersonId { get; set; }
+
+        public string ExpenseId { get; set; }
+
+        public string ReportId { get; set; }
+
+        public double? Amount { get; set; }
+
+        public bool? IsPaid { get; set; }
     }
 }

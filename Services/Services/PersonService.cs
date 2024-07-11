@@ -15,25 +15,44 @@ namespace Services.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-
-        public void DeletePerson(string id)
-        {
-            throw new NotImplementedException();
-        }
-
         public List<Person> GetPersons()
         {
-            throw new NotImplementedException();
+            return _unitOfWork.GetRepository<Person>().Entities.Where(g => !g.DeletedTime.HasValue).ToList();
         }
 
         public void PostPerson(PostPersonModel model)
         {
-            throw new NotImplementedException();
+            var person = _mapper.Map<Person>(model);
+            person.CreatedTime = DateTime.Now;
+            _unitOfWork.GetRepository<Person>().Insert(person);
+            _unitOfWork.Save();
         }
 
         public void PutPerson(string id, PutPersonModel model)
         {
-            throw new NotImplementedException();
+            var existedPerson = _unitOfWork.GetRepository<Person>().GetById(id);
+            if (existedPerson == null)
+            {
+                throw new Exception($"Group with ID {id} doesn't exist!");
+            }
+            _mapper.Map(model, existedPerson);
+            existedPerson.LastUpdatedTime = DateTime.Now;
+            _unitOfWork.GetRepository<Person>().Update(existedPerson);
+            _unitOfWork.Save();
         }
+
+        public void DeletePerson(string id)
+        {
+            var existedPerson = _unitOfWork.GetRepository<Person>().GetById(id);
+            if (existedPerson == null)
+            {
+                throw new Exception($"Group with ID {id} doesn't exist!");
+            }
+            existedPerson.DeletedTime = DateTime.Now;
+            _unitOfWork.GetRepository<Person>().Update(existedPerson);
+            _unitOfWork.Save();
+        }
+
+      
     }
 }
