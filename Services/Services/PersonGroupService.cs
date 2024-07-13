@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Entities;
 using Repositories.IRepositories;
 using Repositories.ResponseModel.ExpenseModel;
 using Repositories.ResponseModel.PersonGroupModel;
+using Repositories.ResponseModel.PersonModel;
 using Services.IServices;
+using System.Collections.Generic;
 
 namespace Services.Services
 {
@@ -17,9 +20,27 @@ namespace Services.Services
             _mapper = mapper;
         }
 
-        public List<GetPersonGroupModel> GetPersonGroups()
+        public List<GetPersonGroupModel> GetPersonGroups(string? groupId)
         {
-            return _mapper.Map<List<GetPersonGroupModel>>(_unitOfWork.GetRepository<PersonGroup>().Entities.Where(g => !g.DeletedTime.HasValue).ToList());
+            var query = _unitOfWork.GetRepository<PersonGroup>()
+                                   .Entities.Where(pg => !pg.DeletedTime.HasValue)
+                                   .Include(pg => pg.Person)
+                                   .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(groupId))
+            {
+                query = query.Where(pg => pg.GroupId == groupId);
+            }
+
+            var groupQuery = query.GroupBy(pg => pg.GroupId).ToList();
+
+            var responseList = groupQuery.Select(g => new GetPersonGroupModel
+            {
+                GroupId = g.Key,
+                Persons = g.Select(pg => _mapper.Map<GetPersonModel>(pg.Person)).ToList()
+            }).ToList();
+
+            return responseList;
         }
 
         public void PostPersonGroup(PostPersonGroupModel model)

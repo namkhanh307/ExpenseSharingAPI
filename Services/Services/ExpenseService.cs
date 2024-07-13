@@ -16,9 +16,18 @@ namespace Services.Services
             _mapper = mapper;
         }
 
-        public List<GetExpenseModel> GetExpenses()
+        public List<GetExpenseModel> GetExpenses(string? reportId, string? type)
         {
-            return _mapper.Map<List<GetExpenseModel>>(_unitOfWork.GetRepository<Expense>().Entities.Where(g => !g.DeletedTime.HasValue).ToList());
+            var query = _unitOfWork.GetRepository<Expense>().Entities.Where(g => !g.DeletedTime.HasValue).AsQueryable();
+            if (!string.IsNullOrWhiteSpace(reportId))
+            {
+                query = query.Where(e => e.ReportId == reportId);
+            }
+            if(!string.IsNullOrWhiteSpace(type))
+            {
+                query = query.Where(e => e.Type == type);
+            }
+            return _mapper.Map<List<GetExpenseModel>>(query.ToList());
         }
         public void PostExpense(PostExpenseModel model)
         {

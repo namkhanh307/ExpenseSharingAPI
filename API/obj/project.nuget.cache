@@ -1,12 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "Z4Zwrl5T7GnpgKmBzeP7/emG4bDZGhLeL6PncZjmrvU8uIDVOC4km9y60/z08rz9Otqvrio6ifF5RE7Oz4WRnA==",
+  "dgSpecHash": "aFy92VO16bBJjucMvpU0+PglnFR3Zs05LOU8hxFutBCGJXG463OrTMl9+aPAmktWJoWP2cCQW7UM0t6kl9O+Qg==",
   "success": true,
   "projectFilePath": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\API\\API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\nobod\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
     "C:\\Users\\nobod\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\nobod\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",
+    "C:\\Users\\nobod\\.nuget\\packages\\castle.core\\5.1.1\\castle.core.5.1.1.nupkg.sha512",
     "C:\\Users\\nobod\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",
     "C:\\Users\\nobod\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\nobod\\.nuget\\packages\\humanizer.core.af\\2.14.1\\humanizer.core.af.2.14.1.nupkg.sha512",
@@ -82,6 +83,7 @@
     "C:\\Users\\nobod\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\8.0.6\\microsoft.entityframeworkcore.abstractions.8.0.6.nupkg.sha512",
     "C:\\Users\\nobod\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\8.0.6\\microsoft.entityframeworkcore.analyzers.8.0.6.nupkg.sha512",
     "C:\\Users\\nobod\\.nuget\\packages\\microsoft.entityframeworkcore.design\\8.0.6\\microsoft.entityframeworkcore.design.8.0.6.nupkg.sha512",
+    "C:\\Users\\nobod\\.nuget\\packages\\microsoft.entityframeworkcore.proxies\\8.0.6\\microsoft.entityframeworkcore.proxies.8.0.6.nupkg.sha512",
     "C:\\Users\\nobod\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\8.0.6\\microsoft.entityframeworkcore.relational.8.0.6.nupkg.sha512",
     "C:\\Users\\nobod\\.nuget\\packages\\microsoft.entityframeworkcore.sqlserver\\8.0.6\\microsoft.entityframeworkcore.sqlserver.8.0.6.nupkg.sha512",
     "C:\\Users\\nobod\\.nuget\\packages\\microsoft.entityframeworkcore.tools\\8.0.4\\microsoft.entityframeworkcore.tools.8.0.4.nupkg.sha512",

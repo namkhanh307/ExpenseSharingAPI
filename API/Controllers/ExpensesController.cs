@@ -16,9 +16,9 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public List<GetExpenseModel> GetExpenses()
+        public List<GetExpenseModel> GetExpenses(string? reportId, string? type)
         {
-            return _expenseService.GetExpenses();
+            return _expenseService.GetExpenses(reportId, type);
         }
         [HttpPost]
         public void PostExpense(PostExpenseModel model)

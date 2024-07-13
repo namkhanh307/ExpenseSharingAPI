@@ -34,6 +34,8 @@ namespace API
             builder.Services.AddScoped<IReportService, ReportService>();
             builder.Services.AddScoped<IRecordService, RecordService>();
             builder.Services.AddScoped<IPersonService, PersonService>();
+            builder.Services.AddScoped<ICalculateService, CalculateService>();
+
             //Add Automapper
             builder.Services.AddAutoMapper(typeof(GroupProfile).Assembly);
             builder.Services.AddAutoMapper(typeof(ExpenseProfile).Assembly);
