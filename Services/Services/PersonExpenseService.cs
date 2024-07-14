@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Entities;
 using Repositories.IRepositories;
 using Repositories.ResponseModel.ExpenseModel;
 using Repositories.ResponseModel.PersonExpenseModel;
+using Repositories.ResponseModel.PersonModel;
 using Services.IServices;
 
 namespace Services.Services
@@ -17,10 +19,46 @@ namespace Services.Services
             _mapper = mapper;
         }
 
-        public List<GetPersonExpenseModel> GetPersonExpenses()
+        public List<GetPersonExpenseModel> GetPersonExpenses(string? reportId, string? expenseId)
         {
-            return _mapper.Map<List<GetPersonExpenseModel>>(_unitOfWork.GetRepository<PersonExpense>().Entities.Where(g => !g.DeletedTime.HasValue).ToList());
+            // Fetch the main query
+            var query = _unitOfWork.GetRepository<PersonExpense>().Entities
+                .Where(pe => !pe.DeletedTime.HasValue)
+                .Include(pe => pe.Person)
+                .Include(pe => pe.Expense)
+                .AsQueryable();
+
+            // Apply filters
+            if (!string.IsNullOrWhiteSpace(reportId))
+            {
+                query = query.Where(pe => pe.ReportId == reportId);
+            }
+            if (!string.IsNullOrWhiteSpace(expenseId))
+            {
+                query = query.Where(pe => pe.ExpenseId == expenseId);
+            }
+
+            // Execute query and group results
+            var groupedResults = query.ToList()
+                                      .GroupBy(pe => pe.ExpenseId)
+                                      .ToList();
+
+            // Prepare response
+            var responseList = groupedResults.Select(group =>
+            {
+                var firstExpense = group.First().Expense;
+                var affordedBy = _unitOfWork.GetRepository<Person>().GetById(firstExpense.CreatedBy);
+                return new GetPersonExpenseModel
+                {
+                    ExpenseId = group.Key,
+                    Person = _mapper.Map<GetPersonModel>(affordedBy),
+                    Persons = group.Select(pe => _mapper.Map<GetPersonModel>(pe.Person)).ToList()
+                };
+            }).ToList();
+
+            return responseList;
         }
+
 
         public void PostPersonExpense(PostPersonExpenseModel model)
         {

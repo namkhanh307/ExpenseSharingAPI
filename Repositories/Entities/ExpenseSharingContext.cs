@@ -85,23 +85,18 @@ public partial class ExpenseSharingContext : DbContext
 
         modelBuilder.Entity<PersonExpense>(entity =>
         {
-            entity.HasKey(e => new { e.ExpenseId, e.PersonId, e.GroupId }).HasName("PK__PersonEx__35F3AA9E2F5ABE97");
+            entity.HasKey(e => new { e.ExpenseId, e.PersonId}).HasName("PK__PersonEx__35F3AA9E2F5ABE97");
 
             entity.ToTable("PersonExpense");
 
             entity.Property(e => e.ExpenseId).HasColumnName("ExpenseID");
             entity.Property(e => e.PersonId).HasColumnName("PersonID");
-            entity.Property(e => e.GroupId).HasColumnName("GroupID");
 
             entity.HasOne(d => d.Expense).WithMany(p => p.PersonExpenses)
                 .HasForeignKey(d => d.ExpenseId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__PersonExp__Expen__32AB8735");
 
-            entity.HasOne(d => d.Group).WithMany(p => p.PersonExpenses)
-                .HasForeignKey(d => d.GroupId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__PersonExp__Group__3493CFA7");
 
             entity.HasOne(d => d.Person).WithMany(p => p.PersonExpenses)
                 .HasForeignKey(d => d.PersonId)

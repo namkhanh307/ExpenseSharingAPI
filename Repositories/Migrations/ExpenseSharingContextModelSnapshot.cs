@@ -171,10 +171,6 @@ namespace Repositories.Migrations
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("PersonID");
 
-                    b.Property<string>("GroupId")
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnName("GroupID");
-
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -196,12 +192,15 @@ namespace Repositories.Migrations
                     b.Property<DateTime>("LastUpdatedTime")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("ExpenseId", "PersonId", "GroupId")
+                    b.Property<string>("ReportId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ExpenseId", "PersonId")
                         .HasName("PK__PersonEx__35F3AA9E2F5ABE97");
 
-                    b.HasIndex("GroupId");
-
                     b.HasIndex("PersonId");
+
+                    b.HasIndex("ReportId");
 
                     b.ToTable("PersonExpense", (string)null);
                 });
@@ -362,23 +361,21 @@ namespace Repositories.Migrations
                         .IsRequired()
                         .HasConstraintName("FK__PersonExp__Expen__32AB8735");
 
-                    b.HasOne("Repositories.Entities.Group", "Group")
-                        .WithMany("PersonExpenses")
-                        .HasForeignKey("GroupId")
-                        .IsRequired()
-                        .HasConstraintName("FK__PersonExp__Group__3493CFA7");
-
                     b.HasOne("Repositories.Entities.Person", "Person")
                         .WithMany("PersonExpenses")
                         .HasForeignKey("PersonId")
                         .IsRequired()
                         .HasConstraintName("FK__PersonExp__Perso__339FAB6E");
 
+                    b.HasOne("Repositories.Entities.Report", "Report")
+                        .WithMany("PersonExpenses")
+                        .HasForeignKey("ReportId");
+
                     b.Navigation("Expense");
 
-                    b.Navigation("Group");
-
                     b.Navigation("Person");
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Repositories.Entities.PersonGroup", b =>
@@ -443,8 +440,6 @@ namespace Repositories.Migrations
 
             modelBuilder.Entity("Repositories.Entities.Group", b =>
                 {
-                    b.Navigation("PersonExpenses");
-
                     b.Navigation("PersonGroups");
 
                     b.Navigation("Reports");
@@ -462,6 +457,8 @@ namespace Repositories.Migrations
             modelBuilder.Entity("Repositories.Entities.Report", b =>
                 {
                     b.Navigation("Expenses");
+
+                    b.Navigation("PersonExpenses");
 
                     b.Navigation("Records");
                 });

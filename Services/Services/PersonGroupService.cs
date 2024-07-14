@@ -51,24 +51,24 @@ namespace Services.Services
             _unitOfWork.Save();
         }
 
-        public void PutPersonGroup(string id, PutPersonGroupModel model)
+        public void PutPersonGroup(string groupId, string personId, PutPersonGroupModel model)
         {
-            var existedPersonGroup = _unitOfWork.GetRepository<PersonGroup>().GetById(id);
+            var existedPersonGroup = _unitOfWork.GetRepository<PersonGroup>().Entities.Where(pg => pg.GroupId == groupId && pg.PersonId == personId).FirstOrDefault();
             if (existedPersonGroup == null)
             {
-                throw new Exception($"PersonGroup with ID {id} doesn't exist!");
+                throw new Exception($"PersonGroup with personID {personId} or groupID {groupId} doesn't exist!");
             }
             _mapper.Map(model, existedPersonGroup);
             existedPersonGroup.LastUpdatedTime = DateTime.Now;
             _unitOfWork.GetRepository<PersonGroup>().Update(existedPersonGroup);
             _unitOfWork.Save();
         }
-        public void DeletePersonGroup(string id)
+        public void DeletePersonGroup(string groupId, string personId)
         {
-            var existedPersonGroup = _unitOfWork.GetRepository<PersonGroup>().GetById(id);
+            var existedPersonGroup = _unitOfWork.GetRepository<PersonGroup>().Entities.Where(pg => pg.GroupId == groupId && pg.PersonId == personId).FirstOrDefault();
             if (existedPersonGroup == null)
             {
-                throw new Exception($"PersonGroup with ID {id} doesn't exist!");
+                throw new Exception($"PersonGroup with personID {personId} or groupID {groupId} doesn't exist!");
             }
             existedPersonGroup.DeletedTime = DateTime.Now;
             _unitOfWork.GetRepository<PersonGroup>().Update(existedPersonGroup);

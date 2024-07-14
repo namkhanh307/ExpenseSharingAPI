@@ -15,9 +15,9 @@ namespace API.Controllers
             _personExpenseService = personExpenseService;
         }
         [HttpGet]
-        public List<GetPersonExpenseModel> GetPersonExpenses()
+        public List<GetPersonExpenseModel> GetPersonExpenses(string? reportId, string? expenseId)
         {
-            return _personExpenseService.GetPersonExpenses();
+            return _personExpenseService.GetPersonExpenses(reportId, expenseId);
         }
         [HttpPost]
         public void PostPersonExpense(PostPersonExpenseModel model)

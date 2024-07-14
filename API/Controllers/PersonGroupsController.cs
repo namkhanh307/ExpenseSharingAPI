@@ -25,14 +25,14 @@ namespace API.Controllers
             _personGroupService.PostPersonGroup(model);
         }
         [HttpPut]
-        public void PutPersonGroup(string id, PutPersonGroupModel model)
+        public void PutPersonGroup(string groupId, string personId, PutPersonGroupModel model)
         {
-            _personGroupService.PutPersonGroup(id, model);
+            _personGroupService.PutPersonGroup(groupId, personId, model);
         }
         [HttpDelete]
-        public void DeletePersonGroup(string id)
+        public void DeletePersonGroup(string groupId, string personId)
         {
-            _personGroupService.DeletePersonGroup(id);
+            _personGroupService.DeletePersonGroup(groupId, personId);
         }
     }
 }
