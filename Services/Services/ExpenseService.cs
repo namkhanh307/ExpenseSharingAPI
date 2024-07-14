@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using Core.Infrastructure;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Authentication;
 using Repositories.Entities;
 using Repositories.IRepositories;
 using Repositories.ResponseModel.ExpenseModel;
@@ -8,12 +11,15 @@ namespace Services.Services
 {
     public class ExpenseService : IExpenseService
     {
+        private readonly IHttpContextAccessor _contextAccessor;
+
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public ExpenseService(IUnitOfWork unitOfWork, IMapper mapper)
+        public ExpenseService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor contextAccessor)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _contextAccessor = contextAccessor;
         }
 
         public List<GetExpenseModel> GetExpenses(string? reportId, string? type)
@@ -31,8 +37,10 @@ namespace Services.Services
         }
         public void PostExpense(PostExpenseModel model)
         {
+            string idUser = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
             var expense = _mapper.Map<Expense>(model);
             expense.CreatedTime = DateTime.Now;
+            expense.CreatedBy = idUser;
             _unitOfWork.GetRepository<Expense>().Insert(expense);
             _unitOfWork.Save();
         }
