@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Core.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 using Repositories.Entities;
+using Repositories.ResponseModel.GroupModel;
 using Repositories.ResponseModel.ReportModel;
 using Services.IServices;
 
@@ -15,24 +17,40 @@ namespace API.Controllers
             _reportService = reportService;
         }
         [HttpGet]
-        public List<GetReportModel> GetReports()
+        public IActionResult GetReports()
         {
-            return _reportService.GetReports();
+            var result = _reportService.GetReports();
+            return Ok(new BaseResponseModel<List<GetReportModel>>(
+                statusCode: StatusCodes.Status200OK,
+                code: ResponseCodeConstants.SUCCESS,
+                data: result));
         }
         [HttpPost]
-        public void PostReport(PostReportModel model)
+        public IActionResult PostReport(PostReportModel model)
         {
             _reportService.PostReport(model);
+            return Ok(new BaseResponseModel<string>(
+                statusCode: StatusCodes.Status200OK,
+                code: ResponseCodeConstants.SUCCESS,
+                data: "Them bao cong thanh cong"));
         }
         [HttpPut]
-        public void PutReport(string id, PutReportModel model)
+        public IActionResult PutReport(string id, PutReportModel model)
         {
             _reportService.PutReport(id, model);
+            return Ok(new BaseResponseModel<string>(
+                statusCode: StatusCodes.Status200OK,
+                code: ResponseCodeConstants.SUCCESS,
+                data: "Chinh sua bao cao thanh cong"));
         }
         [HttpDelete]
-        public void DeleteReport(string id)
+        public IActionResult DeleteReport(string id)
         {
             _reportService.DeleteReport(id);
+            return Ok(new BaseResponseModel<string>(
+                statusCode: StatusCodes.Status200OK,
+                code: ResponseCodeConstants.SUCCESS,
+                data: "Xoa bao cao thanh cong"));
         }
     }
 }

@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Core.Infrastructure;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.ResponseModel.AuthModel;
+using Repositories.ResponseModel.PersonModel;
 using Services.IServices;
 
 namespace API.Controllers
@@ -15,22 +17,31 @@ namespace API.Controllers
             _authService = authService;
         }
         [HttpPost("signup")]
-        public IActionResult SignUp(PostSignUpModel model)
+        public IActionResult SignUp(PostSignUpModel model)  
         {
             _authService.SignUp(model);
-            return Ok();
+            return Ok(new BaseResponseModel<string>(
+                statusCode: StatusCodes.Status200OK,
+                code: ResponseCodeConstants.SUCCESS,
+                data: "Dang ky thanh cong!"));
         }
         [HttpPost("login")]
         public IActionResult LogIn(PostLogInModel model)
         {
             var result = _authService.LogIn(model);
-            return Ok(result);
+            return Ok(new BaseResponseModel<GetLogInModel>(
+                           statusCode: StatusCodes.Status200OK,
+                           code: ResponseCodeConstants.SUCCESS,
+                           data: result));
         }
-        [HttpPost("getinfo")]
+        [HttpGet("getinfo")]
         public IActionResult GetInfo()
         {
             var result = _authService.GetInfo();
-            return Ok(result);
+            return Ok(new BaseResponseModel<GetPersonModel>(
+                statusCode: StatusCodes.Status200OK,
+                code: ResponseCodeConstants.SUCCESS,
+                data: result));
         }
     }
 }

@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Core.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 using Repositories.Entities;
+using Repositories.ResponseModel.GroupModel;
 using Repositories.ResponseModel.RecordModel;
 using Services.IServices;
 
@@ -15,24 +17,40 @@ namespace API.Controllers
             _recordService = recordService;
         }
         [HttpGet]
-        public List<GetRecordModel> GetRecords()
+        public IActionResult GetRecords()
         {
-            return _recordService.GetRecord();
+            var result = _recordService.GetRecord();
+            return Ok(new BaseResponseModel<List<GetRecordModel>>(
+               statusCode: StatusCodes.Status200OK,
+               code: ResponseCodeConstants.SUCCESS,
+               data: result));
         }
         [HttpPost]
-        public void PostRecord(PostRecordModel model)
+        public IActionResult PostRecord(PostRecordModel model)
         {
             _recordService.PostRecord(model);
+            return Ok(new BaseResponseModel<string>(
+               statusCode: StatusCodes.Status200OK,
+               code: ResponseCodeConstants.SUCCESS,
+               data: "Tao moi ban ghi thanh cong"));
         }
         [HttpPut]
-        public void PutRecord(string id, PutRecordModel model)
+        public IActionResult PutRecord(string id, PutRecordModel model)
         {
             _recordService.PutRecord(id, model);
+            return Ok(new BaseResponseModel<string>(
+               statusCode: StatusCodes.Status200OK,
+               code: ResponseCodeConstants.SUCCESS,
+               data: "Chinh sua ban ghi thanh cong"));
         }
         [HttpDelete]
-        public void DeleteRecord(string id)
+        public IActionResult DeleteRecord(string id)
         {
             _recordService.DeleteRecord(id);
+            return Ok(new BaseResponseModel<string>(
+               statusCode: StatusCodes.Status200OK,
+               code: ResponseCodeConstants.SUCCESS,
+               data: "Xoa ban ghi thanh cong"));
         }
     }
 }

@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Core.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 using Repositories.Entities;
+using Repositories.ResponseModel.GroupModel;
 using Repositories.ResponseModel.PersonGroupModel;
 using Services.IServices;
 
@@ -15,24 +17,40 @@ namespace API.Controllers
             _personGroupService = personGroupService;
         }
         [HttpGet]
-        public List<GetPersonGroupModel> GetPersonGroups(string? groupId)
+        public IActionResult GetPersonGroups(string? groupId)
         {
-            return _personGroupService.GetPersonGroups(groupId);
+            var result = _personGroupService.GetPersonGroups(groupId);
+            return Ok(new BaseResponseModel<List<GetPersonGroupModel>>(
+               statusCode: StatusCodes.Status200OK,
+               code: ResponseCodeConstants.SUCCESS,
+               data: result));
         }
         [HttpPost]
-        public void PostPersonGroup(PostPersonGroupModel model)
+        public IActionResult PostPersonGroup(PostPersonGroupModel model)
         {
             _personGroupService.PostPersonGroup(model);
+            return Ok(new BaseResponseModel<string>(
+               statusCode: StatusCodes.Status200OK,
+               code: ResponseCodeConstants.SUCCESS,
+               data: "Them thanh vien vao nhom thanh cong"));
         }
         [HttpPut]
-        public void PutPersonGroup(string groupId, string personId, PutPersonGroupModel model)
+        public IActionResult PutPersonGroup(string groupId, string personId, PutPersonGroupModel model)
         {
             _personGroupService.PutPersonGroup(groupId, personId, model);
+            return Ok(new BaseResponseModel<string>(
+               statusCode: StatusCodes.Status200OK,
+               code: ResponseCodeConstants.SUCCESS,
+               data: "Chinh sua thanh vien trong nhom thanh cong"));
         }
         [HttpDelete]
-        public void DeletePersonGroup(string groupId, string personId)
+        public IActionResult DeletePersonGroup(string groupId, string personId)
         {
             _personGroupService.DeletePersonGroup(groupId, personId);
+            return Ok(new BaseResponseModel<string>(
+               statusCode: StatusCodes.Status200OK,
+               code: ResponseCodeConstants.SUCCESS,
+               data: "Xoa thanh vien khoi nhom thanh cong"));
         }
     }
 }

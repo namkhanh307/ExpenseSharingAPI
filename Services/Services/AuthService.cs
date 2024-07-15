@@ -64,8 +64,15 @@ namespace Services.Services
             if(model.Password != model.ConfirmedPassword)
             {
                 throw new ErrorException(StatusCodes.Status409Conflict, ErrorCode.Conflicted, "");
-            }         
-            _unitOfWork.GetRepository<Person>().Insert(_mapper.Map<Person>(model));
+            }
+            var newPerson = new Person()
+            {
+                Name = model.Name,
+                Phone = model.Phone,
+                Password = model.Password,
+                CreatedTime =  DateTime.Now
+            };
+            _unitOfWork.GetRepository<Person>().Insert(newPerson);
             _unitOfWork.Save();
         }
     }

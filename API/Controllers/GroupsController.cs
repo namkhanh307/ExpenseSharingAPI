@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Core.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 using Repositories.Entities;
+using Repositories.ResponseModel.AuthModel;
 using Repositories.ResponseModel.GroupModel;
 using Services.IServices;
 
@@ -15,24 +17,40 @@ namespace API.Controllers
             _groupService = groupService;
         }
         [HttpGet]
-        public List<GetGroupModel> GetGroups()
+        public IActionResult GetGroups()
         {
-            return _groupService.GetGroups();
+            var result = _groupService.GetGroups();
+            return Ok(new BaseResponseModel<List<GetGroupModel>>(
+               statusCode: StatusCodes.Status200OK,
+               code: ResponseCodeConstants.SUCCESS,
+               data: result));
         }
         [HttpPost]
-        public void PostGroup(PostGroupModel model)
+        public IActionResult PostGroup(PostGroupModel model)
         {
             _groupService.PostGroup(model);
+            return Ok(new BaseResponseModel<string>(
+               statusCode: StatusCodes.Status200OK,
+               code: ResponseCodeConstants.SUCCESS,
+               data: "Tao nhom thanh cong"));
         }
         [HttpPut]
-        public void PutGroup(string id, PutGroupModel model)
+        public IActionResult PutGroup(string id, PutGroupModel model)
         {
             _groupService.PutGroup(id, model);
+            return Ok(new BaseResponseModel<string>(
+               statusCode: StatusCodes.Status200OK,
+               code: ResponseCodeConstants.SUCCESS,
+               data: "Chinh sua nhom thanh cong"));
         }
         [HttpDelete]
-        public void DeleteGroup(string id)
+        public IActionResult DeleteGroup(string id)
         {
             _groupService.DeleteGroup(id);
+            return Ok(new BaseResponseModel<string>(
+               statusCode: StatusCodes.Status200OK,
+               code: ResponseCodeConstants.SUCCESS,
+               data: "Xoa nhom thanh cong"));
         }
     }
 }

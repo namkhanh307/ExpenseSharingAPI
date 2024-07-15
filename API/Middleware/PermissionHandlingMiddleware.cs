@@ -20,7 +20,7 @@ namespace API.Middleware
             _excludedUris = new List<string>()
             {
                 "/api/Auth/login",
-                "/api/auth/signup",
+                "/api/Auth/signup",
             };
             _contextAccessor = contextAccessor;
         }
@@ -46,7 +46,11 @@ namespace API.Middleware
         {
             string requestUri = context.Request.Path.Value; ///api/dashboard
             if (_excludedUris.Contains(requestUri) || !requestUri.StartsWith("/api/")) return true;
-            string idUser = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
+            string idUser = "";
+            if (_contextAccessor != null)
+            {
+                idUser = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
+            }
             try
             {
                 {

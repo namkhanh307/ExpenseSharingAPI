@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Core.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 using Repositories.Entities;
+using Repositories.ResponseModel.GroupModel;
 using Repositories.ResponseModel.PersonModel;
 using Services.IServices;
 
@@ -15,24 +17,40 @@ namespace API.Controllers
             _personService = personService;
         }
         [HttpGet]
-        public List<GetPersonModel> GetPersons()
+        public IActionResult GetPersons()
         {
-            return _personService.GetPersons();
+            var result = _personService.GetPersons();
+            return Ok(new BaseResponseModel<List<GetPersonModel>>(
+               statusCode: StatusCodes.Status200OK,
+               code: ResponseCodeConstants.SUCCESS,
+               data: result));
         }
         [HttpPost]
-        public void PostPerson(PostPersonModel model)
+        public IActionResult PostPerson(PostPersonModel model)
         {
             _personService.PostPerson(model);
+            return Ok(new BaseResponseModel<string>(
+               statusCode: StatusCodes.Status200OK,
+               code: ResponseCodeConstants.SUCCESS,
+               data: "Them thanh vien thanh cong"));
         }
         [HttpPut]
-        public void PutPerson(string id, PutPersonModel model)
+        public IActionResult PutPerson(string id, PutPersonModel model)
         {
             _personService.PutPerson(id, model);
+            return Ok(new BaseResponseModel<string>(
+               statusCode: StatusCodes.Status200OK,
+               code: ResponseCodeConstants.SUCCESS,
+               data: "Chinh sua thanh vien thanh cong"));
         }
         [HttpDelete]
-        public void DeletePerson(string id)
+        public IActionResult DeletePerson(string id)
         {
             _personService.DeletePerson(id);
+            return Ok(new BaseResponseModel<string>(
+               statusCode: StatusCodes.Status200OK,
+               code: ResponseCodeConstants.SUCCESS,
+               data: "Xoa thanh vien thanh cong"));
         }
     }
 }

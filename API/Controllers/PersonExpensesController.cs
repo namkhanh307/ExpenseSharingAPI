@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Core.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 using Repositories.Entities;
+using Repositories.ResponseModel.GroupModel;
 using Repositories.ResponseModel.PersonExpenseModel;
 using Services.IServices;
 
@@ -15,24 +17,40 @@ namespace API.Controllers
             _personExpenseService = personExpenseService;
         }
         [HttpGet]
-        public List<GetPersonExpenseModel> GetPersonExpenses(string? reportId, string? expenseId)
+        public IActionResult GetPersonExpenses(string? reportId, string? expenseId)
         {
-            return _personExpenseService.GetPersonExpenses(reportId, expenseId);
+            var result = _personExpenseService.GetPersonExpenses(reportId, expenseId);
+            return Ok(new BaseResponseModel<List<GetPersonExpenseModel>>(
+               statusCode: StatusCodes.Status200OK,
+               code: ResponseCodeConstants.SUCCESS,
+               data: result));
         }
         [HttpPost]
-        public void PostPersonExpense(PostPersonExpenseModel model)
+        public IActionResult PostPersonExpense(PostPersonExpenseModel model)
         {
             _personExpenseService.PostPersonExpense(model);
+            return Ok(new BaseResponseModel<string>(
+               statusCode: StatusCodes.Status200OK,
+               code: ResponseCodeConstants.SUCCESS,
+               data: "Tao chi tieu cho thanh vien thanh cong"));
         }
         [HttpPut]
-        public void PutPersonExpense(string id, PutPersonExpenseModel model)
+        public IActionResult PutPersonExpense(string id, PutPersonExpenseModel model)
         {
             _personExpenseService.PutPersonExpense(id, model);
+            return Ok(new BaseResponseModel<string>(
+               statusCode: StatusCodes.Status200OK,
+               code: ResponseCodeConstants.SUCCESS,
+               data: "Chinh sua chi tieu cho thanh vien thanh cong"));
         }
         [HttpDelete]
-        public void DeletePersonExpense(string id)
+        public IActionResult DeletePersonExpense(string id)
         {
             _personExpenseService.DeletePersonExpense(id);
+            return Ok(new BaseResponseModel<string>(
+               statusCode: StatusCodes.Status200OK,
+               code: ResponseCodeConstants.SUCCESS,
+               data: "Xoa chi tieu cho thanh vien thanh cong"));
         }
     }
 }
