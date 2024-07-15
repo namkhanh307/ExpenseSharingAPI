@@ -9,30 +9,20 @@ namespace API.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<PermissionHandlingMiddleware> _logger;
-        private readonly Dictionary<string, List<string>> _rolePermissions;
         private readonly IEnumerable<string> _excludedUris;
+        private readonly IHttpContextAccessor _contextAccessor;
 
 
-        public PermissionHandlingMiddleware(RequestDelegate next, ILogger<PermissionHandlingMiddleware> logger)
+        public PermissionHandlingMiddleware(RequestDelegate next, ILogger<PermissionHandlingMiddleware> logger, IHttpContextAccessor contextAccessor)
         {
             _next = next;
             _logger = logger;
             _excludedUris = new List<string>()
             {
-                "/api/auth/login",
-                "/api/auth/register",
-                "/api/roles",
-                "/api/roles/getrolebynumber",
-                "/api/modules"
+                "/api/Auth/login",
+                "/api/auth/signup",
             };
-            _rolePermissions = new Dictionary<string, List<string>>()
-            {
-                //author bang role, roleClaim userClaim
-                //{ "admin", new List<string> { "/api/categories", "/api/roles", "/api/modules", "/api/user", "/api/profile" } },
-                { "QcManagement", new List<string> { "/api/dashboards"} },
-                { "WarehouseManagement", new List<string> {"/api/WareHouse-Management"} },
-                { "LineManagement", new List<string> { "/api/dashboards"} }
-            };
+            _contextAccessor = contextAccessor;
         }
 
         public async Task Invoke(HttpContext context, IUnitOfWork unitOfWork)
@@ -56,22 +46,16 @@ namespace API.Middleware
         {
             string requestUri = context.Request.Path.Value; ///api/dashboard
             if (_excludedUris.Contains(requestUri) || !requestUri.StartsWith("/api/")) return true;
-            string[] segments = requestUri.Split('/');
-            string controller = segments.Length > 2 ? $"/api/{segments[2]}" : string.Empty;
-
+            string idUser = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
             try
             {
-                string userRole = Authentication.GetUserRoleFromHttpContext(context);
-
-                // If the user role is admin, allow access to all controllers
-                if (userRole == "admin") return true;
-
-                // Check if the user's role has permission to access the requested controller
-                if (_rolePermissions.TryGetValue(userRole, out var allowedControllers))
                 {
-                    return allowedControllers.Any(uri => requestUri.StartsWith(uri, System.StringComparison.OrdinalIgnoreCase));
+                    if(idUser != null)
+                    {
+                        return true;
+                    }
+                    return false;
                 }
-                return false;
             }
             catch (Exception ex)
             {

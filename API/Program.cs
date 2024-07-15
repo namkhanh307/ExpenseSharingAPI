@@ -73,6 +73,10 @@ namespace API
             builder.Services.AddScoped<IRecordService, RecordService>();
             builder.Services.AddScoped<IPersonService, PersonService>();
             builder.Services.AddScoped<ICalculateService, CalculateService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<ITokenService, TokenService>();
+
+
 
             //Add Automapper
             builder.Services.AddAutoMapper(typeof(GroupProfile).Assembly);
@@ -97,8 +101,8 @@ namespace API
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ValidAudience = builder.Configuration["JWT:ValidAudience"],
-                    ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+                    ValidAudience = builder.Configuration["JWT:Audience"],
+                    ValidIssuer = builder.Configuration["JWT:Issuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
                 };
             });
