@@ -119,8 +119,8 @@ namespace Repositories.Repositories
 
         public async Task UpdateAsync(T obj)
         {
-            _dbSet.Attach(obj);
-            _context.Entry(obj).State = EntityState.Modified;
+             _dbSet.Attach(obj);
+             _context.Entry(obj).State = EntityState.Modified;
         }
     }
 }

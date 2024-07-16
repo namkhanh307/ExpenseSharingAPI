@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Repositories.Entities;
 
 namespace Repositories.Entities;
 
@@ -27,151 +30,104 @@ public partial class ExpenseSharingContext : DbContext
 
     public virtual DbSet<Report> Reports { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=(local);Database=ExpenseSharingAPICF;UID=sa;PWD=12345;TrustServerCertificate=True");
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlServer("Server=(local);Database=ExpenseSharing;UID=sa;PWD=12345;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
+        // Expense configuration
         modelBuilder.Entity<Expense>(entity =>
         {
-            entity.ToTable("Expense");
+            entity.HasKey(e => e.Id);
 
-            entity.Property(e => e.Amount).HasColumnName("amount");
-            entity.Property(e => e.Name)
-                .HasMaxLength(50)
-                .HasColumnName("expenseName");
-            entity.Property(e => e.Type)
-                .HasMaxLength(50)
-                .HasColumnName("expenseType");
-            entity.Property(e => e.InvoiceImage).HasColumnName("invoiceImage");
-            entity.Property(e => e.ReportId).HasColumnName("reportID");
-        
-            entity.HasOne(d => d.Report).WithMany(p => p.Expenses)
-                .HasForeignKey(d => d.ReportId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Expense_Report");
+            entity.HasOne(e => e.Report)
+                .WithMany(r => r.Expenses)
+                .HasForeignKey(e => e.ReportId);
+
+            entity.HasMany(e => e.PersonExpenses)
+                .WithOne(pe => pe.Expense)
+                .HasForeignKey(pe => pe.ExpenseId);
+
+            entity.HasMany(e => e.Records)
+                .WithOne(r => r.Expense)
+                .HasForeignKey(r => r.ExpenseId);
         });
 
+        // Group configuration
         modelBuilder.Entity<Group>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK_Room");
+            entity.HasKey(g => g.Id);
 
-            entity.ToTable("Group");
+            entity.HasMany(g => g.PersonGroups)
+                .WithOne(pg => pg.Group)
+                .HasForeignKey(pg => pg.GroupId);
 
-            entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.Name)
-                .HasMaxLength(50)
-                .HasColumnName("name");
-            entity.Property(e => e.Size).HasColumnName("size");
-            entity.Property(e => e.Type).HasColumnName("type");
+            entity.HasMany(g => g.Reports)
+                .WithOne(r => r.Group)
+                .HasForeignKey(r => r.GroupId);
         });
 
+        // Person configuration
         modelBuilder.Entity<Person>(entity =>
         {
-            entity.ToTable("Person");
+            entity.HasKey(p => p.Id);
 
-            entity.Property(e => e.Name)
-                .HasMaxLength(50)
-                .HasColumnName("name");
-            entity.Property(e => e.Password)
-                .HasMaxLength(50)
-                .HasColumnName("password");
-            entity.Property(e => e.Phone)
-                .HasMaxLength(10)
-                .IsFixedLength()
-                .HasColumnName("phone");
+            entity.HasMany(p => p.PersonExpenses)
+                .WithOne(pe => pe.Person)
+                .HasForeignKey(pe => pe.PersonId);
+
+            entity.HasMany(p => p.PersonGroups)
+                .WithOne(pg => pg.Person)
+                .HasForeignKey(pg => pg.PersonId);
+
+            entity.HasMany(p => p.Records)
+                .WithOne(r => r.Person)
+                .HasForeignKey(r => r.PersonId);
         });
 
+        // PersonExpense configuration
         modelBuilder.Entity<PersonExpense>(entity =>
         {
-            entity.HasKey(e => new { e.ExpenseId, e.PersonId}).HasName("PK__PersonEx__35F3AA9E2F5ABE97");
+            entity.HasKey(pe => new { pe.ExpenseId, pe.PersonId });
 
-            entity.ToTable("PersonExpense");
-
-            entity.Property(e => e.ExpenseId).HasColumnName("ExpenseID");
-            entity.Property(e => e.PersonId).HasColumnName("PersonID");
-
-            entity.HasOne(d => d.Expense).WithMany(p => p.PersonExpenses)
-                .HasForeignKey(d => d.ExpenseId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__PersonExp__Expen__32AB8735");
-
-
-            entity.HasOne(d => d.Person).WithMany(p => p.PersonExpenses)
-                .HasForeignKey(d => d.PersonId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__PersonExp__Perso__339FAB6E");
+            entity.HasOne(pe => pe.Report)
+                .WithMany(r => r.PersonExpenses)
+                .HasForeignKey(pe => pe.ReportId);
         });
 
+        // PersonGroup configuration
         modelBuilder.Entity<PersonGroup>(entity =>
         {
-            entity.HasKey(e => new { e.PersonId, e.GroupId }).HasName("PK__PersonRo__290798144CC3970E");
-
-            entity.ToTable("PersonGroup");
-
-            entity.Property(e => e.PersonId).HasColumnName("personID");
-            entity.Property(e => e.GroupId).HasColumnName("groupID");
-            entity.Property(e => e.IsAdmin).HasColumnName("isAdmin");
-
-            entity.HasOne(d => d.Group).WithMany(p => p.PersonGroups)
-                .HasForeignKey(d => d.GroupId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__PersonRoo__RoomI__60A75C0F");
-
-            entity.HasOne(d => d.Person).WithMany(p => p.PersonGroups)
-                .HasForeignKey(d => d.PersonId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__PersonRoo__Perso__5FB337D6");
+            entity.HasKey(pg => new { pg.PersonId, pg.GroupId });
         });
 
+        // Record configuration
         modelBuilder.Entity<Record>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Record__D825197E756EB7D9");
+            entity.HasKey(r => r.Id);
 
-            entity.ToTable("Record");
+            entity.HasOne(r => r.Person)
+                .WithMany(p => p.Records)
+                .HasForeignKey(r => r.PersonId);
 
-            entity.Property(e => e.Amount).HasColumnName("amount");
-            entity.Property(e => e.ExpenseId).HasColumnName("expenseID");
-            entity.Property(e => e.IsPaid).HasColumnName("isPaid");
-            entity.Property(e => e.PersonId).HasColumnName("personID");
-            entity.Property(e => e.ReportId).HasColumnName("reportID");
+            entity.HasOne(r => r.Expense)
+                .WithMany(e => e.Records)
+                .HasForeignKey(r => r.ExpenseId);
 
-            entity.HasOne(d => d.Expense).WithMany(p => p.Records)
-                .HasForeignKey(d => d.ExpenseId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Record_Expense");
-
-            entity.HasOne(d => d.Person).WithMany(p => p.Records)
-                .HasForeignKey(d => d.PersonId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Record_Person");
-
-            entity.HasOne(d => d.Report).WithMany(p => p.Records)
-                .HasForeignKey(d => d.ReportId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Record_Report");
+            entity.HasOne(r => r.Report)
+                .WithMany(rp => rp.Records)
+                .HasForeignKey(r => r.ReportId);
         });
 
+        // Report configuration
         modelBuilder.Entity<Report>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Report__3214EC2761BA3C9B");
+            entity.HasKey(r => r.Id);
 
-            entity.ToTable("Report");
-
-            entity.Property(e => e.GroupId).HasColumnName("groupID");
-            entity.Property(e => e.Name)
-                .HasMaxLength(50)
-                .HasColumnName("name");
-
-            entity.HasOne(d => d.Group).WithMany(p => p.Reports)
-                .HasForeignKey(d => d.GroupId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Report_Group");
+            entity.HasOne(r => r.Group)
+                .WithMany(g => g.Reports)
+                .HasForeignKey(r => r.GroupId);
         });
-
-        OnModelCreatingPartial(modelBuilder);
     }
-
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

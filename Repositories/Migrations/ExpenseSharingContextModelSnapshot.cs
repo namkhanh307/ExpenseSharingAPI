@@ -28,8 +28,7 @@ namespace Repositories.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<double?>("Amount")
-                        .HasColumnType("float")
-                        .HasColumnName("amount");
+                        .HasColumnType("float");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -44,41 +43,34 @@ namespace Repositories.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("InvoiceImage")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("invoiceImage");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastUpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastUpdatedTime")
+                    b.Property<DateTime?>("LastUpdatedTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("expenseName");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ReportId")
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnName("reportID");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Type")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("expenseType");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("Expense", (string)null);
+                    b.ToTable("Expenses");
                 });
 
             modelBuilder.Entity("Repositories.Entities.Group", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnName("ID");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -95,26 +87,21 @@ namespace Repositories.Migrations
                     b.Property<string>("LastUpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastUpdatedTime")
+                    b.Property<DateTime?>("LastUpdatedTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("name");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Size")
-                        .HasColumnType("int")
-                        .HasColumnName("size");
+                        .HasColumnType("int");
 
                     b.Property<int?>("Type")
-                        .HasColumnType("int")
-                        .HasColumnName("type");
+                        .HasColumnType("int");
 
-                    b.HasKey("Id")
-                        .HasName("PK_Room");
+                    b.HasKey("Id");
 
-                    b.ToTable("Group", (string)null);
+                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("Repositories.Entities.Person", b =>
@@ -137,39 +124,30 @@ namespace Repositories.Migrations
                     b.Property<string>("LastUpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastUpdatedTime")
+                    b.Property<DateTime?>("LastUpdatedTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("name");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("password");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
-                        .HasMaxLength(10)
-                        .HasColumnType("nchar(10)")
-                        .HasColumnName("phone")
-                        .IsFixedLength();
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Person", (string)null);
+                    b.ToTable("People");
                 });
 
             modelBuilder.Entity("Repositories.Entities.PersonExpense", b =>
                 {
                     b.Property<string>("ExpenseId")
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnName("ExpenseID");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PersonId")
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnName("PersonID");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -183,37 +161,31 @@ namespace Repositories.Migrations
                     b.Property<DateTime?>("DeletedTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("LastUpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastUpdatedTime")
+                    b.Property<DateTime?>("LastUpdatedTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ReportId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("ExpenseId", "PersonId")
-                        .HasName("PK__PersonEx__35F3AA9E2F5ABE97");
+                    b.HasKey("ExpenseId", "PersonId");
 
                     b.HasIndex("PersonId");
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("PersonExpense", (string)null);
+                    b.ToTable("PersonExpenses");
                 });
 
             modelBuilder.Entity("Repositories.Entities.PersonGroup", b =>
                 {
                     b.Property<string>("PersonId")
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnName("personID");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("GroupId")
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnName("groupID");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -227,25 +199,20 @@ namespace Repositories.Migrations
                     b.Property<DateTime?>("DeletedTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool?>("IsAdmin")
-                        .HasColumnType("bit")
-                        .HasColumnName("isAdmin");
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastUpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastUpdatedTime")
+                    b.Property<DateTime?>("LastUpdatedTime")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("PersonId", "GroupId")
-                        .HasName("PK__PersonRo__290798144CC3970E");
+                    b.HasKey("PersonId", "GroupId");
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("PersonGroup", (string)null);
+                    b.ToTable("PersonGroups");
                 });
 
             modelBuilder.Entity("Repositories.Entities.Record", b =>
@@ -254,8 +221,7 @@ namespace Repositories.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<double?>("Amount")
-                        .HasColumnType("float")
-                        .HasColumnName("amount");
+                        .HasColumnType("float");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -270,29 +236,24 @@ namespace Repositories.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ExpenseId")
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnName("expenseID");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool?>("IsPaid")
-                        .HasColumnType("bit")
-                        .HasColumnName("isPaid");
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastUpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastUpdatedTime")
+                    b.Property<DateTime?>("LastUpdatedTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PersonId")
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnName("personID");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ReportId")
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnName("reportID");
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id")
-                        .HasName("PK__Record__D825197E756EB7D9");
+                    b.HasKey("Id");
 
                     b.HasIndex("ExpenseId");
 
@@ -300,7 +261,7 @@ namespace Repositories.Migrations
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("Record", (string)null);
+                    b.ToTable("Records");
                 });
 
             modelBuilder.Entity("Repositories.Entities.Report", b =>
@@ -321,34 +282,29 @@ namespace Repositories.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("GroupId")
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnName("groupID");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LastUpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastUpdatedTime")
+                    b.Property<DateTime?>("LastUpdatedTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("name");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id")
-                        .HasName("PK__Report__3214EC2761BA3C9B");
+                    b.HasKey("Id");
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("Report", (string)null);
+                    b.ToTable("Reports");
                 });
 
             modelBuilder.Entity("Repositories.Entities.Expense", b =>
                 {
                     b.HasOne("Repositories.Entities.Report", "Report")
                         .WithMany("Expenses")
-                        .HasForeignKey("ReportId")
-                        .HasConstraintName("FK_Expense_Report");
+                        .HasForeignKey("ReportId");
 
                     b.Navigation("Report");
                 });
@@ -358,14 +314,14 @@ namespace Repositories.Migrations
                     b.HasOne("Repositories.Entities.Expense", "Expense")
                         .WithMany("PersonExpenses")
                         .HasForeignKey("ExpenseId")
-                        .IsRequired()
-                        .HasConstraintName("FK__PersonExp__Expen__32AB8735");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Repositories.Entities.Person", "Person")
                         .WithMany("PersonExpenses")
                         .HasForeignKey("PersonId")
-                        .IsRequired()
-                        .HasConstraintName("FK__PersonExp__Perso__339FAB6E");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Repositories.Entities.Report", "Report")
                         .WithMany("PersonExpenses")
@@ -383,14 +339,14 @@ namespace Repositories.Migrations
                     b.HasOne("Repositories.Entities.Group", "Group")
                         .WithMany("PersonGroups")
                         .HasForeignKey("GroupId")
-                        .IsRequired()
-                        .HasConstraintName("FK__PersonRoo__RoomI__60A75C0F");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Repositories.Entities.Person", "Person")
                         .WithMany("PersonGroups")
                         .HasForeignKey("PersonId")
-                        .IsRequired()
-                        .HasConstraintName("FK__PersonRoo__Perso__5FB337D6");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Group");
 
@@ -401,18 +357,15 @@ namespace Repositories.Migrations
                 {
                     b.HasOne("Repositories.Entities.Expense", "Expense")
                         .WithMany("Records")
-                        .HasForeignKey("ExpenseId")
-                        .HasConstraintName("FK_Record_Expense");
+                        .HasForeignKey("ExpenseId");
 
                     b.HasOne("Repositories.Entities.Person", "Person")
                         .WithMany("Records")
-                        .HasForeignKey("PersonId")
-                        .HasConstraintName("FK_Record_Person");
+                        .HasForeignKey("PersonId");
 
                     b.HasOne("Repositories.Entities.Report", "Report")
                         .WithMany("Records")
-                        .HasForeignKey("ReportId")
-                        .HasConstraintName("FK_Record_Report");
+                        .HasForeignKey("ReportId");
 
                     b.Navigation("Expense");
 
@@ -425,8 +378,7 @@ namespace Repositories.Migrations
                 {
                     b.HasOne("Repositories.Entities.Group", "Group")
                         .WithMany("Reports")
-                        .HasForeignKey("GroupId")
-                        .HasConstraintName("FK_Report_Group");
+                        .HasForeignKey("GroupId");
 
                     b.Navigation("Group");
                 });
