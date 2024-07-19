@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http.Authentication;
 using Repositories.Entities;
 using Repositories.IRepositories;
 using Repositories.ResponseModel.ExpenseModel;
+using Repositories.ResponseModel.PersonExpenseModel;
 using Services.IServices;
 
 namespace Services.Services
@@ -15,11 +16,13 @@ namespace Services.Services
 
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public ExpenseService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor contextAccessor)
+        private readonly IPersonExpenseService _personExpenseService;
+        public ExpenseService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor contextAccessor, IPersonExpenseService personExpenseService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _contextAccessor = contextAccessor;
+            _personExpenseService = personExpenseService;   
         }
 
         public List<GetExpenseModel> GetExpenses(string? reportId, string? type)
@@ -41,7 +44,19 @@ namespace Services.Services
             var expense = _mapper.Map<Expense>(model);
             expense.CreatedTime = DateTime.Now;
             expense.CreatedBy = idUser;
+            if(!string.IsNullOrWhiteSpace(model.CreatedBy))
+            {
+                expense.CreatedBy = model.CreatedBy;
+            }
+            PostPersonExpenseModel postPersonExpenseModel = new()
+            {
+                ExpenseId = expense.Id,
+                PersonIds = new List<string> { expense.CreatedBy },
+                ReportId = model.ReportId
+
+            };
             _unitOfWork.GetRepository<Expense>().Insert(expense);
+            _personExpenseService.PostPersonExpense(postPersonExpenseModel);
             _unitOfWork.Save();
         }
 

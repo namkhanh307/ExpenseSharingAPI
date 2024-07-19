@@ -5,7 +5,7 @@ namespace Services.IServices
 {
     public interface IPersonExpenseService
     {
-        void DeletePersonExpense(string id);
+        void DeletePersonExpense(string expenseId, string personId);
         List<GetPersonExpenseModel> GetPersonExpenses(string? reportId, string? expenseId);
         void PostPersonExpense(PostPersonExpenseModel model);
         void PutPersonExpense(string id, PutPersonExpenseModel model);

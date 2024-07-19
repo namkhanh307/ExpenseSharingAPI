@@ -62,9 +62,17 @@ namespace Services.Services
 
         public void PostPersonExpense(PostPersonExpenseModel model)
         {
-            var personExpense = _mapper.Map<PersonExpense>(model);
-            personExpense.CreatedTime = DateTime.Now;
-            _unitOfWork.GetRepository<PersonExpense>().Insert(personExpense);
+            foreach (var item in model.PersonIds)
+            {
+                var personExpense = new PersonExpense()
+                {
+                    ExpenseId = model.ExpenseId,
+                    PersonId = item,
+                    ReportId = model.ReportId,
+                };
+                personExpense.CreatedTime = DateTime.Now;
+                _unitOfWork.GetRepository<PersonExpense>().Insert(personExpense);
+            }           
             _unitOfWork.Save();
         }
 
@@ -80,12 +88,12 @@ namespace Services.Services
             _unitOfWork.GetRepository<PersonExpense>().Update(existedPersonExpense);
             _unitOfWork.Save();
         }
-        public void DeletePersonExpense(string id)
+        public void DeletePersonExpense(string expenseId, string personId)
         {
-            var existedPersonExpense = _unitOfWork.GetRepository<PersonExpense>().GetById(id);
+            var existedPersonExpense = _unitOfWork.GetRepository<PersonExpense>().Entities.Where(pe => pe.ExpenseId == expenseId && pe.PersonId == personId).FirstOrDefault();
             if (existedPersonExpense == null)
             {
-                throw new Exception($"Group with ID {id} doesn't exist!");
+                throw new Exception($"PersonExpense with expenseId {expenseId} or personId {personId} doesn't exist!");
             }
             existedPersonExpense.DeletedTime = DateTime.Now;
             _unitOfWork.GetRepository<PersonExpense>().Update(existedPersonExpense);

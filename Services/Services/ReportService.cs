@@ -17,9 +17,13 @@ namespace Services.Services
             _mapper = mapper;
         }
 
-        public List<GetReportModel> GetReports()
+        public List<GetReportModel> GetReports(string? groupId)
         {
             var reports = _unitOfWork.GetRepository<Report>().Entities.Where(g => !g.DeletedTime.HasValue).ToList();
+            if(!string.IsNullOrWhiteSpace(groupId))
+            {
+                reports = reports.Where(r => r.GroupId == groupId).ToList();
+            }
             List<GetReportModel> result = new List<GetReportModel>();
             foreach (var report in reports)
             {

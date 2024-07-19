@@ -34,19 +34,19 @@ namespace API.Controllers
                code: ResponseCodeConstants.SUCCESS,
                data: "Tao chi tieu cho thanh vien thanh cong"));
         }
-        [HttpPut]
-        public IActionResult PutPersonExpense(string id, PutPersonExpenseModel model)
-        {
-            _personExpenseService.PutPersonExpense(id, model);
-            return Ok(new BaseResponseModel<string>(
-               statusCode: StatusCodes.Status200OK,
-               code: ResponseCodeConstants.SUCCESS,
-               data: "Chinh sua chi tieu cho thanh vien thanh cong"));
-        }
+        //[HttpPut]
+        //public IActionResult PutPersonExpense(string id, PutPersonExpenseModel model)
+        //{
+        //    _personExpenseService.PutPersonExpense(id, model);
+        //    return Ok(new BaseResponseModel<string>(
+        //       statusCode: StatusCodes.Status200OK,
+        //       code: ResponseCodeConstants.SUCCESS,
+        //       data: "Chinh sua chi tieu cho thanh vien thanh cong"));
+        //}
         [HttpDelete]
-        public IActionResult DeletePersonExpense(string id)
+        public IActionResult DeletePersonExpense(string expenseId, string personId)
         {
-            _personExpenseService.DeletePersonExpense(id);
+            _personExpenseService.DeletePersonExpense(expenseId, personId);
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,

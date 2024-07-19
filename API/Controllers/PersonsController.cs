@@ -17,9 +17,9 @@ namespace API.Controllers
             _personService = personService;
         }
         [HttpGet]
-        public IActionResult GetPersons()
+        public IActionResult GetPersons(string? id)
         {
-            var result = _personService.GetPersons();
+            var result = _personService.GetPersons(id);
             return Ok(new BaseResponseModel<List<GetPersonModel>>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,

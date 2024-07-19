@@ -17,9 +17,9 @@ namespace API.Controllers
             _reportService = reportService;
         }
         [HttpGet]
-        public IActionResult GetReports()
+        public IActionResult GetReports(string? groupId)
         {
-            var result = _reportService.GetReports();
+            var result = _reportService.GetReports(groupId);
             return Ok(new BaseResponseModel<List<GetReportModel>>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,

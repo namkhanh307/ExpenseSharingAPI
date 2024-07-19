@@ -16,9 +16,14 @@ namespace Services.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public List<GetPersonModel> GetPersons()
+        public List<GetPersonModel> GetPersons(string? id)
         {
-            return _mapper.Map<List<GetPersonModel>>(_unitOfWork.GetRepository<Person>().Entities.Where(g => !g.DeletedTime.HasValue).ToList());
+            var response = _unitOfWork.GetRepository<Person>().Entities.Where(g => !g.DeletedTime.HasValue).ToList();
+            if(!string.IsNullOrWhiteSpace(id))
+            {
+                response = response.Where(p => p.Id == id).ToList();
+            }
+            return _mapper.Map<List<GetPersonModel>>(response);
         }
 
         public void PostPerson(PostPersonModel model)
