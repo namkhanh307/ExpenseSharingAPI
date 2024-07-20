@@ -8,8 +8,14 @@ namespace Repositories.ResponseModel.CalculateModel
 {
     public class ResponseShortTermModel
     {
-        public string PersonPay {  get; set; } = string.Empty;
+        public ResponseShortTermModel(PersonResponseModel _personPay, PersonResponseModel _personReceive, double _amount)
+        {
+            PersonPay = _personPay;
+            PersonReceive = _personReceive;
+            Amount = _amount;
+        }
+        public PersonResponseModel PersonPay {  get; set; } = new PersonResponseModel();
         public double Amount { get; set; } = double.MinValue;
-        public string PersonReceive { get; set; } = string.Empty;
+        public PersonResponseModel PersonReceive { get; set; } = new PersonResponseModel();
     }
 }

@@ -17,7 +17,7 @@ namespace API.Controllers
             _calculateService = calculateService;
         }
         [HttpPost]
-        public IActionResult CalculateShortTerm([FromBody]List<CalculateShortTermModel> model)
+        public IActionResult CalculateShortTerm([FromBody]CalculateShortTermModel model)
         {
             var result = _calculateService.CalculateShortTerm(model);
             return Ok(new BaseResponseModel<List<ResponseShortTermModel>>(

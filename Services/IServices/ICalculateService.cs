@@ -9,6 +9,6 @@ namespace Services.IServices
 {
     public interface ICalculateService
     {
-        List<ResponseShortTermModel>? CalculateShortTerm(List<CalculateShortTermModel> model);
+        List<ResponseShortTermModel>? CalculateShortTerm(CalculateShortTermModel model);
     }
 }
