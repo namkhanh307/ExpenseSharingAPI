@@ -407,3 +407,7 @@ Services/obj/Debug/net8.0/Services.AssemblyInfoInputs.cache
 *.cache
 *.json
 /.vs
+/API/obj
+/.vs
+*.json
+/.vs
