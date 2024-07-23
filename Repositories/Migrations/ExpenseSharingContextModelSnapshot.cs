@@ -48,7 +48,7 @@ namespace Repositories.Migrations
                     b.Property<string>("LastUpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("LastUpdatedTime")
+                    b.Property<DateTime>("LastUpdatedTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
@@ -87,7 +87,7 @@ namespace Repositories.Migrations
                     b.Property<string>("LastUpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("LastUpdatedTime")
+                    b.Property<DateTime>("LastUpdatedTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
@@ -124,7 +124,7 @@ namespace Repositories.Migrations
                     b.Property<string>("LastUpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("LastUpdatedTime")
+                    b.Property<DateTime>("LastUpdatedTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
@@ -138,7 +138,7 @@ namespace Repositories.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("People");
+                    b.ToTable("Persons");
                 });
 
             modelBuilder.Entity("Repositories.Entities.PersonExpense", b =>
@@ -244,7 +244,7 @@ namespace Repositories.Migrations
                     b.Property<string>("LastUpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("LastUpdatedTime")
+                    b.Property<DateTime>("LastUpdatedTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PersonId")
@@ -287,7 +287,7 @@ namespace Repositories.Migrations
                     b.Property<string>("LastUpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("LastUpdatedTime")
+                    b.Property<DateTime>("LastUpdatedTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")

@@ -20,7 +20,7 @@ public partial class ExpenseSharingContext : DbContext
 
     public virtual DbSet<Group> Groups { get; set; }
 
-    public virtual DbSet<Person> People { get; set; }
+    public virtual DbSet<Person> Persons { get; set; }
 
     public virtual DbSet<PersonExpense> PersonExpenses { get; set; }
 
