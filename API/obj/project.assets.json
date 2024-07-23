@@ -468,11 +468,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseShairngAPI\\API\\API.csproj",
+      "projectUniqueName": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\API\\API.csproj",
       "projectName": "API",
-      "projectPath": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseShairngAPI\\API\\API.csproj",
+      "projectPath": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\API\\API.csproj",
       "packagesPath": "C:\\Users\\nobod\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseShairngAPI\\API\\obj\\",
+      "outputPath": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\API\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -494,8 +494,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseShairngAPI\\Services\\Services.csproj": {
-              "projectPath": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseShairngAPI\\Services\\Services.csproj"
+            "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Services\\Services.csproj": {
+              "projectPath": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Services\\Services.csproj"
             }
           }
         }

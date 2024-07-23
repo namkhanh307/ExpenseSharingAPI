@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "+9tmqfZ2cxgiJow45HoAE6Mea82biGBsOfWP8pz1SeE57ynmnBwNLGifdrfSFA7/4+9bFR4XOzu6OLlJUMsfWQ==",
+  "dgSpecHash": "2apsZnZRX2ByHlpVdqPPLWVJPE078m5lQwJW1U2alaAryjFj/mZzTM+DfWwgUyMyo2O/Hp/+szLJP7W/QwjhkA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseShairngAPI\\API\\API.csproj",
+  "projectFilePath": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\API\\API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\nobod\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "C:\\Users\\nobod\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
