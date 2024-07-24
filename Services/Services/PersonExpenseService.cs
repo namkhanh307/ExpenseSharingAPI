@@ -51,6 +51,7 @@ namespace Services.Services
                 return new GetPersonExpenseModel
                 {
                     ExpenseId = group.Key,
+                    ExpenseName = firstExpense.Name,
                     Person = _mapper.Map<GetPersonModel>(affordedBy),
                     Persons = group.Select(pe => _mapper.Map<GetPersonModel>(pe.Person)).ToList()
                 };

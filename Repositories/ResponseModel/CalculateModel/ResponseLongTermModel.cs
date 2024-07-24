@@ -8,5 +8,6 @@ namespace Repositories.ResponseModel.CalculateModel
 {
     public class ResponseLongTermModel
     {
+        public List<ResponseShortTermModel>? ResponseShortTerm { get; set; }
     }
 }

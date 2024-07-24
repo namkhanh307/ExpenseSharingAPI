@@ -396,3 +396,27 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+API/obj/Debug/net8.0/API.AssemblyInfo.cs
+API/obj/Debug/net8.0/API.AssemblyInfoInputs.cache
+Core/obj/Debug/net8.0/Core.AssemblyInfo.cs
+Core/obj/Debug/net8.0/Core.AssemblyInfoInputs.cache
+Repositories/obj/Debug/net8.0/Repositories.AssemblyInfo.cs
+Repositories/obj/Debug/net8.0/Repositories.AssemblyInfoInputs.cache
+Services/obj/Debug/net8.0/Services.AssemblyInfo.cs
+Services/obj/Debug/net8.0/Services.AssemblyInfoInputs.cache
+*.cache
+*.json
+/.vs
+/API/obj
+/.vs
+*.json
+/.vs
+.vs/ExpenseShairngAPI/v17/.suo
+.vs/ExpenseShairngAPI/v17/DocumentLayout.json
+/.vs/ExpenseShairngAPI/v17
+/.vs/ExpenseShairngAPI
+*.json
+.vs/ExpenseShairngAPI/DesignTimeBuild/.dtbcache.v2
+*.v2
+/.vs
+/.vs
