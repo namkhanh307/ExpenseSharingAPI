@@ -8,7 +8,7 @@ namespace Repositories.ResponseModel.CalculateModel
 {
     public class PersonShortTermModel
     {
-        public required string Name { get; set; }
-        public required double Amount { get; set; }
+        public string Name { get; set; }
+        public double Amount { get; set; }
     }
 }

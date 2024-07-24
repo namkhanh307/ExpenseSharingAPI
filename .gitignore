@@ -416,3 +416,7 @@ Services/obj/Debug/net8.0/Services.AssemblyInfoInputs.cache
 /.vs/ExpenseShairngAPI/v17
 /.vs/ExpenseShairngAPI
 *.json
+.vs/ExpenseShairngAPI/DesignTimeBuild/.dtbcache.v2
+*.v2
+/.vs
+/.vs

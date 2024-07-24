@@ -5,6 +5,7 @@ using Repositories.ResponseModel.CalculateModel;
 using Repositories.ResponseModel.PersonGroupModel;
 using Repositories.ResponseModel.PersonModel;
 using Services.IServices;
+using System.Collections.Generic;
 using System.Text.Json;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -81,11 +82,18 @@ namespace Services.Services
                                    .Entities.Where(pg => pg.GroupId == groupId)
                                    .Include(pg => pg.Person)
                                    .AsQueryable(); 
+            //lay toan bo nguoi trong nhom 
             var groupPersonGroup = personGroupQuery.GroupBy(pg => pg.GroupId).ToList();
 
-            var persons = groupPersonGroup.Select(pg => pg.Select(p => p.Person).ToList());
+            var persons = groupPersonGroup.SelectMany(pg => pg.Select(p => p.Person)).ToList();
+            List<ResponseShortTermModel> responseShortTerm = new();
+            CalculateShortTermModel input = new();
+            input.Persons = persons.Select(p => p.Name).ToList();
+            input.CalculatedPersonModels = new();
+            /*
             foreach (var fe in fixedExpense)
             {
+                //lay ra nhung nguoi share chi tieu fe 
                 var personExpenseQuery = _unitOfWork.GetRepository<PersonExpense>()
                                    .Entities.Where(pg => pg.ExpenseId == fe.Id)
                                    .Include(pg => pg.Person)
@@ -93,11 +101,15 @@ namespace Services.Services
                 var groupPersonExpense = personExpenseQuery.GroupBy(pg => pg.ExpenseId).ToList();
 
                 var pSub = groupPersonExpense.Select(pg => pg.Select(p => p.Person).ToList());
+
+
                 Console.WriteLine(JsonSerializer.Serialize(pSub));
 
             }
             foreach (var fle in flexExpense)
             {
+                //lay ra nhung nguoi share chi tieu fle
+
                 var personExpenseQuery = _unitOfWork.GetRepository<PersonExpense>()
                                     .Entities.Where(pg => pg.ExpenseId == fle.Id)
                                     .Include(pg => pg.Person)
@@ -105,23 +117,34 @@ namespace Services.Services
                 var groupPersonExpense = personExpenseQuery.GroupBy(pg => pg.ExpenseId).ToList();
 
                 var pSub = groupPersonExpense.Select(pg => pg.Select(p => p.Person).ToList());
-                Console.WriteLine(JsonSerializer.Serialize(pSub));
+                input.Persons = (List<string>)persons.SelectMany(p => p.Name);
+                Console.WriteLine(JsonSerializer.Serialize(input.Persons));
+                Console.WriteLine(JsonSerializer.Serialize("------------------------"));
+                //Console.WriteLine(JsonSerializer.Serialize(pSub));
 
-            }
+            }*/
             foreach (var se in sharedExpense)
             {
+                //lay ra nhung nguoi share chi tieu se
                 var personExpenseQuery = _unitOfWork.GetRepository<PersonExpense>()
                                    .Entities.Where(pg => pg.ExpenseId == se.Id)
                                    .Include(pg => pg.Person)
                                    .AsQueryable();
                 var groupPersonExpense = personExpenseQuery.GroupBy(pg => pg.ExpenseId).ToList();
 
-                var pSub = groupPersonExpense.Select(pg => pg.Select(p => p.Person).ToList());
-                Console.WriteLine(JsonSerializer.Serialize(pSub));
+                var pSub = groupPersonExpense.Select(pg => pg.Select(p => p.Person.Name).ToList()).ToList();
+                PersonShortTermModel personShortTermModel = new();
+                
+
+                Console.WriteLine(JsonSerializer.Serialize("------------------------"));
+                //Console.WriteLine(JsonSerializer.Serialize(pSub));
 
             }
-            Console.WriteLine(JsonSerializer.Serialize(persons));
-            return null;
+            //Console.WriteLine(JsonSerializer.Serialize(persons));
+            return new ResponseLongTermModel()
+            {
+                ResponseShortTerm = responseShortTerm
+            };
 
         }
         public void SetPair(int n, List<CalculatingShortTermModel> pair, List<PersonResponseModel> p)
