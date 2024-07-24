@@ -21,17 +21,6 @@ namespace Repositories.ResponseModel.CalculateModel
             Name = _name;
             Amount = _amount;
         }
-        public PersonResponseModel(string _name, double _amount, bool _isAdmin, double _diff, double _fixed, double _flex, double _shared)
-        {
-            Name = _name;
-            Amount = _amount;
-            IsAdmin = _isAdmin;
-            Diff = _diff;
-            Fixed = _fixed;
-            Flex = _flex;
-            Shared = _shared;
-            
-        }
         public string Name { get; set; } = string.Empty;
         public bool IsAdmin { get; set; }
         public double Amount { get; set; }

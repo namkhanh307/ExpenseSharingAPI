@@ -5,9 +5,6 @@ using System.Text.Json;
 
 namespace API.Middleware
 {
-
-
-
     public class CustomExceptionHandlerMiddleware
     {
         private readonly RequestDelegate _next;

@@ -9,7 +9,6 @@ namespace Services.IServices
 {
     public interface ICalculateService
     {
-        ResponseLongTermModel CalculateLongTerm(string reportId);
-        List<ResponseShortTermModel> CalculateShortTerm(CalculateShortTermModel model);
+        List<ResponseShortTermModel>? CalculateShortTerm(CalculateShortTermModel model);
     }
 }

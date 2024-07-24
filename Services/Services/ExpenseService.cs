@@ -27,10 +27,7 @@ namespace Services.Services
 
         public List<GetExpenseModel> GetExpenses(string? reportId, string? type)
         {
-            //lay toan bo available expenese
-            //linq
             var query = _unitOfWork.GetRepository<Expense>().Entities.Where(g => !g.DeletedTime.HasValue).AsQueryable();
-
             if (!string.IsNullOrWhiteSpace(reportId))
             {
                 query = query.Where(e => e.ReportId == reportId);
@@ -56,6 +53,7 @@ namespace Services.Services
                 ExpenseId = expense.Id,
                 PersonIds = new List<string> { expense.CreatedBy },
                 ReportId = model.ReportId
+
             };
             _unitOfWork.GetRepository<Expense>().Insert(expense);
             _personExpenseService.PostPersonExpense(postPersonExpenseModel);
