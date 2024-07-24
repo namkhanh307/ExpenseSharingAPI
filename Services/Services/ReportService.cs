@@ -24,7 +24,7 @@ namespace Services.Services
             {
                 reports = reports.Where(r => r.GroupId == groupId).ToList();
             }
-            List<GetReportModel> result = [];
+            List<GetReportModel> result = new List<GetReportModel>();
             foreach (var report in reports)
             {
                 GetReportModel response = new()

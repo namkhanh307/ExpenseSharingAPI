@@ -1,18 +1,26 @@
-﻿using Repositories.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Repositories.Entities;
+using Repositories.IRepositories;
 using Repositories.ResponseModel.CalculateModel;
+using Repositories.ResponseModel.PersonGroupModel;
+using Repositories.ResponseModel.PersonModel;
 using Services.IServices;
 using System.Collections.Generic;
 using System.Text.Json;
-using System.Text.Json.Nodes;
-using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Services.Services
 {
     public class CalculateService : ICalculateService
     {
-        public List<ResponseShortTermModel>? CalculateShortTerm(CalculateShortTermModel model)
+        private readonly IUnitOfWork _unitOfWork;
+        public CalculateService(IUnitOfWork unitOfWork)
         {
-            List<ResponseShortTermModel> pair = new();
+            _unitOfWork = unitOfWork;
+        }
+        public List<ResponseShortTermModel> CalculateShortTerm(CalculateShortTermModel model)
+        {
+            List<CalculatingShortTermModel> pair = new();
             List<PersonResponseModel> p = new();
             List<PersonResponseModel> pNeg = new();
             List<PersonResponseModel> pPos = new();
@@ -24,25 +32,7 @@ namespace Services.Services
             }
             //set pair
             int n = model.Persons.Count;
-            pair.EnsureCapacity(n * (n - 1) / 2);  
-            int a = 0;
-            for (int i = 0; i < n - 1; i++)
-            {
-                for (int j = i + 1; j < n; j++)
-                {
-                    // Add new elements to the list if necessary
-                    if (a >= pair.Count)
-                    {
-                        pair.Add(new ResponseShortTermModel(p[i], p[j], 0.0));
-                    }
-                    else
-                    {
-                        pair[a].PersonPay = p[i];
-                        pair[a].PersonReceive = p[j];
-                    }
-                    a++;
-                }
-            }
+            SetPair(n, pair, p);
             //verify psub
             foreach (var item in model.CalculatedPersonModels)
             {
@@ -51,10 +41,10 @@ namespace Services.Services
                 List<PersonResponseModel> pSub = new();
                 foreach (var item1 in item.SubPersons)
                 {
-                    PersonResponseModel personFromP = p.Where(p => p.Name == item1).FirstOrDefault();
+                    PersonResponseModel personFromP = p.Where(p => p.Name == item1).FirstOrDefault()!;
                     foreach (var item2 in item.PersonShortTerms)
                     {
-                        if(personFromP.Name == item2.Name)
+                        if (personFromP!.Name == item2.Name)
                         {
                             amount = item2.Amount;
                         }
@@ -114,7 +104,7 @@ namespace Services.Services
 
 
                 Console.WriteLine(JsonSerializer.Serialize(pSub));
-                Console.WriteLine("Next");
+
             }
             foreach (var fle in flexExpense)
             {

@@ -16,11 +16,20 @@ namespace API.Controllers
         {
             _calculateService = calculateService;
         }
-        [HttpPost]
+        [HttpPost("shortTerm")]
         public IActionResult CalculateShortTerm([FromBody]CalculateShortTermModel model)
         {
             var result = _calculateService.CalculateShortTerm(model);
             return Ok(new BaseResponseModel<List<ResponseShortTermModel>>(
+                statusCode: StatusCodes.Status200OK,
+                code: ResponseCodeConstants.SUCCESS,
+                data: result));
+        }
+        [HttpPost("longTerm")]
+        public IActionResult CalculateLongTerm(string reportId)
+        {
+            var result = _calculateService.CalculateLongTerm(reportId);
+            return Ok(new BaseResponseModel<ResponseLongTermModel>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
                 data: result));
