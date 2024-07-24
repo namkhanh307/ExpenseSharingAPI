@@ -8572,23 +8572,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\dippe\\.nuget\\packages\\": {},
+    "C:\\Users\\nobod\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\c#_workplace\\ExpenseSharingAPI-khanh\\API\\API.csproj",
+      "projectUniqueName": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\API\\API.csproj",
       "projectName": "API",
-      "projectPath": "E:\\c#_workplace\\ExpenseSharingAPI-khanh\\API\\API.csproj",
-      "packagesPath": "C:\\Users\\dippe\\.nuget\\packages\\",
-      "outputPath": "E:\\c#_workplace\\ExpenseSharingAPI-khanh\\API\\obj\\",
+      "projectPath": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\API\\API.csproj",
+      "packagesPath": "C:\\Users\\nobod\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\API\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\dippe\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\nobod\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -8604,11 +8604,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "E:\\c#_workplace\\ExpenseSharingAPI-khanh\\Core\\Core.csproj": {
-              "projectPath": "E:\\c#_workplace\\ExpenseSharingAPI-khanh\\Core\\Core.csproj"
+            "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Core\\Core.csproj": {
+              "projectPath": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Core\\Core.csproj"
             },
-            "E:\\c#_workplace\\ExpenseSharingAPI-khanh\\Services\\Services.csproj": {
-              "projectPath": "E:\\c#_workplace\\ExpenseSharingAPI-khanh\\Services\\Services.csproj"
+            "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Services\\Services.csproj": {
+              "projectPath": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Services\\Services.csproj"
             }
           }
         }
@@ -8617,6 +8617,11 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -8675,7 +8680,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.301/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.200/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
