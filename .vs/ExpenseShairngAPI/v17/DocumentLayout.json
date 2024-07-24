@@ -3,6 +3,7 @@
   "WorkspaceRootPath": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\",
   "Documents": [
     {
+<<<<<<< HEAD
       "AbsoluteMoniker": "D:0:0:{36C07E13-EBE5-49B9-BF66-29474354F304}|Services\\Services.csproj|c:\\users\\nobod\\documents\\github\\expensesharingapi\\services\\services\\calculateservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{36C07E13-EBE5-49B9-BF66-29474354F304}|Services\\Services.csproj|solutionrelative:services\\services\\calculateservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
 <<<<<<< Updated upstream
@@ -16,10 +17,41 @@
       "RelativeMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|solutionrelative:repositories\\responsemodel\\calculatemodel\\personshorttermmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+=======
+      "AbsoluteMoniker": "D:0:0:{36C07E13-EBE5-49B9-BF66-29474354F304}|Services\\Services.csproj|C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\services\\services\\expenseservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{36C07E13-EBE5-49B9-BF66-29474354F304}|Services\\Services.csproj|solutionrelative:services\\services\\expenseservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{36C07E13-EBE5-49B9-BF66-29474354F304}|Services\\Services.csproj|C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\services\\services\\calculateservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{36C07E13-EBE5-49B9-BF66-29474354F304}|Services\\Services.csproj|solutionrelative:services\\services\\calculateservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{36C07E13-EBE5-49B9-BF66-29474354F304}|Services\\Services.csproj|c:\\users\\nobod\\documents\\github\\expensesharingapi\\services\\services\\recordservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{36C07E13-EBE5-49B9-BF66-29474354F304}|Services\\Services.csproj|solutionrelative:services\\services\\recordservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{36C07E13-EBE5-49B9-BF66-29474354F304}|Services\\Services.csproj|c:\\users\\nobod\\documents\\github\\expensesharingapi\\services\\services\\reportservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{36C07E13-EBE5-49B9-BF66-29474354F304}|Services\\Services.csproj|solutionrelative:services\\services\\reportservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{36C07E13-EBE5-49B9-BF66-29474354F304}|Services\\Services.csproj|c:\\users\\nobod\\documents\\github\\expensesharingapi\\services\\services\\persongroupservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{36C07E13-EBE5-49B9-BF66-29474354F304}|Services\\Services.csproj|solutionrelative:services\\services\\persongroupservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{36C07E13-EBE5-49B9-BF66-29474354F304}|Services\\Services.csproj|c:\\users\\nobod\\documents\\github\\expensesharingapi\\services\\services\\groupservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{36C07E13-EBE5-49B9-BF66-29474354F304}|Services\\Services.csproj|solutionrelative:services\\services\\groupservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\repositories\\responsemodel\\calculatemodel\\personshorttermmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|solutionrelative:repositories\\responsemodel\\calculatemodel\\personshorttermmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+>>>>>>> df6bf90ae7d4c93f5cf43c2009ccc91add766ba7
       "AbsoluteMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\repositories\\responsemodel\\calculatemodel\\calculateshorttermmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|solutionrelative:repositories\\responsemodel\\calculatemodel\\calculateshorttermmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+<<<<<<< HEAD
       "AbsoluteMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\repositories\\responsemodel\\calculatemodel\\personresponsemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|solutionrelative:repositories\\responsemodel\\calculatemodel\\personresponsemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -28,6 +60,30 @@
       "RelativeMoniker": "D:0:0:{36C07E13-EBE5-49B9-BF66-29474354F304}|Services\\Services.csproj|solutionrelative:services\\iservices\\icalculateservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
 =======
 >>>>>>> Stashed changes
+=======
+      "AbsoluteMoniker": "D:0:0:{FCBDC3FB-BB45-4BA0-8855-BE63967728AF}|API\\API.csproj|C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\api\\controllers\\calculatecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FCBDC3FB-BB45-4BA0-8855-BE63967728AF}|API\\API.csproj|solutionrelative:api\\controllers\\calculatecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{36C07E13-EBE5-49B9-BF66-29474354F304}|Services\\Services.csproj|C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\services\\services\\personexpenseservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{36C07E13-EBE5-49B9-BF66-29474354F304}|Services\\Services.csproj|solutionrelative:services\\services\\personexpenseservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\repositories\\responsemodel\\calculatemodel\\responselongtermmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|solutionrelative:repositories\\responsemodel\\calculatemodel\\responselongtermmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\repositories\\responsemodel\\personexpensemodel\\getpersonexpensemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|solutionrelative:repositories\\responsemodel\\personexpensemodel\\getpersonexpensemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\repositories\\repositories.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{C73DDDC1-88C6-4193-B912-103F998D317A}|Repositories\\Repositories.csproj|solutionrelative:repositories\\repositories.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FCBDC3FB-BB45-4BA0-8855-BE63967728AF}|API\\API.csproj|C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FCBDC3FB-BB45-4BA0-8855-BE63967728AF}|API\\API.csproj|solutionrelative:api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+>>>>>>> df6bf90ae7d4c93f5cf43c2009ccc91add766ba7
     }
   ],
   "DocumentGroupContainers": [
@@ -37,6 +93,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 185,
+<<<<<<< HEAD
           "SelectedChildIndex": 7,
           "Children": [
             {
@@ -109,6 +166,11 @@
             {
 =======
 >>>>>>> Stashed changes
+=======
+          "SelectedChildIndex": 14,
+          "Children": [
+            {
+>>>>>>> df6bf90ae7d4c93f5cf43c2009ccc91add766ba7
               "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
             },
@@ -138,12 +200,93 @@
             },
             {
               "$type": "Document",
+<<<<<<< HEAD
               "DocumentIndex": 0,
+=======
+              "DocumentIndex": 3,
+              "Title": "ReportService.cs",
+              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Services\\Services\\ReportService.cs",
+              "RelativeDocumentMoniker": "Services\\Services\\ReportService.cs",
+              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Services\\Services\\ReportService.cs",
+              "RelativeToolTip": "Services\\Services\\ReportService.cs",
+              "ViewState": "AQIAABUAAAAAAAAAAAAowAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-24T15:25:07.86Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "PersonGroupService.cs",
+              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Services\\Services\\PersonGroupService.cs",
+              "RelativeDocumentMoniker": "Services\\Services\\PersonGroupService.cs",
+              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Services\\Services\\PersonGroupService.cs",
+              "RelativeToolTip": "Services\\Services\\PersonGroupService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-24T15:25:06.227Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "GroupService.cs",
+              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Services\\Services\\GroupService.cs",
+              "RelativeDocumentMoniker": "Services\\Services\\GroupService.cs",
+              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Services\\Services\\GroupService.cs",
+              "RelativeToolTip": "Services\\Services\\GroupService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-24T15:25:03.722Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "RecordService.cs",
+              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Services\\Services\\RecordService.cs",
+              "RelativeDocumentMoniker": "Services\\Services\\RecordService.cs",
+              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Services\\Services\\RecordService.cs",
+              "RelativeToolTip": "Services\\Services\\RecordService.cs",
+              "ViewState": "AQIAAA0AAAAAAAAAAAA1wAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-24T15:16:10.923Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "ResponseLongTermModel.cs",
+              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\ResponseModel\\CalculateModel\\ResponseLongTermModel.cs",
+              "RelativeDocumentMoniker": "Repositories\\ResponseModel\\CalculateModel\\ResponseLongTermModel.cs",
+              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\ResponseModel\\CalculateModel\\ResponseLongTermModel.cs",
+              "RelativeToolTip": "Repositories\\ResponseModel\\CalculateModel\\ResponseLongTermModel.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAqwAoAAAAkAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-24T09:25:09.637Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "GetPersonExpenseModel.cs",
+              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\ResponseModel\\PersonExpenseModel\\GetPersonExpenseModel.cs",
+              "RelativeDocumentMoniker": "Repositories\\ResponseModel\\PersonExpenseModel\\GetPersonExpenseModel.cs",
+              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\ResponseModel\\PersonExpenseModel\\GetPersonExpenseModel.cs",
+              "RelativeToolTip": "Repositories\\ResponseModel\\PersonExpenseModel\\GetPersonExpenseModel.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAiAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-24T08:45:33.768Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+>>>>>>> df6bf90ae7d4c93f5cf43c2009ccc91add766ba7
               "Title": "CalculateService.cs",
               "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Services\\Services\\CalculateService.cs",
               "RelativeDocumentMoniker": "Services\\Services\\CalculateService.cs",
               "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Services\\Services\\CalculateService.cs",
               "RelativeToolTip": "Services\\Services\\CalculateService.cs",
+<<<<<<< HEAD
               "ViewState": "AQIAAEYAAAAAAAAAAAAgwE4AAAAjAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
 <<<<<<< Updated upstream
@@ -152,6 +295,97 @@
               "WhenOpened": "2024-07-24T16:29:10.383Z",
               "EditorCaption": ""
 >>>>>>> Stashed changes
+=======
+              "ViewState": "AQIAAHAAAAAAAAAAAAAwwH0AAAAtAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-24T08:02:18.565Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ExpenseService.cs",
+              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Services\\Services\\ExpenseService.cs",
+              "RelativeDocumentMoniker": "Services\\Services\\ExpenseService.cs",
+              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Services\\Services\\ExpenseService.cs",
+              "RelativeToolTip": "Services\\Services\\ExpenseService.cs",
+              "ViewState": "AQIAABMAAAAAAAAAAAA2wDYAAAANAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-24T08:37:48.73Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "CalculateShortTermModel.cs",
+              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\ResponseModel\\CalculateModel\\CalculateShortTermModel.cs",
+              "RelativeDocumentMoniker": "Repositories\\ResponseModel\\CalculateModel\\CalculateShortTermModel.cs",
+              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\ResponseModel\\CalculateModel\\CalculateShortTermModel.cs",
+              "RelativeToolTip": "Repositories\\ResponseModel\\CalculateModel\\CalculateShortTermModel.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAqwAsAAAAlAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-24T09:38:10.087Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "PersonShortTermModel.cs",
+              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\ResponseModel\\CalculateModel\\PersonShortTermModel.cs",
+              "RelativeDocumentMoniker": "Repositories\\ResponseModel\\CalculateModel\\PersonShortTermModel.cs",
+              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\ResponseModel\\CalculateModel\\PersonShortTermModel.cs",
+              "RelativeToolTip": "Repositories\\ResponseModel\\CalculateModel\\PersonShortTermModel.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAqwAsAAAAOAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-24T10:05:48.389Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "PersonExpenseService.cs",
+              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Services\\Services\\PersonExpenseService.cs",
+              "RelativeDocumentMoniker": "Services\\Services\\PersonExpenseService.cs",
+              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Services\\Services\\PersonExpenseService.cs",
+              "RelativeToolTip": "Services\\Services\\PersonExpenseService.cs",
+              "ViewState": "AQIAABsAAAAAAAAAAAAowDUAAAA0AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-24T08:44:53.021Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "CalculateController.cs",
+              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\API\\Controllers\\CalculateController.cs",
+              "RelativeDocumentMoniker": "API\\Controllers\\CalculateController.cs",
+              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\API\\Controllers\\CalculateController.cs",
+              "RelativeToolTip": "API\\Controllers\\CalculateController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAB0AAAAIAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-24T09:52:10.576Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Repositories",
+              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\Repositories.csproj",
+              "RelativeDocumentMoniker": "Repositories\\Repositories.csproj",
+              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\Repositories\\Repositories.csproj",
+              "RelativeToolTip": "Repositories\\Repositories.csproj",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2024-07-24T08:02:12.439Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\API\\Program.cs",
+              "RelativeDocumentMoniker": "API\\Program.cs",
+              "ToolTip": "C:\\Users\\nobod\\Documents\\GitHub\\ExpenseSharingAPI\\API\\Program.cs",
+              "RelativeToolTip": "API\\Program.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAIYAAAASAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-06-10T08:27:03.254Z"
+>>>>>>> df6bf90ae7d4c93f5cf43c2009ccc91add766ba7
             }
           ]
         }

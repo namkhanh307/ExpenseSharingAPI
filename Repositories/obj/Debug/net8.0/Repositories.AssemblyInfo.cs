@@ -14,11 +14,15 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Repositories")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+73daeb2ad1ea6fdce22f41f8c39fedade227ecc7")]
 =======
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f51b8fa73be0e150cb5047e29a64afcd630f6786")]
 >>>>>>> Stashed changes
+=======
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6aad1153c3b360ea493fd1aace15d25f675f8685")]
+>>>>>>> df6bf90ae7d4c93f5cf43c2009ccc91add766ba7
 [assembly: System.Reflection.AssemblyProductAttribute("Repositories")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Repositories")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -111,6 +111,12 @@ namespace Services.Services
                 var groupPersonExpense = personExpenseQuery.GroupBy(pg => pg.ExpenseId).ToList();
 
                 var pSub = groupPersonExpense.Select(pg => pg.Select(p => p.Person).ToList());
+<<<<<<< HEAD
+=======
+
+
+                Console.WriteLine(JsonSerializer.Serialize(pSub));
+>>>>>>> df6bf90ae7d4c93f5cf43c2009ccc91add766ba7
 
 
                 Console.WriteLine(JsonSerializer.Serialize(pSub));
