@@ -55,6 +55,8 @@ namespace Repositories.Repositories
             return _dbSet.Skip(index * pageSize).Take(pageSize).ToList();
         }
 
+
+
         public List<T> GetAllAsync()
         {
             return _context.Set<T>().ToList();

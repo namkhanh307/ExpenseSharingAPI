@@ -19,7 +19,7 @@ namespace Services.Services
 
         public List<GetGroupModel> GetGroups()
         {
-            return _mapper.Map<List<GetGroupModel>>(_unitOfWork.GetRepository<Group>().Entities.Where(g => !g.DeletedTime.HasValue).ToList());
+            return _mapper.Map<List<GetGroupModel>>(_unitOfWork.GetRepository<Group>().Entities.Where(g => !g.DeletedTime.HasValue).ToList());        
         }
 
         public void PostGroup(PostGroupModel model)

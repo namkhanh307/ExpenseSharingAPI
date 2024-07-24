@@ -4,7 +4,6 @@ using Repositories.IRepositories;
 using Repositories.ResponseModel.ExpenseModel;
 using Repositories.ResponseModel.RecordModel;
 using Services.IServices;
-using System.Collections.Generic;
 
 namespace Services.Services
 {
@@ -18,12 +17,9 @@ namespace Services.Services
             _mapper = mapper;
         }
 
-        public List<GetRecordModel> GetRecord(string? recordId, string? reportId)
+        public List<GetRecordModel> GetRecord()
         {
-            var records = _unitOfWork.GetRepository<Record>().Entities
-                        .Where(g => !g.DeletedTime.HasValue && (reportId == null || g.ReportId == reportId) && (recordId == null || g.Id == recordId))
-                        .ToList();
-            return _mapper.Map<List<GetRecordModel>>(records);
+            return _mapper.Map<List<GetRecordModel>>(_unitOfWork.GetRepository<Record>().Entities.Where(g => !g.DeletedTime.HasValue).ToList());
         }
 
         public void PostRecord(PostRecordModel model)
