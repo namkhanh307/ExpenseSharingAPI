@@ -43,14 +43,14 @@ namespace Services.Services
         }
         public void PostExpense(PostExpenseModel model)
         {
-            string idUser = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
+            //string idUser = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
             var expense = _mapper.Map<Expense>(model);
             expense.CreatedTime = DateTime.Now;
-            expense.CreatedBy = idUser;
-            if(!string.IsNullOrWhiteSpace(model.CreatedBy))
-            {
-                expense.CreatedBy = model.CreatedBy;
-            }
+            //expense.CreatedBy = idUser;
+            //if(!string.IsNullOrWhiteSpace(model.CreatedBy))
+            //{
+            //    expense.CreatedBy = model.CreatedBy;
+            //}
             //PostPersonExpenseModel postPersonExpenseModel = new()
             //{
             //    ExpenseId = expense.Id,

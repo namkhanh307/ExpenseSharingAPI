@@ -8,7 +8,7 @@ namespace Repositories.ResponseModel.PersonExpenseModel
     {
         public string? ExpenseId { get; set; }
         public string? ExpenseName { get; set; }
-        public List<PersonExpenseModel>? Persons { get; set; }
+        public List<GetPersonExpenseSub>? Persons { get; set; }
         public string? ReportId { get; set; }
         public string? ReportName { get; set; }
     }

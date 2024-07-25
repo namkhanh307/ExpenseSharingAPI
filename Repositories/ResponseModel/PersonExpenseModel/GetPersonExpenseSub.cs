@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Repositories.ResponseModel.PersonExpenseModel
 {
-    public class PersonExpenseModel
+    public class GetPersonExpenseSub
     {
         public string? Id { get; set; }
         public string? Name { get; set; }
