@@ -16,15 +16,27 @@ namespace API.Controllers
         {
             _recordService = recordService;
         }
-        [HttpGet]
-        public IActionResult GetRecords()
+
+        [HttpGet("GetRecords")]
+        public IActionResult GetRecords(string? reportId)
         {
-            var result = _recordService.GetRecord();
+            var result = _recordService.GetRecord(null, reportId);
             return Ok(new BaseResponseModel<List<GetRecordModel>>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
                data: result));
         }
+
+        [HttpGet("GetRecordDetails")]
+        public IActionResult GetRecordDetails(string recordId)
+        {
+            var result = _recordService.GetRecord(recordId, null);
+            return Ok(new BaseResponseModel<List<GetRecordModel>>(
+               statusCode: StatusCodes.Status200OK,
+               code: ResponseCodeConstants.SUCCESS,
+               data: result));
+        }
+
         [HttpPost]
         public IActionResult PostRecord(PostRecordModel model)
         {
