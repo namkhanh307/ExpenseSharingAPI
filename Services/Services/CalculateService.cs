@@ -134,10 +134,8 @@ namespace Services.Services
 
                 var pSub = groupPersonExpense.Select(pg => pg.Select(p => p.Person.Name).ToList()).ToList();
                 PersonShortTermModel personShortTermModel = new();
-                
-
                 Console.WriteLine(JsonSerializer.Serialize("------------------------"));
-                //Console.WriteLine(JsonSerializer.Serialize(pSub));
+                Console.WriteLine(JsonSerializer.Serialize(pSub));
 
             }
             //Console.WriteLine(JsonSerializer.Serialize(persons));
