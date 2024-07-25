@@ -405,18 +405,11 @@ Repositories/obj/Debug/net8.0/Repositories.AssemblyInfoInputs.cache
 Services/obj/Debug/net8.0/Services.AssemblyInfo.cs
 Services/obj/Debug/net8.0/Services.AssemblyInfoInputs.cache
 *.cache
-*.json
-/.vs
-/API/obj
-/.vs
-*.json
-/.vs
-.vs/ExpenseShairngAPI/v17/.suo
-.vs/ExpenseShairngAPI/v17/DocumentLayout.json
-/.vs/ExpenseShairngAPI/v17
-/.vs/ExpenseShairngAPI
-*.json
-.vs/ExpenseShairngAPI/DesignTimeBuild/.dtbcache.v2
-*.v2
-/.vs
-/.vs
+
+# Ignore bin and obj directories in all project folders
+*/bin/
+*/obj/
+
+# Explicitly include launchSettings.json and appsettings.json
+!*/launchSettings.json
+!*/appsettings.json
