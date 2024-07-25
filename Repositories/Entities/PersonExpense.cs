@@ -8,6 +8,8 @@ public partial class PersonExpense
     public string ExpenseId { get; set; } = null!;
 
     public string PersonId { get; set; } = null!;
+    public double Amount { get; set; }
+    public bool IsShared { get; set; }
     public string? ReportId { get; set; }
 
     public string? CreatedBy { get; set; }

@@ -51,14 +51,14 @@ namespace Services.Services
             {
                 expense.CreatedBy = model.CreatedBy;
             }
-            PostPersonExpenseModel postPersonExpenseModel = new()
-            {
-                ExpenseId = expense.Id,
-                PersonIds = new List<string> { expense.CreatedBy },
-                ReportId = model.ReportId
-            };
+            //PostPersonExpenseModel postPersonExpenseModel = new()
+            //{
+            //    ExpenseId = expense.Id,
+            //    PersonIds = new List<string> { expense.CreatedBy },
+            //    ReportId = model.ReportId
+            //};
             _unitOfWork.GetRepository<Expense>().Insert(expense);
-            _personExpenseService.PostPersonExpense(postPersonExpenseModel);
+            //_personExpenseService.PostPersonExpense(postPersonExpenseModel);
             _unitOfWork.Save();
         }
 
