@@ -4,6 +4,7 @@ namespace Repositories.IRepositories
 {
     public interface IGenericRepository<T> where T : class
     {
+        void Detach(T entity);
         IEnumerable<T> Get(int index, int pageSize);
         IQueryable<T> Entities { get; }
         T GetById(object id);

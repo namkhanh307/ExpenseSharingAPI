@@ -11,11 +11,23 @@ namespace Repositories.Repositories
         {
             _dbContext = dbContext;
         }
-        private IGroupRepository _groupRepository;
-        public IGroupRepository GroupRepository
+        //private IGroupRepository _groupRepository;
+        //public IGroupRepository GroupRepository
+        //{
+
+        //    get { return _groupRepository ??= new GroupRepository(_dbContext); }
+        //}
+        private IPersonExpenseRepository _personExpenseRepository;
+        public IPersonExpenseRepository PersonExpenseRepository
         {
 
-            get { return _groupRepository ??= new GroupRepository(_dbContext); }
+            get { return _personExpenseRepository ??= new PersonExpenseRepository(_dbContext); }
+        }
+        private IPersonGroupRepository _personGroupRepository;
+        public IPersonGroupRepository PersonGroupRepository
+        {
+
+            get { return _personGroupRepository ??= new PersonGroupRepository(_dbContext); }
         }
         public IGenericRepository<T> GetRepository<T>() where T : class
         {

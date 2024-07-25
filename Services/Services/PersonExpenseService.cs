@@ -86,19 +86,48 @@ namespace Services.Services
             }           
             _unitOfWork.Save();
         }
+        public void PostPersonExpenseForDeveloping(PostPersonExpenseForDevModel model)
+        {
+            var personExpense = new PersonExpense()
+            {
+                ExpenseId = model.ExpenseId,
+                PersonId = model.PersonId,
+                ReportId = model.ReportId,
+                IsShared = model.IsShared,
+                Amount = model.Amount,
+            };
+            personExpense.CreatedTime = DateTime.Now;
+            _unitOfWork.GetRepository<PersonExpense>().Insert(personExpense);
+            _unitOfWork.Save();       
+        }
 
         public void PutPersonExpense(string expenseId, PutPersonExpenseModel model)
         {
-            var existedPersonExpense = _unitOfWork.GetRepository<PersonExpense>().Entities.Where(e => e.ExpenseId == expenseId && !e.DeletedTime.HasValue).ToList();
-            if (existedPersonExpense == null)
+            // Fetch existing PersonExpense entities
+            var existedPersonExpenses = _unitOfWork.GetRepository<PersonExpense>()
+                                                   .Entities
+                                                   .Where(e => e.ExpenseId == expenseId && !e.DeletedTime.HasValue)
+                                                   .ToList();
+
+            if (existedPersonExpenses == null || !existedPersonExpenses.Any())
             {
                 throw new Exception($"This expense with Id {expenseId} doesn't have any person sharing with!");
             }
-            foreach (var item in existedPersonExpense)
+
+            // Mark existing PersonExpense entities as deleted
+            foreach (var item in existedPersonExpenses)
             {
-                _unitOfWork.GetRepository<PersonExpense>().Delete(item);
+                _unitOfWork.PersonExpenseRepository.DeletePersonExpense(item.PersonId, item.ExpenseId);
             }
+
+            // Save changes and detach the updated entities
             _unitOfWork.Save();
+            foreach (var item in existedPersonExpenses)
+            {
+                _unitOfWork.GetRepository<PersonExpense>().Detach(item);
+            }
+
+            // Insert new PersonExpense entities
             foreach (var item in model.Persons)
             {
                 var personExpense = new PersonExpense()
@@ -108,12 +137,16 @@ namespace Services.Services
                     ReportId = model.ReportId,
                     IsShared = item.IsShared,
                     Amount = item.Amount,
+                    CreatedTime = DateTime.Now
                 };
-                personExpense.CreatedTime = DateTime.Now;
+
                 _unitOfWork.GetRepository<PersonExpense>().Insert(personExpense);
             }
-            
+
+            // Save all changes
+            _unitOfWork.Save();
         }
+
         public void DeletePersonExpense(string expenseId, string personId)
         {
             var existedPersonExpense = _unitOfWork.GetRepository<PersonExpense>().Entities.Where(pe => pe.ExpenseId == expenseId && pe.PersonId == personId).FirstOrDefault();

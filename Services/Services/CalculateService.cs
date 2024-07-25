@@ -73,7 +73,7 @@ namespace Services.Services
         public ResponseLongTermModel CalculateLongTerm(string reportId)
         {
             var report = _unitOfWork.GetRepository<Report>().GetById(reportId);
-            var expenseQuery = _unitOfWork.GetRepository<Expense>().Entities.Where(f => f.ReportId == reportId).AsQueryable();
+            var expenseQuery = _unitOfWork.GetRepository<Expense>().Entities.Where(f => f.ReportId == reportId && !f.DeletedTime.HasValue).AsQueryable();
             var fixedExpense = expenseQuery.Where(f => f.Type!.Equals("0")).ToList();
             var flexExpense = expenseQuery.Where(f => f.Type!.Equals("1")).ToList();
             var sharedExpense = expenseQuery.Where(f => f.Type!.Equals("2")).ToList();
@@ -123,9 +123,11 @@ namespace Services.Services
                 //Console.WriteLine(JsonSerializer.Serialize(pSub));
 
             }*/
+            List <CalculatedPersonModel> calculatedPersonModels = new();
             foreach (var se in sharedExpense)
             {
                 //lay ra nhung nguoi share chi tieu se
+                CalculatedPersonModel calculatedPersonModel = new();
                 var personExpenseQuery = _unitOfWork.GetRepository<PersonExpense>()
                                    .Entities.Where(pg => pg.ExpenseId == se.Id)
                                    .Include(pg => pg.Person)
@@ -133,15 +135,26 @@ namespace Services.Services
                 var groupPersonExpense = personExpenseQuery.GroupBy(pg => pg.ExpenseId).ToList();
 
                 List<string>? pSub = groupPersonExpense.SelectMany(pg => pg.Select(p => p.Person.Name)).ToList();
-                PersonShortTermModel personShortTermModel = new();
-
+                List<PersonShortTermModel> personShortTermModel = groupPersonExpense.SelectMany(item => item.Select(p =>
+                {
+                    return new PersonShortTermModel()
+                    {
+                        Id = p.PersonId,
+                        Amount = p.Amount,
+                        Name = p.Person.Name
+                    };
+                })).ToList();
+                calculatedPersonModel.SubPersons = pSub;
+                calculatedPersonModel.PersonShortTerms = personShortTermModel;
+                calculatedPersonModels.Add(calculatedPersonModel);
             }
+            input.CalculatedPersonModels = calculatedPersonModels;
+            
             //Console.WriteLine(JsonSerializer.Serialize(persons));
             return new ResponseLongTermModel()
             {
-                ResponseShortTerm = responseShortTerm
+                ResponseShortTerm = CalculateShortTerm(input)
             };
-
         }
         public void SetPair(int n, List<CalculatingShortTermModel> pair, List<PersonResponseModel> p)
         {
@@ -268,12 +281,12 @@ namespace Services.Services
             {
                 if (pairSub[i].Debt > 0)
                 {
-                    response.Add(new ResponseShortTermModel(pairSub[i].Person1.Name, pairSub[i].Person2.Name,pairSub[i].Debt));
+                    response.Add(new ResponseShortTermModel(pairSub[i].Person1.Name, pairSub[i].Person2.Name, Math.Round(pairSub[i].Debt, 2)));
                     //Console.WriteLine($"{pairSub[i].Person1.Name} will pay {pairSub[i].Person2.Name}: {pairSub[i].Debt}k VND");
                 }
                 else if (pairSub[i].Debt < 0)
                 {
-                    response.Add(new ResponseShortTermModel(pairSub[i].Person2.Name, pairSub[i].Person1.Name, Math.Abs(pairSub[i].Debt)));
+                    response.Add(new ResponseShortTermModel(pairSub[i].Person2.Name, pairSub[i].Person1.Name, Math.Round(Math.Abs(pairSub[i].Debt), 2)));
                     //Console.WriteLine($"{pairSub[i].Person2.Name} will pay {pairSub[i].Person1.Name}: {Math.Abs(pairSub[i].Debt)}k VND");
                 }
             }

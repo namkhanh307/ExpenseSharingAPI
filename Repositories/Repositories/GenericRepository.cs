@@ -15,11 +15,15 @@ namespace Repositories.Repositories
             _context = dbContext;
             _dbSet = _context.Set<T>();
         }
+        public void Detach(T entity)
+        {
+            _context.Entry(entity).State = EntityState.Detached;
+        }
         public IQueryable<T> Entities => _context.Set<T>();
 
         public void Delete(object id)
         {
-            T entity = _dbSet.Find(id);
+            T entity = _dbSet.Find(id);//tim theo khoa chinh
             if (entity != null)
             {
                 _dbSet.Remove(entity);

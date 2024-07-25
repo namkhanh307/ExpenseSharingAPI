@@ -8,6 +8,7 @@ namespace Services.IServices
         void DeletePersonExpense(string expenseId, string personId);
         List<GetPersonExpenseModel> GetPersonExpenses(string? reportId, string? expenseId);
         void PostPersonExpense(PostPersonExpenseModel model);
+        void PostPersonExpenseForDeveloping(PostPersonExpenseForDevModel model);
         void PutPersonExpense(string expenseId, PutPersonExpenseModel model);
     }
 }

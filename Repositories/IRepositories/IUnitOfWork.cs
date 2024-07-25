@@ -3,7 +3,8 @@ namespace Repositories.IRepositories
 {
     public interface IUnitOfWork : IDisposable
     {
-        IGroupRepository GroupRepository { get; }
+        IPersonGroupRepository PersonGroupRepository { get; }
+        IPersonExpenseRepository PersonExpenseRepository { get; }
         IGenericRepository<T> GetRepository<T>() where T : class;
         void Save();
         Task SaveAsync();

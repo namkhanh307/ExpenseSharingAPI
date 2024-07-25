@@ -25,10 +25,19 @@ namespace API.Controllers
                code: ResponseCodeConstants.SUCCESS,
                data: result));
         }
-        [HttpPost]
+        [HttpPost("forApp")]
         public IActionResult PostPersonExpense(PostPersonExpenseModel model)
         {
             _personExpenseService.PostPersonExpense(model);
+            return Ok(new BaseResponseModel<string>(
+               statusCode: StatusCodes.Status200OK,
+               code: ResponseCodeConstants.SUCCESS,
+               data: "Tao chi tieu cho thanh vien thanh cong"));
+        }
+        [HttpPost("forDeveloping")]
+        public IActionResult PostPersonExpenseForDeveloping(PostPersonExpenseForDevModel model)
+        {
+            _personExpenseService.PostPersonExpenseForDeveloping(model);
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
