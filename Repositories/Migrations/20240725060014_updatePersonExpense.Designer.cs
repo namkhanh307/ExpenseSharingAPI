@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repositories.Entities;
 
@@ -11,9 +12,11 @@ using Repositories.Entities;
 namespace Repositories.Migrations
 {
     [DbContext(typeof(ExpenseSharingContext))]
-    partial class ExpenseSharingContextModelSnapshot : ModelSnapshot
+    [Migration("20240725060014_updatePersonExpense")]
+    partial class updatePersonExpense
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

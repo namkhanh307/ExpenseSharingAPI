@@ -52,8 +52,17 @@ namespace Services.Services
                 {
                     ExpenseId = group.Key,
                     ExpenseName = firstExpense.Name,
-                    Person = _mapper.Map<GetPersonModel>(affordedBy),
-                    Persons = group.Select(pe => _mapper.Map<GetPersonModel>(pe.Person)).ToList()
+                    Persons = group.Select(pe => {
+                        return new GetPersonExpenseSub(){
+                            Amount = pe.Amount,
+                            IsShared = pe.IsShared,
+                            Name = pe.Person.Name,
+                            Id = pe.PersonId,
+                            Phone = pe.Person.Phone,
+                        };
+                    }).ToList(),
+                    ReportId = firstExpense.ReportId,
+                    ReportName = firstExpense.Report == null ? "Fix null" : firstExpense.Report.Name
                 };
             }).ToList();
 
@@ -63,13 +72,15 @@ namespace Services.Services
 
         public void PostPersonExpense(PostPersonExpenseModel model)
         {
-            foreach (var item in model.PersonIds)
+            foreach (var item in model.Persons)
             {
                 var personExpense = new PersonExpense()
                 {
                     ExpenseId = model.ExpenseId,
-                    PersonId = item,
+                    PersonId = item.Id,
                     ReportId = model.ReportId,
+                    IsShared = item.IsShared,
+                    Amount = item.Amount,
                 };
                 personExpense.CreatedTime = DateTime.Now;
                 _unitOfWork.GetRepository<PersonExpense>().Insert(personExpense);
@@ -77,16 +88,33 @@ namespace Services.Services
             _unitOfWork.Save();
         }
 
-        public void PutPersonExpense(string id, PutPersonExpenseModel model)
+        public void PutPersonExpense(string expenseId, PutPersonExpenseModel model)
         {
-            var existedPersonExpense = _unitOfWork.GetRepository<PersonExpense>().GetById(id);
+            var existedPersonExpense = _unitOfWork.GetRepository<PersonExpense>().Entities.Where(e => e.ExpenseId == expenseId && !e.DeletedTime.HasValue).ToList();
             if (existedPersonExpense == null)
             {
-                throw new Exception($"Group with ID {id} doesn't exist!");
+                throw new Exception($"This expense with Id {expenseId} doesn't have any person sharing with!");
             }
-            _mapper.Map(model, existedPersonExpense);
-            existedPersonExpense.LastUpdatedTime = DateTime.Now;
-            _unitOfWork.GetRepository<PersonExpense>().Update(existedPersonExpense);
+            foreach (var item in existedPersonExpense)
+            {
+                item.DeletedTime = DateTime.Now;
+                _unitOfWork.GetRepository<PersonExpense>().Update(item);
+            }
+            _unitOfWork.Save();
+
+            foreach (var item in model.Persons)
+            {
+                var personExpense = new PersonExpense()
+                {
+                    ExpenseId = expenseId,
+                    PersonId = item.Id!,
+                    ReportId = model.ReportId,
+                    IsShared = item.IsShared,
+                    Amount = item.Amount,
+                };
+                personExpense.CreatedTime = DateTime.Now;
+                _unitOfWork.GetRepository<PersonExpense>().Insert(personExpense);
+            }
             _unitOfWork.Save();
         }
         public void DeletePersonExpense(string expenseId, string personId)

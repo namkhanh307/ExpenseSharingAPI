@@ -132,10 +132,8 @@ namespace Services.Services
                                    .AsQueryable();
                 var groupPersonExpense = personExpenseQuery.GroupBy(pg => pg.ExpenseId).ToList();
 
-                var pSub = groupPersonExpense.Select(pg => pg.Select(p => p.Person.Name).ToList()).ToList();
+                List<string>? pSub = groupPersonExpense.SelectMany(pg => pg.Select(p => p.Person.Name)).ToList();
                 PersonShortTermModel personShortTermModel = new();
-                Console.WriteLine(JsonSerializer.Serialize("------------------------"));
-                Console.WriteLine(JsonSerializer.Serialize(pSub));
 
             }
             //Console.WriteLine(JsonSerializer.Serialize(persons));

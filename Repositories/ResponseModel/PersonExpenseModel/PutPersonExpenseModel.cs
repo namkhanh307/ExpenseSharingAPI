@@ -6,8 +6,7 @@ namespace Repositories.ResponseModel.PersonExpenseModel
 {
     public class PutPersonExpenseModel
     {
-        public required string ExpenseId { get; set; }
-        public required List<string> PersonIds { get; set; }
+        public required List<PostPersonExpenseSub> Persons { get; set; }
         public required string ReportId { get; set; }
     }
 }
