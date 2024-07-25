@@ -69,7 +69,6 @@ namespace Services.Services
             return responseList;
         }
 
-
         public void PostPersonExpense(PostPersonExpenseModel model)
         {
             foreach (var item in model.Persons)
@@ -97,11 +96,9 @@ namespace Services.Services
             }
             foreach (var item in existedPersonExpense)
             {
-                item.DeletedTime = DateTime.Now;
-                _unitOfWork.GetRepository<PersonExpense>().Update(item);
+                _unitOfWork.GetRepository<PersonExpense>().Delete(item);
             }
             _unitOfWork.Save();
-
             foreach (var item in model.Persons)
             {
                 var personExpense = new PersonExpense()
@@ -115,7 +112,7 @@ namespace Services.Services
                 personExpense.CreatedTime = DateTime.Now;
                 _unitOfWork.GetRepository<PersonExpense>().Insert(personExpense);
             }
-            _unitOfWork.Save();
+            
         }
         public void DeletePersonExpense(string expenseId, string personId)
         {
