@@ -49,17 +49,25 @@ namespace Services.Services
             await _unitOfWork.SaveAsync();
         }
 
-        public void PutRecord(string id, PutRecordModel model)
+        public async Task PutRecord(string id, PutRecordModel model)
         {
+            string fileName = await FileUploadHelper.UploadFile(model.InvoiceImage, id);
+            
             var existedRecord = _unitOfWork.GetRepository<Record>().GetById(id);
             if (existedRecord == null)
             {
                 throw new Exception($"Group with ID {id} doesn't exist!");
             }
-            _mapper.Map(model, existedRecord);
-            existedRecord.LastUpdatedTime = DateTime.Now;
-            _unitOfWork.GetRepository<Record>().Update(existedRecord);
-            _unitOfWork.Save();
+
+            if (fileName != null)
+            {
+                existedRecord.InvoiceImage = fileName;
+            }
+
+            existedRecord.IsPaid = model.IsPaid;
+
+            await _unitOfWork.GetRepository<Record>().UpdateAsync(existedRecord);
+            await _unitOfWork.SaveAsync();
         }
         public void DeleteRecord(string id)
         {

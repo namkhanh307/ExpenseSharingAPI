@@ -24,52 +24,58 @@ namespace Services.Services
             _personExpenseService = personExpenseService;   
         }
 
-        public List<GetExpenseModel> GetExpenses(string? reportId, string? type)
+        public List<GetExpenseModel> GetExpenses(string? reportId, string? type, DateTime? fromDate, DateTime? endDate, string? expenseName)
         {
             var query = _unitOfWork.GetRepository<Expense>().Entities.Where(g => !g.DeletedTime.HasValue).AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(reportId))
-            {
-                query = query.Where(e => e.ReportId == reportId);
-            }
-            if(!string.IsNullOrWhiteSpace(type))
-            {
-                query = query.Where(e => e.Type == type);
-            }
+            query = query
+                    .Where(e => string.IsNullOrWhiteSpace(reportId) || e.ReportId == reportId)
+                    .Where(e => string.IsNullOrWhiteSpace(type) || e.Type == type)
+                    .Where(e => fromDate == null || e.CreatedTime >= fromDate)
+                    .Where(e => endDate == null || e.CreatedTime <= endDate)
+                    .Where(e => string.IsNullOrWhiteSpace(expenseName) || e.Name.Contains(expenseName));
+
             return _mapper.Map<List<GetExpenseModel>>(query.ToList());
         }
-        public void PostExpense(PostExpenseModel model)
+        public async Task PostExpense(PostExpenseModel model)
         {
-            //string idUser = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
-            var expense = _mapper.Map<Expense>(model);
-            expense.CreatedTime = DateTime.Now;
-            //expense.CreatedBy = idUser;
-            //if(!string.IsNullOrWhiteSpace(model.CreatedBy))
-            //{
-            //    expense.CreatedBy = model.CreatedBy;
-            //}
-            //PostPersonExpenseModel postPersonExpenseModel = new()
-            //{
-            //    ExpenseId = expense.Id,
-            //    PersonIds = new List<string> { expense.CreatedBy },
-            //    ReportId = model.ReportId
-            //};
-            _unitOfWork.GetRepository<Expense>().Insert(expense);
-            //_personExpenseService.PostPersonExpense(postPersonExpenseModel);
-            _unitOfWork.Save();
+            string idUser = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
+            var expenseId = Guid.NewGuid().ToString();
+            string fileName = await FileUploadHelper.UploadFile(model.InvoiceImage!, expenseId);
+            var newExpense = new Expense()
+            {
+                Id = expenseId,
+                Name = model.Name,
+                Type = model.Type,
+                Amount = model.Amount,
+                ReportId = model.ReportId,
+                CreatedTime = DateTime.Now,
+                CreatedBy = idUser,
+                InvoiceImage = fileName
+            };
+            await _unitOfWork.GetRepository<Expense>().InsertAsync(newExpense);
+            await _unitOfWork.SaveAsync();
         }
 
-        public void PutExpense(string id, PutExpenseModel model)
+        public async Task PutExpense(string id, PutExpenseModel model)
         {
+            string fileName = await FileUploadHelper.UploadFile(model.InvoiceImage!, id);
             var existedExpense = _unitOfWork.GetRepository<Expense>().GetById(id);
+
             if (existedExpense == null)
             {
                 throw new Exception($"Expense with ID {id} doesn't exist!");
             }
-            _mapper.Map(model, existedExpense);
-            existedExpense.LastUpdatedTime = DateTime.Now;
-            _unitOfWork.GetRepository<Expense>().Update(existedExpense);
-            _unitOfWork.Save();
+
+            if (!string.IsNullOrWhiteSpace(fileName))
+            {
+                existedExpense.InvoiceImage = fileName;
+            }
+
+            existedExpense.Amount = model.Amount;
+
+            await _unitOfWork.GetRepository<Expense>().UpdateAsync(existedExpense);
+            await _unitOfWork.SaveAsync();
         }
 
         public void DeleteExpense(string expenseId)

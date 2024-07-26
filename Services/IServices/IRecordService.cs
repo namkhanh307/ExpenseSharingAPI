@@ -9,6 +9,6 @@ namespace Services.IServices
         void DeleteRecord(string id);
         List<GetRecordModel> GetRecord(string? recordId, string? reportId);
         Task PostRecord(PostRecordModel model);
-        void PutRecord(string id, PutRecordModel model);
+        Task PutRecord(string id, PutRecordModel model);
     }
 }

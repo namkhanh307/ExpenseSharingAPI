@@ -18,9 +18,9 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetExpenses(string? reportId, string? type)
+        public IActionResult GetExpenses(string? reportId, string? type, DateTime? fromDate, DateTime? endDate, string? expenseName)
         {
-            var result = _expenseService.GetExpenses(reportId, type);
+            var result = _expenseService.GetExpenses(reportId, type, fromDate, endDate, expenseName);
             return Ok(new BaseResponseModel<List<GetExpenseModel>>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
