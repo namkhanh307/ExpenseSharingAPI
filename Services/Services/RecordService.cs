@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Core.Infrastructure;
+using Microsoft.AspNetCore.Http;
 using Repositories.Entities;
 using Repositories.IRepositories;
 using Repositories.ResponseModel.ExpenseModel;
@@ -11,10 +13,12 @@ namespace Services.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public RecordService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public RecordService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public List<GetRecordModel> GetRecord(string? recordId, string? reportId)
@@ -25,12 +29,24 @@ namespace Services.Services
             return _mapper.Map<List<GetRecordModel>>(records);
         }
 
-        public void PostRecord(PostRecordModel model)
+        public async Task PostRecord(PostRecordModel model)
         {
-            var record = _mapper.Map<Record>(model);
-            record.CreatedTime = DateTime.Now;
-            _unitOfWork.GetRepository<Record>().Insert(record);
-            _unitOfWork.Save();
+            string idUser = Authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
+            var id = Guid.NewGuid().ToString();
+            string fileName = await FileUploadHelper.UploadFile(model.InvoiceImage, id);
+            var newRecord = new Record()
+            {
+                Id = id,
+                ExpenseId = model.ExpenseId,
+                PersonId = model.PersonId,
+                InvoiceImage = fileName,
+                ReportId = model.ReportId,
+                IsPaid = false,
+                CreatedTime = DateTime.Now,
+                CreatedBy = idUser
+            };
+            await _unitOfWork.GetRepository<Record>().InsertAsync(newRecord);
+            await _unitOfWork.SaveAsync();
         }
 
         public void PutRecord(string id, PutRecordModel model)

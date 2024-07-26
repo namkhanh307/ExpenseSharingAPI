@@ -13,6 +13,8 @@ public partial class Record : BaseEntity
 
     public double? Amount { get; set; }
 
+    public string? InvoiceImage {  get; set; }
+
     public bool? IsPaid { get; set; }
     public virtual Expense? Expense { get; set; }
 

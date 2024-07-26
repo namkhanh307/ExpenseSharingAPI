@@ -16,11 +16,20 @@ namespace API.Controllers
         {
             _personGroupService = personGroupService;
         }
-        [HttpGet]
+        [HttpGet("GetPersonGroups")]
         public IActionResult GetPersonGroups(string? groupId)
         {
             var result = _personGroupService.GetPersonGroups(groupId);
             return Ok(new BaseResponseModel<List<GetPersonGroupModel>>(
+               statusCode: StatusCodes.Status200OK,
+               code: ResponseCodeConstants.SUCCESS,
+               data: result));
+        }
+        [HttpGet("GetAllGroupsByPersonId")]
+        public IActionResult GetAllGroupsByPersonId(string personId)
+        {
+            var result = _personGroupService.GetAllGroupsByPersonId(personId);
+            return Ok(new BaseResponseModel<List<GetGroupModel>>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
                data: result));
@@ -44,9 +53,9 @@ namespace API.Controllers
                data: "Chinh sua thanh vien trong nhom thanh cong"));
         }
         [HttpDelete]
-        public IActionResult DeletePersonGroup(string groupId, string personId)
+        public IActionResult DeletePersonGroup(string groupId, string? personId, bool? wantToOut)
         {
-            _personGroupService.DeletePersonGroup(groupId, personId);
+            _personGroupService.DeletePersonGroup(groupId, personId, wantToOut);
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,

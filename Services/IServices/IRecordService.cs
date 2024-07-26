@@ -1,4 +1,5 @@
-﻿using Repositories.Entities;
+﻿using Microsoft.AspNetCore.Http;
+using Repositories.Entities;
 using Repositories.ResponseModel.RecordModel;
 
 namespace Services.IServices
@@ -7,7 +8,7 @@ namespace Services.IServices
     {
         void DeleteRecord(string id);
         List<GetRecordModel> GetRecord(string? recordId, string? reportId);
-        void PostRecord(PostRecordModel model);
+        Task PostRecord(PostRecordModel model);
         void PutRecord(string id, PutRecordModel model);
     }
 }

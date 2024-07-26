@@ -1,4 +1,6 @@
 ﻿
+using Repositories.ResponseModel.AuthModel;
+using Repositories.ResponseModel.GroupModel;
 using Repositories.ResponseModel.PersonModel;
 
 namespace Repositories.ResponseModel.PersonGroupModel

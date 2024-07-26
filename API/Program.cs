@@ -63,6 +63,7 @@ namespace API
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+
             //Add Scope
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IExpenseService, ExpenseService>();
@@ -75,8 +76,6 @@ namespace API
             builder.Services.AddScoped<ICalculateService, CalculateService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
-
-
 
             //Add Automapper
             builder.Services.AddAutoMapper(typeof(GroupProfile).Assembly);
@@ -124,6 +123,7 @@ namespace API
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
             app.UseCors("CorsPolicy");
 
             app.UseAuthentication();

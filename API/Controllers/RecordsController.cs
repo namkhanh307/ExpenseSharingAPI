@@ -1,4 +1,5 @@
 ﻿using Core.Infrastructure;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Entities;
 using Repositories.ResponseModel.GroupModel;
@@ -12,11 +13,12 @@ namespace API.Controllers
     public class RecordsController : ControllerBase
     {
         private readonly IRecordService _recordService;
-        public RecordsController(IRecordService recordService)
+        private readonly IWebHostEnvironment _env;
+        public RecordsController(IRecordService recordService, IWebHostEnvironment env)
         {
             _recordService = recordService;
+            _env = env;
         }
-
         [HttpGet("GetRecords")]
         public IActionResult GetRecords(string? reportId)
         {
@@ -26,7 +28,6 @@ namespace API.Controllers
                code: ResponseCodeConstants.SUCCESS,
                data: result));
         }
-
         [HttpGet("GetRecordDetails")]
         public IActionResult GetRecordDetails(string recordId)
         {
@@ -36,16 +37,16 @@ namespace API.Controllers
                code: ResponseCodeConstants.SUCCESS,
                data: result));
         }
-
         [HttpPost]
-        public IActionResult PostRecord(PostRecordModel model)
+        public async Task<IActionResult> PostRecord(PostRecordModel model)
         {
-            _recordService.PostRecord(model);
+            await _recordService.PostRecord(model);
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
                data: "Tao moi ban ghi thanh cong"));
         }
+
         [HttpPut]
         public IActionResult PutRecord(string id, PutRecordModel model)
         {
