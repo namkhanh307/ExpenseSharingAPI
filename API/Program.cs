@@ -106,6 +106,13 @@ namespace API
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
                 };
             });
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", builder =>
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader());
+            });
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("RequireAdministratorRole", policy =>
@@ -124,8 +131,7 @@ namespace API
             }
 
             app.UseHttpsRedirection();
-            app.UseCors("CorsPolicy");
-
+            app.UseCors("AllowAll");
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseMiddleware<CustomExceptionHandlerMiddleware>();
