@@ -8,8 +8,11 @@ namespace Repositories.Entities
 {
     public class FriendRequest : BaseEntity
     {
-        public int SenderId { get; set; }
-        public int ReceiverId { get; set; }
+        public string SenderId { get; set; }
+        public string ReceiverId { get; set; }
+        public DateTime RequestDate { get; set; }
         public string Status { get; set; }
+        public Person Sender { get; set; }
+        public Person Receiver { get; set; }
     }
 }

@@ -29,7 +29,8 @@ public partial class ExpenseSharingContext : DbContext
     public virtual DbSet<Record> Records { get; set; }
 
     public virtual DbSet<Report> Reports { get; set; }
-
+    public virtual DbSet<Friend> Friends { get; set; }
+    public virtual DbSet<FriendRequest> FriendRequests { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlServer("Server=(local);Database=ExpenseSharing;UID=sa;PWD=12345;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -69,6 +70,22 @@ public partial class ExpenseSharingContext : DbContext
         });
 
         // Person configuration
+        //modelBuilder.Entity<Person>(entity =>
+        //{
+        //    entity.HasKey(p => p.Id);
+
+        //    entity.HasMany(p => p.PersonExpenses)
+        //        .WithOne(pe => pe.Person)
+        //        .HasForeignKey(pe => pe.PersonId);
+
+        //    entity.HasMany(p => p.PersonGroups)
+        //        .WithOne(pg => pg.Person)
+        //        .HasForeignKey(pg => pg.PersonId);
+
+        //    entity.HasMany(p => p.Records)
+        //        .WithOne(r => r.Person)
+        //        .HasForeignKey(r => r.PersonId);
+        //});
         modelBuilder.Entity<Person>(entity =>
         {
             entity.HasKey(p => p.Id);
@@ -84,6 +101,21 @@ public partial class ExpenseSharingContext : DbContext
             entity.HasMany(p => p.Records)
                 .WithOne(r => r.Person)
                 .HasForeignKey(r => r.PersonId);
+
+            entity.HasMany(p => p.Friends)
+                .WithOne(f => f.Person)
+                .HasForeignKey(f => f.PersonId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasMany(p => p.FriendRequestsSent)
+                .WithOne(fr => fr.Sender)
+                .HasForeignKey(fr => fr.SenderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasMany(p => p.FriendRequestsReceived)
+                .WithOne(fr => fr.Receiver)
+                .HasForeignKey(fr => fr.ReceiverId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
         // PersonExpense configuration
@@ -129,5 +161,31 @@ public partial class ExpenseSharingContext : DbContext
                 .WithMany(g => g.Reports)
                 .HasForeignKey(r => r.GroupId);
         });
+        //Friend 
+        modelBuilder.Entity<Friend>(entity =>
+            {
+                entity.HasKey(f => new { f.PersonId, f.FriendId });
+
+                entity.HasOne(f => f.FriendPerson)
+                    .WithMany(p => p.FriendOf)
+                    .HasForeignKey(f => f.FriendId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // FriendRequest configuration
+            modelBuilder.Entity<FriendRequest>(entity =>
+            {
+                entity.HasKey(fr => fr.Id);
+
+                entity.HasOne(fr => fr.Sender)
+                    .WithMany(p => p.FriendRequestsSent)
+                    .HasForeignKey(fr => fr.SenderId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(fr => fr.Receiver)
+                    .WithMany(p => p.FriendRequestsReceived)
+                    .HasForeignKey(fr => fr.ReceiverId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
     }
 }
