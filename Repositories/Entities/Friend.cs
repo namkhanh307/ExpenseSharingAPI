@@ -8,8 +8,8 @@ namespace Repositories.Entities
 {
     public class Friend
     {
-        public int PersonId1 { get; set; }
-        public int PersonId2 { get; set; }
+        public string PersonId1 { get; set; }
+        public string PersonId2 { get; set; }
         public string? CreatedBy { get; set; }
         public string? LastUpdatedBy { get; set; }
         public string? DeletedBy { get; set; }

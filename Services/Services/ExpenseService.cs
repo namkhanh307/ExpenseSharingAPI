@@ -40,11 +40,13 @@ namespace Services.Services
         public async Task PostExpense(PostExpenseModel model)
         {
             string idUser = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
-            var expenseId = Guid.NewGuid().ToString();
-            string fileName = await FileUploadHelper.UploadFile(model.InvoiceImage!, expenseId);
+            var expenseId = Guid.NewGuid().ToString("N");
+
+            string fileName = await FileUploadHelper.UploadFile(model.InvoiceImage, expenseId);
             var newExpense = new Expense()
             {
                 Id = expenseId,
+                Report = null,
                 Name = model.Name,
                 Type = model.Type,
                 Amount = model.Amount,
@@ -59,7 +61,7 @@ namespace Services.Services
 
         public async Task PutExpense(string id, PutExpenseModel model)
         {
-            string fileName = await FileUploadHelper.UploadFile(model.InvoiceImage!, id);
+            string fileName = await FileUploadHelper.UploadFile(model.InvoiceImage, id);
             var existedExpense = _unitOfWork.GetRepository<Expense>().GetById(id);
 
             if (existedExpense == null)

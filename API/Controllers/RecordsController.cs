@@ -48,9 +48,9 @@ namespace API.Controllers
         }
 
         [HttpPut]
-        public IActionResult PutRecord(string id, PutRecordModel model)
+        public async Task<IActionResult> PutRecord(string id, PutRecordModel model)
         {
-            _recordService.PutRecord(id, model);
+            await _recordService.PutRecord(id, model);
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,

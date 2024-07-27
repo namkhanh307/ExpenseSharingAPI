@@ -27,18 +27,18 @@ namespace API.Controllers
                 data: result));
         }
         [HttpPost]
-        public IActionResult PostExpense(PostExpenseModel model)
+        public async Task<IActionResult> PostExpense(PostExpenseModel model)
         {
-            _expenseService.PostExpense(model);
+            await _expenseService.PostExpense(model);
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
                data: "Tao chi tieu thanh cong"));
         }
         [HttpPut]
-        public IActionResult PutExpense(string id, PutExpenseModel model)
+        public async Task<IActionResult> PutExpense(string id, PutExpenseModel model)
         {
-            _expenseService.PutExpense(id, model);
+            await _expenseService.PutExpense(id, model);
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,

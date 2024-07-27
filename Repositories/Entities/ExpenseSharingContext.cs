@@ -30,7 +30,11 @@ public partial class ExpenseSharingContext : DbContext
 
     public virtual DbSet<Report> Reports { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlServer("Server=(local);Database=ExpenseSharing;UID=sa;PWD=12345;TrustServerCertificate=True");
+    public virtual DbSet<Friend> Friends { get; set; }
+
+    public virtual DbSet<FriendRequest> FriendRequests { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlServer("Server=ASUS\\SQLSERVER;Database=ExpenseSharing;UID=sa;PWD=12345;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -128,6 +132,38 @@ public partial class ExpenseSharingContext : DbContext
             entity.HasOne(r => r.Group)
                 .WithMany(g => g.Reports)
                 .HasForeignKey(r => r.GroupId);
+        });
+
+        // Friend configuration
+        modelBuilder.Entity<Friend>(entity =>
+        {
+            entity.HasKey(f => new { f.PersonId1, f.PersonId2 });
+
+            entity.HasOne<Person>()
+                .WithMany()
+                .HasForeignKey(f => f.PersonId1)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<Person>()
+                .WithMany()
+                .HasForeignKey(f => f.PersonId2)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // FriendRequest configuration
+        modelBuilder.Entity<FriendRequest>(entity =>
+        {
+            entity.HasKey(fr => new { fr.SenderId, fr.ReceiverId });
+
+            entity.HasOne<Person>()
+                .WithMany()
+                .HasForeignKey(fr => fr.SenderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<Person>()
+                .WithMany()
+                .HasForeignKey(fr => fr.ReceiverId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
     }
 }

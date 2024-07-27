@@ -32,7 +32,7 @@ namespace Services.Services
         public async Task PostRecord(PostRecordModel model)
         {
             string idUser = Authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
-            var id = Guid.NewGuid().ToString();
+            var id = Guid.NewGuid().ToString("N");
             string fileName = await FileUploadHelper.UploadFile(model.InvoiceImage, id);
             var newRecord = new Record()
             {
