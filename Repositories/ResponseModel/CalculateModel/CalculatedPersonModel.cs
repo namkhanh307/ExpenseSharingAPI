@@ -9,6 +9,7 @@ namespace Repositories.ResponseModel.CalculateModel
     public class CalculatedPersonModel
     {
         public List<string> SubPersons { get; set; }
+        public string ExpenseId { get; set; }
         public List<PersonShortTermModel> PersonShortTerms { get; set; }
     }
 }

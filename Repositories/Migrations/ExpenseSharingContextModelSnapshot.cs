@@ -55,7 +55,6 @@ namespace Repositories.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ReportId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Type")
@@ -394,9 +393,7 @@ namespace Repositories.Migrations
                 {
                     b.HasOne("Repositories.Entities.Report", "Report")
                         .WithMany("Expenses")
-                        .HasForeignKey("ReportId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ReportId");
 
                     b.Navigation("Report");
                 });

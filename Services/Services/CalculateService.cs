@@ -4,6 +4,7 @@ using Repositories.IRepositories;
 using Repositories.ResponseModel.CalculateModel;
 using Repositories.ResponseModel.PersonGroupModel;
 using Repositories.ResponseModel.PersonModel;
+using Repositories.ResponseModel.RecordModel;
 using Services.IServices;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -36,6 +37,7 @@ namespace Services.Services
             //verify psub
             foreach (var item in model.CalculatedPersonModels)
             {
+                string expenseId = item.ExpenseId;
                 double amountEachPair = 0;
                 double amount = 0;
                 bool isShared = false;
@@ -74,6 +76,7 @@ namespace Services.Services
                         if (p[i].Name.Equals(item3.Name))
                         {
                             p[i].Diff = p[i].Diff + item3.Diff;
+                            p[i].ExpenseId = expenseId;
                         }
                     }
                 }                
@@ -147,6 +150,7 @@ namespace Services.Services
                 var groupPersonExpense = personExpenseQuery.GroupBy(pg => pg.ExpenseId).ToList();
 
                 List<string>? pSub = groupPersonExpense.SelectMany(pg => pg.Select(p => p.Person.Name)).ToList();
+                string expenseId = groupPersonExpense.Select(p => p.Key).FirstOrDefault();
                 List<PersonShortTermModel> personShortTermModel = groupPersonExpense.SelectMany(item => item.Select(p =>
                 {
                     return new PersonShortTermModel()
@@ -157,6 +161,7 @@ namespace Services.Services
                     };
                 })).ToList();
                 calculatedPersonModel.SubPersons = pSub;
+                calculatedPersonModel.ExpenseId = expenseId;
                 calculatedPersonModel.PersonShortTerms = personShortTermModel;
                 calculatedPersonModels.Add(calculatedPersonModel);
             }
@@ -211,12 +216,12 @@ namespace Services.Services
             {//truong hop 2 mang chenh lech do so nguoi le
                 if (n1 > n2)
                 {
-                    pNegSub.Add(new PersonResponseModel("newname", 0, false, false, 0, 0, 0, 0));
+                    pNegSub.Add(new PersonResponseModel("newname", 0, false, false, 0, 0, 0, 0,""));
                     n2++;
                 }
                 else if (n1 < n2)
                 {
-                    pPosSub.Add(new PersonResponseModel("newname", 0, false, false, 0, 0, 0, 0));
+                    pPosSub.Add(new PersonResponseModel("newname", 0, false, false, 0, 0, 0, 0,""));
                     n1++;
                 }
             }
@@ -288,17 +293,38 @@ namespace Services.Services
         }
         public List<ResponseShortTermModel> Result(List<CalculatingShortTermModel> pairSub)
         {
+            List<PostRecordModel> responseList = new();
             List<ResponseShortTermModel> response = new();
             for (int i = 0; i < pairSub.Count; i++)
             {
                 if (pairSub[i].Debt > 0)
                 {
                     response.Add(new ResponseShortTermModel(pairSub[i].Person1.Name, pairSub[i].Person2.Name, Math.Round(pairSub[i].Debt, 2)));
+                    PostRecordModel postRecordModel = new()
+                    {
+                        Amount = Math.Round(pairSub[i].Debt, 2),
+                        ExpenseId = pairSub[i].Person1.ExpenseId,
+                        InvoiceImage = null,
+                        IsPaid = false,
+                        PersonId = null,
+                        ReportId = null,
+                    };
+                    responseList.Add(postRecordModel);
                     //Console.WriteLine($"{pairSub[i].Person1.Name} will pay {pairSub[i].Person2.Name}: {pairSub[i].Debt}k VND");
                 }
                 else if (pairSub[i].Debt < 0)
                 {
                     response.Add(new ResponseShortTermModel(pairSub[i].Person2.Name, pairSub[i].Person1.Name, Math.Round(Math.Abs(pairSub[i].Debt), 2)));
+                    PostRecordModel postRecordModel = new()
+                    {
+                        Amount = Math.Round(pairSub[i].Debt, 2),
+                        ExpenseId = pairSub[i].Person1.ExpenseId,
+                        InvoiceImage = null,
+                        IsPaid = false,
+                        PersonId = null,
+                        ReportId = null,
+                    };
+                    responseList.Add(postRecordModel);
                     //Console.WriteLine($"{pairSub[i].Person2.Name} will pay {pairSub[i].Person1.Name}: {Math.Abs(pairSub[i].Debt)}k VND");
                 }
             }
