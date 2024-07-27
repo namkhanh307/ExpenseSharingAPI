@@ -38,6 +38,7 @@ namespace Services.Services
             {
                 double amountEachPair = 0;
                 double amount = 0;
+                bool isShared = false;
                 List<PersonResponseModel> pSub = new();
                 foreach (var item1 in item.SubPersons)
                 {
@@ -47,16 +48,27 @@ namespace Services.Services
                         if (personFromP!.Name == item2.Name)
                         {
                             amount = item2.Amount;
+                            isShared = item2.IsShared;
                         }
                     }
                     PersonResponseModel newPerson = new PersonResponseModel(personFromP.Name, amount);
                     newPerson.Shared = amount;
+                    newPerson.IsShared = isShared;
                     pSub.Add(newPerson);
                     amountEachPair += amount;
                 }
+                int count = 0;
+                count = pSub.Where(p => p.IsShared == false).Count();
                 foreach (var item3 in pSub)
                 {
-                    item3.Diff = (-amountEachPair / item.SubPersons.Count + item3.Shared);
+                    if (item3.IsShared == false)
+                    {
+                        item3.Diff = item3.Shared;
+                    }
+                    else
+                    {
+                        item3.Diff = (-amountEachPair / (item.SubPersons.Count - count) + item3.Shared);
+                    }
                     for (int i = 0; i < p.Count; i++)
                     {
                         if (p[i].Name.Equals(item3.Name))
@@ -73,10 +85,10 @@ namespace Services.Services
         public ResponseLongTermModel CalculateLongTerm(string reportId)
         {
             var report = _unitOfWork.GetRepository<Report>().GetById(reportId);
-            var expenseQuery = _unitOfWork.GetRepository<Expense>().Entities.Where(f => f.ReportId == reportId && !f.DeletedTime.HasValue).AsQueryable();
-            var fixedExpense = expenseQuery.Where(f => f.Type!.Equals("0")).ToList();
-            var flexExpense = expenseQuery.Where(f => f.Type!.Equals("1")).ToList();
-            var sharedExpense = expenseQuery.Where(f => f.Type!.Equals("2")).ToList();
+            var expenseQuery = _unitOfWork.GetRepository<Expense>().Entities.Where(f => f.ReportId == reportId && !f.DeletedTime.HasValue).ToList();
+            //var fixedExpense = expenseQuery.Where(f => f.Type!.Equals("0")).ToList();
+            //var flexExpense = expenseQuery.Where(f => f.Type!.Equals("1")).ToList();
+            //var sharedExpense = expenseQuery.Where(f => f.Type!.Equals("2")).ToList();
             var groupId = report.GroupId;
             var personGroupQuery = _unitOfWork.GetRepository<PersonGroup>()
                                    .Entities.Where(pg => pg.GroupId == groupId)
@@ -123,8 +135,8 @@ namespace Services.Services
                 //Console.WriteLine(JsonSerializer.Serialize(pSub));
 
             }*/
-            List <CalculatedPersonModel> calculatedPersonModels = new();
-            foreach (var se in sharedExpense)
+            List<CalculatedPersonModel> calculatedPersonModels = new();
+            foreach (var se in expenseQuery)
             {
                 //lay ra nhung nguoi share chi tieu se
                 CalculatedPersonModel calculatedPersonModel = new();
@@ -199,12 +211,12 @@ namespace Services.Services
             {//truong hop 2 mang chenh lech do so nguoi le
                 if (n1 > n2)
                 {
-                    pNegSub.Add(new PersonResponseModel("newname", 0, false, 0, 0, 0, 0));
+                    pNegSub.Add(new PersonResponseModel("newname", 0, false, false, 0, 0, 0, 0));
                     n2++;
                 }
                 else if (n1 < n2)
                 {
-                    pPosSub.Add(new PersonResponseModel("newname", 0, false, 0, 0, 0, 0));
+                    pPosSub.Add(new PersonResponseModel("newname", 0, false, false, 0, 0, 0, 0));
                     n1++;
                 }
             }
@@ -235,7 +247,7 @@ namespace Services.Services
                             {//chieu nguoc 
                                 if (pNegSub[i].Equals(pairSub[k].Person2))
                                 {//check cap dang xet = cap trong mang pair
-                                    pairSub[k].Debt = -pPosSub[j].Diff + pairSub[k].Debt;//set tien no + them tien check lech 
+                                    pairSub[k].Debt = -pPosSub[j].Diff + pairSub[k].Debt;//set tien no + them tien check lech
                                     break;
                                 }
                             }

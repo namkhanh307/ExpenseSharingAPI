@@ -21,8 +21,9 @@ namespace Repositories.ResponseModel.CalculateModel
             Name = _name;
             Amount = _amount;
         }
-        public PersonResponseModel(string _name, double _amount, bool _isAdmin, double _diff, double _fixed, double _flex, double _shared)
+        public PersonResponseModel(string _name, double _amount, bool _isAdmin, bool _isShared, double _diff, double _fixed, double _flex, double _shared)
         {
+            IsShared = _isShared;
             Name = _name;
             Amount = _amount;
             IsAdmin = _isAdmin;
@@ -34,6 +35,7 @@ namespace Repositories.ResponseModel.CalculateModel
         }
         public string Name { get; set; } = string.Empty;
         public bool IsAdmin { get; set; }
+        public bool IsShared { get; set; }
         public double Amount { get; set; }
         public double Diff{ get; set; }
         public double Fixed { get; set; }
