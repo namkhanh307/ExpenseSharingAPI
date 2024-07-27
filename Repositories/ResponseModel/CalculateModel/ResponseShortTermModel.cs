@@ -14,6 +14,8 @@ namespace Repositories.ResponseModel.CalculateModel
             PersonReceive = _personReceive;
             Amount = _amount;
         }
+        //public string PersonPayId { get; set; }
+        //public string PersonReceiveId { get; set; }
         public string PersonPay {  get; set; } = string.Empty;
         public string PersonReceive { get; set; } = string.Empty;
         public double Amount { get; set; } = double.MinValue;

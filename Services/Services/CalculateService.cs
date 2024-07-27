@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Entities;
 using Repositories.IRepositories;
 using Repositories.ResponseModel.CalculateModel;
@@ -15,11 +16,13 @@ namespace Services.Services
     public class CalculateService : ICalculateService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public CalculateService(IUnitOfWork unitOfWork)
+        private readonly IMapper _mapper;
+        public CalculateService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
-        public List<ResponseShortTermModel> CalculateShortTerm(CalculateShortTermModel model)
+        public List<ResponseShortTermModel> CalculateShortTerm(CalculatingModel model)
         {
             List<CalculatingShortTermModel> pair = new();
             List<PersonResponseModel> p = new();
@@ -27,25 +30,25 @@ namespace Services.Services
             List<PersonResponseModel> pPos = new();
 
             //add person into p
-            foreach (var item in model.Persons)
+            foreach (var item in model.PersonCalculatingModel)
             {
-                p.Add(new PersonResponseModel(item));
+                p.Add(new PersonResponseModel(item.Name));
             }
             //set pair
-            int n = model.Persons.Count;
+            int n = model.PersonCalculatingModel.Count;
             SetPair(n, pair, p);
             //verify psub
-            foreach (var item in model.CalculatedPersonModels)
+            foreach (var item in model.CalculatingSubModel)
             {
                 string expenseId = item.ExpenseId;
                 double amountEachPair = 0;
                 double amount = 0;
                 bool isShared = false;
                 List<PersonResponseModel> pSub = new();
-                foreach (var item1 in item.SubPersons)
+                foreach (var item1 in item.PersonCalculatingSubModel)
                 {
-                    PersonResponseModel personFromP = p.Where(p => p.Name == item1).FirstOrDefault()!;
-                    foreach (var item2 in item.PersonShortTerms)
+                    PersonResponseModel personFromP = p.Where(p => p.Name == item1.Name).FirstOrDefault()!;
+                    foreach (var item2 in item.PersonCalculatingSubModel)
                     {
                         if (personFromP!.Name == item2.Name)
                         {
@@ -69,14 +72,14 @@ namespace Services.Services
                     }
                     else
                     {
-                        item3.Diff = (-amountEachPair / (item.SubPersons.Count - count) + item3.Shared);
+                        item3.Diff = (-amountEachPair / (item.PersonCalculatingSubModel.Count - count) + item3.Shared);
                     }
                     for (int i = 0; i < p.Count; i++)
                     {
                         if (p[i].Name.Equals(item3.Name))
                         {
                             p[i].Diff = p[i].Diff + item3.Diff;
-                            p[i].ExpenseId = expenseId;
+                            //p[i].ExpenseId = expenseId;
                         }
                     }
                 }                
@@ -102,9 +105,9 @@ namespace Services.Services
 
             var persons = groupPersonGroup.SelectMany(pg => pg.Select(p => p.Person)).ToList();
             List<ResponseShortTermModel> responseShortTerm = new();
-            CalculateShortTermModel input = new();
-            input.Persons = persons.Select(p => p.Name).ToList();
-            input.CalculatedPersonModels = new();
+            CalculatingModel input = new();
+            input.PersonCalculatingModel = _mapper.Map<List<PersonCalculatingModel>>(persons.ToList());
+            input.CalculatingSubModel = new();
             /*
             foreach (var fe in fixedExpense)
             {
@@ -135,37 +138,34 @@ namespace Services.Services
                 input.Persons = (List<string>)persons.SelectMany(p => p.Name);
                 Console.WriteLine(JsonSerializer.Serialize(input.Persons));
                 Console.WriteLine(JsonSerializer.Serialize("------------------------"));
-                //Console.WriteLine(JsonSerializer.Serialize(pSub));
-
+                //Console.WriteLine(JsonSerializer.Serialize(pSub));z
             }*/
-            List<CalculatedPersonModel> calculatedPersonModels = new();
+            List<CalculatingSubModel> calculatingSubModels = new();
             foreach (var se in expenseQuery)
             {
                 //lay ra nhung nguoi share chi tieu se
-                CalculatedPersonModel calculatedPersonModel = new();
+                CalculatingSubModel calculatingSubModel = new();
                 var personExpenseQuery = _unitOfWork.GetRepository<PersonExpense>()
                                    .Entities.Where(pg => pg.ExpenseId == se.Id)
                                    .Include(pg => pg.Person)
                                    .AsQueryable();
                 var groupPersonExpense = personExpenseQuery.GroupBy(pg => pg.ExpenseId).ToList();
-
-                List<string>? pSub = groupPersonExpense.SelectMany(pg => pg.Select(p => p.Person.Name)).ToList();
-                string expenseId = groupPersonExpense.Select(p => p.Key).FirstOrDefault();
-                List<PersonShortTermModel> personShortTermModel = groupPersonExpense.SelectMany(item => item.Select(p =>
+                List<PersonCalculatingModel> personCalculatingSubModel = groupPersonExpense.SelectMany(item => item.Select(p =>
                 {
-                    return new PersonShortTermModel()
+                    return new PersonCalculatingModel()
                     {
                         Id = p.PersonId,
                         Amount = p.Amount,
                         Name = p.Person.Name
                     };
                 })).ToList();
-                calculatedPersonModel.SubPersons = pSub;
-                calculatedPersonModel.ExpenseId = expenseId;
-                calculatedPersonModel.PersonShortTerms = personShortTermModel;
-                calculatedPersonModels.Add(calculatedPersonModel);
+                List<string>? pSub = groupPersonExpense.SelectMany(pg => pg.Select(p => p.Person.Name)).ToList();
+                string expenseId = groupPersonExpense.Select(p => p.Key).FirstOrDefault();
+                calculatingSubModel.PersonCalculatingSubModel = personCalculatingSubModel;
+                calculatingSubModel.ExpenseId = expenseId;
+                calculatingSubModels.Add(calculatingSubModel);
             }
-            input.CalculatedPersonModels = calculatedPersonModels;
+            input.CalculatingSubModel = calculatingSubModels;
             
             //Console.WriteLine(JsonSerializer.Serialize(persons));
             return new ResponseLongTermModel()
@@ -216,12 +216,12 @@ namespace Services.Services
             {//truong hop 2 mang chenh lech do so nguoi le
                 if (n1 > n2)
                 {
-                    pNegSub.Add(new PersonResponseModel("newname", 0, false, false, 0, 0, 0, 0,""));
+                    pNegSub.Add(new PersonResponseModel("newname", 0, false, false, 0, 0, 0, 0));
                     n2++;
                 }
                 else if (n1 < n2)
                 {
-                    pPosSub.Add(new PersonResponseModel("newname", 0, false, false, 0, 0, 0, 0,""));
+                    pPosSub.Add(new PersonResponseModel("newname", 0, false, false, 0, 0, 0, 0));
                     n1++;
                 }
             }
@@ -303,7 +303,7 @@ namespace Services.Services
                     PostRecordModel postRecordModel = new()
                     {
                         Amount = Math.Round(pairSub[i].Debt, 2),
-                        ExpenseId = pairSub[i].Person1.ExpenseId,
+                        ExpenseId = null,
                         InvoiceImage = null,
                         IsPaid = false,
                         PersonId = null,
@@ -318,7 +318,7 @@ namespace Services.Services
                     PostRecordModel postRecordModel = new()
                     {
                         Amount = Math.Round(pairSub[i].Debt, 2),
-                        ExpenseId = pairSub[i].Person1.ExpenseId,
+                        ExpenseId = null,
                         InvoiceImage = null,
                         IsPaid = false,
                         PersonId = null,

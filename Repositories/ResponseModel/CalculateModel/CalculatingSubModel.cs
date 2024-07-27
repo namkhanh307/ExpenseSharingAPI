@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Repositories.ResponseModel.CalculateModel
 {
-    public class CalculatedPersonModel
+    public class CalculatingSubModel
     {
-        public List<string> SubPersons { get; set; }
+        public List<PersonCalculatingModel> PersonCalculatingSubModel { get; set; }
         public string ExpenseId { get; set; }
-        public List<PersonShortTermModel> PersonShortTerms { get; set; }
+        public string ReportId { get; set; }
     }
 }
