@@ -31,8 +31,10 @@ namespace Repositories.ResponseModel.CalculateModel
             Fixed = _fixed;
             Flex = _flex;
             Shared = _shared;
-            
+
         }
+        //public string ReportId { get; set; }
+        //public string ExpenseId { get; set; }
         public string Name { get; set; } = string.Empty;
         public bool IsAdmin { get; set; }
         public bool IsShared { get; set; }

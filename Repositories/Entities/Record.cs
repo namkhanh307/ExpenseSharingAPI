@@ -9,7 +9,7 @@ public partial class Record : BaseEntity
 
     public string? ExpenseId { get; set; }
 
-    public string? ReportId { get; set; }
+    //public string? ReportId { get; set; }
 
     public double? Amount { get; set; }
 
@@ -20,5 +20,5 @@ public partial class Record : BaseEntity
 
     public virtual Person? Person { get; set; }
 
-    public virtual Report? Report { get; set; }
+    //public virtual Report? Report { get; set; }
 }

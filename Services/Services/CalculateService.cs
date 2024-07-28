@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Entities;
 using Repositories.IRepositories;
 using Repositories.ResponseModel.CalculateModel;
 using Repositories.ResponseModel.PersonGroupModel;
 using Repositories.ResponseModel.PersonModel;
+using Repositories.ResponseModel.RecordModel;
 using Services.IServices;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -14,48 +16,68 @@ namespace Services.Services
     public class CalculateService : ICalculateService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public CalculateService(IUnitOfWork unitOfWork)
+        private readonly IMapper _mapper;
+        public CalculateService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
-        public List<ResponseShortTermModel> CalculateShortTerm(CalculateShortTermModel model)
+        public List<ResponseShortTermModel> CalculateShortTerm(CalculatingModel model)
         {
-            List<CalculatingShortTermModel> pair = new();
+            List<CalculatedModel> pair = new();
             List<PersonResponseModel> p = new();
             List<PersonResponseModel> pNeg = new();
             List<PersonResponseModel> pPos = new();
 
             //add person into p
-            foreach (var item in model.Persons)
+            foreach (var item in model.PersonCalculatingModel)
             {
-                p.Add(new PersonResponseModel(item));
+                p.Add(new PersonResponseModel(item.Name));
             }
             //set pair
-            int n = model.Persons.Count;
+            int n = model.PersonCalculatingModel.Count;
             SetPair(n, pair, p);
             //verify psub
-            foreach (var item in model.CalculatedPersonModels)
+            foreach (var item in model.CalculatingSubModel)
             {
+                string expenseId = item.ExpenseId;
                 double amountEachPair = 0;
-                double amount = 0;
-                bool isShared = false;
                 List<PersonResponseModel> pSub = new();
-                foreach (var item1 in item.SubPersons)
+                //foreach (var item1 in item.PersonCalculatingSubModel)
+                //{
+                //    PersonResponseModel personFromP = p.Where(p => p.Name == item1.Name).FirstOrDefault()!;
+                //    foreach (var item2 in item.PersonCalculatingSubModel)
+                //    {
+                //        if (personFromP!.Name == item2.Name)
+                //        {
+                //            amount = item2.Amount;
+                //            isShared = item2.IsShared;
+                //        }
+                //    }
+                //    PersonResponseModel newPerson = new PersonResponseModel(personFromP.Name, amount);
+                //    newPerson.Shared = amount;
+                //    newPerson.IsShared = isShared;
+                //    pSub.Add(newPerson);
+                //    amountEachPair += amount;
+                //}
+                var personData = item.PersonCalculatingSubModel.ToDictionary(item => item.Name, item => new { item.Amount, item.IsShared });
+
+                foreach (var item1 in item.PersonCalculatingSubModel)
                 {
-                    PersonResponseModel personFromP = p.Where(p => p.Name == item1).FirstOrDefault()!;
-                    foreach (var item2 in item.PersonShortTerms)
+                    if (personData.TryGetValue(item1.Name, out var data))
                     {
-                        if (personFromP!.Name == item2.Name)
+                        var personFromP = p.FirstOrDefault(p => p.Name == item1.Name);
+                        if (personFromP != null)
                         {
-                            amount = item2.Amount;
-                            isShared = item2.IsShared;
+                            PersonResponseModel newPerson = new PersonResponseModel(personFromP.Name, data.Amount)
+                            {
+                                Shared = data.Amount,
+                                IsShared = data.IsShared
+                            };
+                            pSub.Add(newPerson);
+                            amountEachPair += data.Amount;
                         }
                     }
-                    PersonResponseModel newPerson = new PersonResponseModel(personFromP.Name, amount);
-                    newPerson.Shared = amount;
-                    newPerson.IsShared = isShared;
-                    pSub.Add(newPerson);
-                    amountEachPair += amount;
                 }
                 int count = 0;
                 count = pSub.Where(p => p.IsShared == false).Count();
@@ -67,13 +89,14 @@ namespace Services.Services
                     }
                     else
                     {
-                        item3.Diff = (-amountEachPair / (item.SubPersons.Count - count) + item3.Shared);
+                        item3.Diff = (-amountEachPair / (item.PersonCalculatingSubModel.Count - count) + item3.Shared);
                     }
                     for (int i = 0; i < p.Count; i++)
                     {
                         if (p[i].Name.Equals(item3.Name))
                         {
                             p[i].Diff = p[i].Diff + item3.Diff;
+                            //p[i].ExpenseId = expenseId;
                         }
                     }
                 }                
@@ -99,9 +122,9 @@ namespace Services.Services
 
             var persons = groupPersonGroup.SelectMany(pg => pg.Select(p => p.Person)).ToList();
             List<ResponseShortTermModel> responseShortTerm = new();
-            CalculateShortTermModel input = new();
-            input.Persons = persons.Select(p => p.Name).ToList();
-            input.CalculatedPersonModels = new();
+            CalculatingModel input = new();
+            input.PersonCalculatingModel = _mapper.Map<List<PersonCalculatingModel>>(persons.ToList());
+            input.CalculatingSubModel = new();
             /*
             foreach (var fe in fixedExpense)
             {
@@ -132,35 +155,34 @@ namespace Services.Services
                 input.Persons = (List<string>)persons.SelectMany(p => p.Name);
                 Console.WriteLine(JsonSerializer.Serialize(input.Persons));
                 Console.WriteLine(JsonSerializer.Serialize("------------------------"));
-                //Console.WriteLine(JsonSerializer.Serialize(pSub));
-
+                //Console.WriteLine(JsonSerializer.Serialize(pSub));z
             }*/
-            List<CalculatedPersonModel> calculatedPersonModels = new();
+            List<CalculatingSubModel> calculatingSubModels = new();
             foreach (var se in expenseQuery)
             {
                 //lay ra nhung nguoi share chi tieu se
-                CalculatedPersonModel calculatedPersonModel = new();
+                CalculatingSubModel calculatingSubModel = new();
                 var personExpenseQuery = _unitOfWork.GetRepository<PersonExpense>()
                                    .Entities.Where(pg => pg.ExpenseId == se.Id)
                                    .Include(pg => pg.Person)
                                    .AsQueryable();
                 var groupPersonExpense = personExpenseQuery.GroupBy(pg => pg.ExpenseId).ToList();
-
-                List<string>? pSub = groupPersonExpense.SelectMany(pg => pg.Select(p => p.Person.Name)).ToList();
-                List<PersonShortTermModel> personShortTermModel = groupPersonExpense.SelectMany(item => item.Select(p =>
+                List<PersonCalculatingModel> personCalculatingSubModel = groupPersonExpense.SelectMany(item => item.Select(p =>
                 {
-                    return new PersonShortTermModel()
+                    return new PersonCalculatingModel()
                     {
                         Id = p.PersonId,
                         Amount = p.Amount,
                         Name = p.Person.Name
                     };
                 })).ToList();
-                calculatedPersonModel.SubPersons = pSub;
-                calculatedPersonModel.PersonShortTerms = personShortTermModel;
-                calculatedPersonModels.Add(calculatedPersonModel);
+                List<string>? pSub = groupPersonExpense.SelectMany(pg => pg.Select(p => p.Person.Name)).ToList();
+                string expenseId = groupPersonExpense.Select(p => p.Key).FirstOrDefault();
+                calculatingSubModel.PersonCalculatingSubModel = personCalculatingSubModel;
+                calculatingSubModel.ExpenseId = expenseId;
+                calculatingSubModels.Add(calculatingSubModel);
             }
-            input.CalculatedPersonModels = calculatedPersonModels;
+            input.CalculatingSubModel = calculatingSubModels;
             
             //Console.WriteLine(JsonSerializer.Serialize(persons));
             return new ResponseLongTermModel()
@@ -168,7 +190,7 @@ namespace Services.Services
                 ResponseShortTerm = CalculateShortTerm(input)
             };
         }
-        public void SetPair(int n, List<CalculatingShortTermModel> pair, List<PersonResponseModel> p)
+        public void SetPair(int n, List<CalculatedModel> pair, List<PersonResponseModel> p)
         {
             pair.EnsureCapacity(n * (n - 1) / 2);
             int a = 0;
@@ -179,7 +201,7 @@ namespace Services.Services
                     // Add new elements to the list if necessary
                     if (a >= pair.Count)
                     {
-                        pair.Add(new CalculatingShortTermModel(p[i], p[j], 0.0));
+                        pair.Add(new CalculatedModel(p[i], p[j], 0.0));
                     }
                     else
                     {
@@ -221,7 +243,7 @@ namespace Services.Services
                 }
             }
         }
-        public void CalculateExpense(int n1, int n2, List<PersonResponseModel> pPosSub, List<PersonResponseModel> pNegSub, List<CalculatingShortTermModel> pairSub)
+        public void CalculateExpense(int n1, int n2, List<PersonResponseModel> pPosSub, List<PersonResponseModel> pNegSub, List<CalculatedModel> pairSub)
         {//tinh tien se cho ra ket qua no giua tat ca cac cap bao gom: tien cung, tien mem, tien shared va tien no
             for (int j = 0; j < n2; j++)
             {
@@ -286,19 +308,40 @@ namespace Services.Services
                 }
             }
         }
-        public List<ResponseShortTermModel> Result(List<CalculatingShortTermModel> pairSub)
+        public List<ResponseShortTermModel> Result(List<CalculatedModel> pairSub)
         {
+            List<PostRecordModel> responseList = new();
             List<ResponseShortTermModel> response = new();
             for (int i = 0; i < pairSub.Count; i++)
             {
                 if (pairSub[i].Debt > 0)
                 {
                     response.Add(new ResponseShortTermModel(pairSub[i].Person1.Name, pairSub[i].Person2.Name, Math.Round(pairSub[i].Debt, 2)));
+                    PostRecordModel postRecordModel = new()
+                    {
+                        Amount = Math.Round(pairSub[i].Debt, 2),
+                        ExpenseId = null,
+                        InvoiceImage = null,
+                        IsPaid = false,
+                        PersonId = null,
+                        ReportId = null,
+                    };
+                    responseList.Add(postRecordModel);
                     //Console.WriteLine($"{pairSub[i].Person1.Name} will pay {pairSub[i].Person2.Name}: {pairSub[i].Debt}k VND");
                 }
                 else if (pairSub[i].Debt < 0)
                 {
                     response.Add(new ResponseShortTermModel(pairSub[i].Person2.Name, pairSub[i].Person1.Name, Math.Round(Math.Abs(pairSub[i].Debt), 2)));
+                    PostRecordModel postRecordModel = new()
+                    {
+                        Amount = Math.Round(pairSub[i].Debt, 2),
+                        ExpenseId = null,
+                        InvoiceImage = null,
+                        IsPaid = false,
+                        PersonId = null,
+                        ReportId = null,
+                    };
+                    responseList.Add(postRecordModel);
                     //Console.WriteLine($"{pairSub[i].Person2.Name} will pay {pairSub[i].Person1.Name}: {Math.Abs(pairSub[i].Debt)}k VND");
                 }
             }

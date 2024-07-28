@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Repositories.Entities
 {
-    public class Friend
+    public partial class Friend
     {
         public string PersonId { get; set; }
         public string FriendId { get; set; }

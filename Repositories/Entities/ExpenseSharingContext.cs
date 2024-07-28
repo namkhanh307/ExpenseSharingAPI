@@ -123,18 +123,18 @@ public partial class ExpenseSharingContext : DbContext
         {
             entity.HasKey(pe => new { pe.ExpenseId, pe.PersonId });
 
-            entity.HasOne(pe => pe.Report)
-                .WithMany(r => r.PersonExpenses)
-                .HasForeignKey(pe => pe.ReportId);
+            //entity.HasOne(pe => pe.Report)
+            //    .WithMany(r => r.PersonExpenses)
+            //    .HasForeignKey(pe => pe.ReportId);
         });
 
-        // PersonGroup configuration
+        //PersonGroup 
         modelBuilder.Entity<PersonGroup>(entity =>
         {
             entity.HasKey(pg => new { pg.PersonId, pg.GroupId });
         });
 
-        // Record configuration
+        //Record 
         modelBuilder.Entity<Record>(entity =>
         {
             entity.HasKey(r => r.Id);
@@ -147,9 +147,9 @@ public partial class ExpenseSharingContext : DbContext
                 .WithMany(e => e.Records)
                 .HasForeignKey(r => r.ExpenseId);
 
-            entity.HasOne(r => r.Report)
-                .WithMany(rp => rp.Records)
-                .HasForeignKey(r => r.ReportId);
+            //entity.HasOne(r => r.Report)
+            //    .WithMany(rp => rp.Records)
+            //    .HasForeignKey(r => r.ReportId);
         });
 
         // Report configuration

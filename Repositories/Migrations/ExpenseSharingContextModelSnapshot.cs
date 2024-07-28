@@ -55,7 +55,6 @@ namespace Repositories.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ReportId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Type")
@@ -254,14 +253,9 @@ namespace Repositories.Migrations
                     b.Property<DateTime?>("LastUpdatedTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ReportId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("ExpenseId", "PersonId");
 
                     b.HasIndex("PersonId");
-
-                    b.HasIndex("ReportId");
 
                     b.ToTable("PersonExpenses");
                 });
@@ -340,16 +334,11 @@ namespace Repositories.Migrations
                     b.Property<string>("PersonId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ReportId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ExpenseId");
 
                     b.HasIndex("PersonId");
-
-                    b.HasIndex("ReportId");
 
                     b.ToTable("Records");
                 });
@@ -394,9 +383,7 @@ namespace Repositories.Migrations
                 {
                     b.HasOne("Repositories.Entities.Report", "Report")
                         .WithMany("Expenses")
-                        .HasForeignKey("ReportId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ReportId");
 
                     b.Navigation("Report");
                 });
@@ -453,15 +440,9 @@ namespace Repositories.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Repositories.Entities.Report", "Report")
-                        .WithMany("PersonExpenses")
-                        .HasForeignKey("ReportId");
-
                     b.Navigation("Expense");
 
                     b.Navigation("Person");
-
-                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Repositories.Entities.PersonGroup", b =>
@@ -493,15 +474,9 @@ namespace Repositories.Migrations
                         .WithMany("Records")
                         .HasForeignKey("PersonId");
 
-                    b.HasOne("Repositories.Entities.Report", "Report")
-                        .WithMany("Records")
-                        .HasForeignKey("ReportId");
-
                     b.Navigation("Expense");
 
                     b.Navigation("Person");
-
-                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Repositories.Entities.Report", b =>
@@ -547,10 +522,6 @@ namespace Repositories.Migrations
             modelBuilder.Entity("Repositories.Entities.Report", b =>
                 {
                     b.Navigation("Expenses");
-
-                    b.Navigation("PersonExpenses");
-
-                    b.Navigation("Records");
                 });
 #pragma warning restore 612, 618
         }

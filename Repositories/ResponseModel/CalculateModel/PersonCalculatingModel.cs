@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Repositories.ResponseModel.CalculateModel
 {
-    public class PersonShortTermModel
+    public class PersonCalculatingModel
     {
         public string? Id { get; set; }
         public string? Name { get; set; }

@@ -61,7 +61,7 @@ namespace API
             //Add DBContext
             builder.Services.AddDbContext<ExpenseSharingContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
             //Add Scope
@@ -115,11 +115,6 @@ namespace API
                     builder.AllowAnyOrigin()
                            .AllowAnyMethod()
                            .AllowAnyHeader());
-            });
-            builder.Services.AddAuthorization(options =>
-            {
-                options.AddPolicy("RequireAdministratorRole", policy =>
-                    policy.RequireClaim("role", "admin"));
             });
             var app = builder.Build();
 
