@@ -333,49 +333,23 @@ namespace Services.Services
                 if (pairSub[i].Debt > 0)
                 {
                     response.Add(new ResponseShortTermModel(pairSub[i].Person1.Name, pairSub[i].Person2.Name, Math.Round(pairSub[i].Debt, 2)));
-                    PostRecordModel neg = new()
-                    {
-                        Amount = Math.Round(pairSub[i].Debt, 2),
-                        ExpenseId = pairSub[i].ExpenseId,
-                        InvoiceImage = null,
-                        IsPaid = false,
-                        PersonId = pairSub[i].Person1.Id,
-                    };
-                    PostRecordModel pos = new()
-                    {
-                        Amount = Math.Round(pairSub[i].Debt, 2),
-                        ExpenseId = pairSub[i].ExpenseId,
-                        InvoiceImage = null,
-                        IsPaid = false,
-                        PersonId = pairSub[i].Person2.Id,
-                    };
-                    responseList.Add(neg);
-                    responseList.Add(pos);
                     //Console.WriteLine($"{pairSub[i].Person1.Name} will pay {pairSub[i].Person2.Name}: {pairSub[i].Debt}k VND");
                 }
                 else if (pairSub[i].Debt < 0)
                 {
-                    response.Add(new ResponseShortTermModel(pairSub[i].Person2.Name, pairSub[i].Person1.Name, Math.Round(Math.Abs(pairSub[i].Debt), 2)));
-                    PostRecordModel neg = new()
-                    {
-                        Amount = Math.Round(pairSub[i].Debt, 2),
-                        ExpenseId = pairSub[i].ExpenseId,
-                        InvoiceImage = null,
-                        IsPaid = false,
-                        PersonId = pairSub[i].Person2.Id,
-                    };
-                    PostRecordModel pos = new()
-                    {
-                        Amount = Math.Round(Math.Abs(pairSub[i].Debt), 2),
-                        ExpenseId = pairSub[i].ExpenseId,
-                        InvoiceImage = null,
-                        IsPaid = false,
-                        PersonId = pairSub[i].Person1.Id
-                    };
-                    responseList.Add(neg);
-                    responseList.Add(pos);
+                    response.Add(new ResponseShortTermModel(pairSub[i].Person2.Name, pairSub[i].Person1.Name, Math.Round(Math.Abs(pairSub[i].Debt), 2)));               
                     //Console.WriteLine($"{pairSub[i].Person2.Name} will pay {pairSub[i].Person1.Name}: {Math.Abs(pairSub[i].Debt)}k VND");
-                }  
+                }
+                PostRecordModel neg = new()
+                {
+                    Amount = Math.Round(pairSub[i].Debt, 2),
+                    InvoiceImage = null,
+                    IsPaid = false,
+                    ReportId = null,
+                    PersonPayId = pairSub[i].Person1.Id,
+                    PersonReceiveId = pairSub[i].Person2.Id,
+                };
+                responseList.Add(neg);
             }
             foreach (var item in responseList)
             {

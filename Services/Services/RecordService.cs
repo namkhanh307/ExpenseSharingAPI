@@ -24,7 +24,7 @@ namespace Services.Services
         public List<GetRecordModel> GetRecord(string? recordId, string? reportId)
         {
             var records = _unitOfWork.GetRepository<Record>().Entities
-                        .Where(g => !g.DeletedTime.HasValue && (reportId == null || g.Expense.ReportId == reportId) && (recordId == null || g.Id == recordId))
+                        .Where(g => !g.DeletedTime.HasValue && (reportId == null || g.ReportId == reportId) && (recordId == null || g.Id == recordId))
                         .ToList();
             return _mapper.Map<List<GetRecordModel>>(records);
         }
@@ -37,7 +37,8 @@ namespace Services.Services
             var newRecord = new Record()
             {
                 Id = id,
-                PersonPayId = model.PersonId,
+                PersonPayId = model.PersonPayId,
+                PersonReceiveId = model.PersonReceiveId,
                 InvoiceImage = fileName,
                 Amount = model.Amount,
                 //ReportId = model.ReportId,

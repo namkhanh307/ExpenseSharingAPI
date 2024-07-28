@@ -316,9 +316,6 @@ namespace Repositories.Migrations
                     b.Property<DateTime?>("DeletedTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ExpenseId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("InvoiceImage")
                         .HasColumnType("nvarchar(max)");
 
@@ -341,8 +338,6 @@ namespace Repositories.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ExpenseId");
 
                     b.HasIndex("PersonPayId");
 
@@ -476,10 +471,6 @@ namespace Repositories.Migrations
 
             modelBuilder.Entity("Repositories.Entities.Record", b =>
                 {
-                    b.HasOne("Repositories.Entities.Expense", "Expense")
-                        .WithMany()
-                        .HasForeignKey("ExpenseId");
-
                     b.HasOne("Repositories.Entities.Person", "PersonPay")
                         .WithMany("RecordPays")
                         .HasForeignKey("PersonPayId");
@@ -491,8 +482,6 @@ namespace Repositories.Migrations
                     b.HasOne("Repositories.Entities.Report", "Report")
                         .WithMany("Records")
                         .HasForeignKey("ReportId");
-
-                    b.Navigation("Expense");
 
                     b.Navigation("PersonPay");
 
