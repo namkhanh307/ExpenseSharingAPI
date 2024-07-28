@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Repositories.Entities;
+﻿using Repositories.Entities;
 using Repositories.ResponseModel.RecordModel;
 
 namespace Services.IServices

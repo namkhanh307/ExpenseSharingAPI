@@ -12,8 +12,8 @@ using Repositories.Entities;
 namespace Repositories.Migrations
 {
     [DbContext(typeof(ExpenseSharingContext))]
-    [Migration("20240727093146_createFriendandFriendRequest")]
-    partial class createFriendandFriendRequest
+    [Migration("20240727100533_initForNhat")]
+    partial class initForNhat
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -73,10 +73,10 @@ namespace Repositories.Migrations
 
             modelBuilder.Entity("Repositories.Entities.Friend", b =>
                 {
-                    b.Property<string>("PersonId1")
+                    b.Property<string>("PersonId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("PersonId2")
+                    b.Property<string>("FriendId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreatedBy")
@@ -97,19 +97,16 @@ namespace Repositories.Migrations
                     b.Property<DateTime>("LastUpdatedTime")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("PersonId1", "PersonId2");
+                    b.HasKey("PersonId", "FriendId");
 
-                    b.HasIndex("PersonId2");
+                    b.HasIndex("FriendId");
 
                     b.ToTable("Friends");
                 });
 
             modelBuilder.Entity("Repositories.Entities.FriendRequest", b =>
                 {
-                    b.Property<string>("SenderId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ReceiverId")
+                    b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreatedBy")
@@ -124,22 +121,32 @@ namespace Repositories.Migrations
                     b.Property<DateTime?>("DeletedTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("LastUpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("LastUpdatedTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("ReceiverId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("RequestDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SenderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("SenderId", "ReceiverId");
+                    b.HasKey("Id");
 
                     b.HasIndex("ReceiverId");
+
+                    b.HasIndex("SenderId");
 
                     b.ToTable("FriendRequests");
                 });
@@ -399,32 +406,40 @@ namespace Repositories.Migrations
 
             modelBuilder.Entity("Repositories.Entities.Friend", b =>
                 {
-                    b.HasOne("Repositories.Entities.Person", null)
-                        .WithMany()
-                        .HasForeignKey("PersonId1")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("Repositories.Entities.Person", "FriendPerson")
+                        .WithMany("FriendOf")
+                        .HasForeignKey("FriendId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Repositories.Entities.Person", null)
-                        .WithMany()
-                        .HasForeignKey("PersonId2")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("Repositories.Entities.Person", "Person")
+                        .WithMany("Friends")
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("FriendPerson");
+
+                    b.Navigation("Person");
                 });
 
             modelBuilder.Entity("Repositories.Entities.FriendRequest", b =>
                 {
-                    b.HasOne("Repositories.Entities.Person", null)
-                        .WithMany()
+                    b.HasOne("Repositories.Entities.Person", "Receiver")
+                        .WithMany("FriendRequestsReceived")
                         .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Repositories.Entities.Person", null)
-                        .WithMany()
+                    b.HasOne("Repositories.Entities.Person", "Sender")
+                        .WithMany("FriendRequestsSent")
                         .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Receiver");
+
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("Repositories.Entities.PersonExpense", b =>
@@ -517,6 +532,14 @@ namespace Repositories.Migrations
 
             modelBuilder.Entity("Repositories.Entities.Person", b =>
                 {
+                    b.Navigation("FriendOf");
+
+                    b.Navigation("FriendRequestsReceived");
+
+                    b.Navigation("FriendRequestsSent");
+
+                    b.Navigation("Friends");
+
                     b.Navigation("PersonExpenses");
 
                     b.Navigation("PersonGroups");
