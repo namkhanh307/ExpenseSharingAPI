@@ -61,6 +61,10 @@ namespace Services.Services
 
             if (fileName != null)
             {
+                if (existedRecord.InvoiceImage != null)
+                {
+                    await FileUploadHelper.DeleteFile(existedRecord.InvoiceImage);
+                }
                 existedRecord.InvoiceImage = fileName;
             }
 
@@ -69,13 +73,14 @@ namespace Services.Services
             await _unitOfWork.GetRepository<Record>().UpdateAsync(existedRecord);
             await _unitOfWork.SaveAsync();
         }
-        public void DeleteRecord(string id)
+        public async Task DeleteRecord(string id)
         {
             var existedRecord = _unitOfWork.GetRepository<Record>().GetById(id);
             if (existedRecord == null)
             {
                 throw new Exception($"Group with ID {id} doesn't exist!");
             }
+            await FileUploadHelper.DeleteFile(existedRecord.InvoiceImage);
             existedRecord.DeletedTime = DateTime.Now;
             _unitOfWork.GetRepository<Record>().Update(existedRecord);
             _unitOfWork.Save();

@@ -40,11 +40,11 @@ namespace Services.Services
             var person = _unitOfWork.GetRepository<Person>().Entities.FirstOrDefault(p => p.Phone == request.Phone);
             if (person == null) 
             {
-                throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.UnAuthorized, "Bạn chưa có tài khoản, hãy đăng ký ngay!");
+                throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.UnAuthorized, "You don't have an account, please sign up!");
             }
             if (person.Password != request.Password)
             {
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Số điện thoại hoặc mật khẩu không đúng!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Phone number or password are incorrect!");
             }
             var token = _tokenService.GenerateTokens(person);
             return new GetLogInModel()

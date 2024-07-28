@@ -39,7 +39,7 @@ namespace Services.Services
             var existedPerson = _unitOfWork.GetRepository<Person>().GetById(id);
             if (existedPerson == null)
             {
-                throw new Exception($"Group with ID {id} doesn't exist!");
+                throw new Exception($"Person with ID {id} doesn't exist!");
             }
             _mapper.Map(model, existedPerson);
             existedPerson.LastUpdatedTime = DateTime.Now;
@@ -52,7 +52,7 @@ namespace Services.Services
             var existedPerson = _unitOfWork.GetRepository<Person>().GetById(id);
             if (existedPerson == null)
             {
-                throw new Exception($"Group with ID {id} doesn't exist!");
+                throw new Exception($"Person with ID {id} doesn't exist!");
             }
             existedPerson.DeletedTime = DateTime.Now;
             _unitOfWork.GetRepository<Person>().Update(existedPerson);

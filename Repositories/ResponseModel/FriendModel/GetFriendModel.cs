@@ -8,7 +8,6 @@ namespace Repositories.ResponseModel.FriendModel
 {
     public class GetFriendModel
     {
-        public string PersonId { get; set; }
         public string FriendId { get; set; }
     }
 }

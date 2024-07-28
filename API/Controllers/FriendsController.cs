@@ -18,9 +18,9 @@ namespace API.Controllers
             _friendService = friendService;
         }
         [HttpGet] 
-        public IActionResult GetFriends(string id)
+        public IActionResult GetFriends()
         {
-            var result = _friendService.GetFriends(id);
+            var result = _friendService.GetFriends();
             return Ok(new BaseResponseModel<List<GetFriendModel>>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
@@ -33,7 +33,16 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
-                data: "Them ban be thanh cong!"));
+                data: "Add friend successfully!"));
+        }
+        [HttpDelete]
+        public IActionResult DeleteFriend(string id)
+        {
+            _friendService.DeleteFriend(id);
+            return Ok(new BaseResponseModel<string>(
+                statusCode: StatusCodes.Status200OK,
+                code: ResponseCodeConstants.SUCCESS,
+                data: "Unfriend successfully!"));
         }
     }
 }

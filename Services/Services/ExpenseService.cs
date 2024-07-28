@@ -42,7 +42,7 @@ namespace Services.Services
             string idUser = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
             var expenseId = Guid.NewGuid().ToString("N");
 
-            string fileName = await FileUploadHelper.UploadFile(model.InvoiceImage, expenseId);
+            string? fileName = await FileUploadHelper.UploadFile(model.InvoiceImage, expenseId);
             var newExpense = new Expense()
             {
                 Id = expenseId,
@@ -71,16 +71,23 @@ namespace Services.Services
 
             if (!string.IsNullOrWhiteSpace(fileName))
             {
-                existedExpense.InvoiceImage = fileName;
+                if (existedExpense.InvoiceImage != null)
+                {
+                    await FileUploadHelper.DeleteFile(existedExpense.InvoiceImage);
+                }
+                existedExpense.InvoiceImage = fileName;  
             }
 
-            existedExpense.Amount = model.Amount;
+            if (!model.Amount.Equals(null))
+            {
+                existedExpense.Amount = model.Amount;
+            }
 
             await _unitOfWork.GetRepository<Expense>().UpdateAsync(existedExpense);
             await _unitOfWork.SaveAsync();
         }
 
-        public void DeleteExpense(string expenseId)
+        public async Task DeleteExpense(string expenseId)
         {
             var currentUserId = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
             Guid.TryParse(currentUserId, out var id);
@@ -105,6 +112,7 @@ namespace Services.Services
             {
                 existedExpense.DeletedBy = currentUserId;
                 existedExpense.DeletedTime = DateTime.Now;
+                await FileUploadHelper.DeleteFile(existedExpense.InvoiceImage);
                 _unitOfWork.GetRepository<Expense>().Update(existedExpense);
                 _unitOfWork.Save();
             }

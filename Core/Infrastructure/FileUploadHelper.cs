@@ -22,9 +22,9 @@ namespace Core.Infrastructure
             }
         }
 
-        public static async Task<string> UploadFile(IFormFile file, string id)
+        public static async Task<string> UploadFile(IFormFile? file, string id)
         {
-            if (file.Length > 0)
+            if (file != null)
             {
                 try
                 {
@@ -45,7 +45,16 @@ namespace Core.Infrastructure
             }
             else
             {
-                return "Upload failed, file is empty.";
+                return "string";
+            }
+        }
+
+        public static async Task DeleteFile(string fileName)
+        {
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "image", fileName);
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
             }
         }
     }

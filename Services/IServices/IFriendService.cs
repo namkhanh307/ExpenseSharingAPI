@@ -12,7 +12,7 @@ namespace Services.IServices
 {
     public interface IFriendService
     {
-        List<GetFriendModel> GetFriends(string id);
+        List<GetFriendModel> GetFriends();
         void PostFriend(PostFriendModel model);
         void DeleteFriend(string id);
     }

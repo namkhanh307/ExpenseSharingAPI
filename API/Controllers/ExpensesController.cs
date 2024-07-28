@@ -33,7 +33,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "Tao chi tieu thanh cong"));
+               data: "Expense added successfully!"));
         }
         [HttpPut]
         public async Task<IActionResult> PutExpense(string id, PutExpenseModel model)
@@ -42,7 +42,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "Chinh sua chi tieu thanh cong"));
+               data: "Expense changed successfully!"));
         }
         [HttpDelete]
         public IActionResult DeleteExpense(string id)
@@ -51,7 +51,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "Xoa chi tieu thanh cong"));
+               data: "Expense deleted successfully!"));
         }
     }
 }

@@ -76,7 +76,7 @@ namespace API
             builder.Services.AddScoped<ICalculateService, CalculateService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
-            builder.Services.AddScoped<IFriendService, IFriendService>();
+            builder.Services.AddScoped<IFriendService, FriendService>();
 
             //Add Automapper
             builder.Services.AddAutoMapper(typeof(GroupProfile).Assembly);
