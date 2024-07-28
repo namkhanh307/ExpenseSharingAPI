@@ -24,7 +24,7 @@ namespace Services.Services
         }
         public List<ResponseShortTermModel> CalculateShortTerm(CalculatingModel model)
         {
-            List<CalculatingShortTermModel> pair = new();
+            List<CalculatedModel> pair = new();
             List<PersonResponseModel> p = new();
             List<PersonResponseModel> pNeg = new();
             List<PersonResponseModel> pPos = new();
@@ -42,25 +42,42 @@ namespace Services.Services
             {
                 string expenseId = item.ExpenseId;
                 double amountEachPair = 0;
-                double amount = 0;
-                bool isShared = false;
                 List<PersonResponseModel> pSub = new();
+                //foreach (var item1 in item.PersonCalculatingSubModel)
+                //{
+                //    PersonResponseModel personFromP = p.Where(p => p.Name == item1.Name).FirstOrDefault()!;
+                //    foreach (var item2 in item.PersonCalculatingSubModel)
+                //    {
+                //        if (personFromP!.Name == item2.Name)
+                //        {
+                //            amount = item2.Amount;
+                //            isShared = item2.IsShared;
+                //        }
+                //    }
+                //    PersonResponseModel newPerson = new PersonResponseModel(personFromP.Name, amount);
+                //    newPerson.Shared = amount;
+                //    newPerson.IsShared = isShared;
+                //    pSub.Add(newPerson);
+                //    amountEachPair += amount;
+                //}
+                var personData = item.PersonCalculatingSubModel.ToDictionary(item => item.Name, item => new { item.Amount, item.IsShared });
+
                 foreach (var item1 in item.PersonCalculatingSubModel)
                 {
-                    PersonResponseModel personFromP = p.Where(p => p.Name == item1.Name).FirstOrDefault()!;
-                    foreach (var item2 in item.PersonCalculatingSubModel)
+                    if (personData.TryGetValue(item1.Name, out var data))
                     {
-                        if (personFromP!.Name == item2.Name)
+                        var personFromP = p.FirstOrDefault(p => p.Name == item1.Name);
+                        if (personFromP != null)
                         {
-                            amount = item2.Amount;
-                            isShared = item2.IsShared;
+                            PersonResponseModel newPerson = new PersonResponseModel(personFromP.Name, data.Amount)
+                            {
+                                Shared = data.Amount,
+                                IsShared = data.IsShared
+                            };
+                            pSub.Add(newPerson);
+                            amountEachPair += data.Amount;
                         }
                     }
-                    PersonResponseModel newPerson = new PersonResponseModel(personFromP.Name, amount);
-                    newPerson.Shared = amount;
-                    newPerson.IsShared = isShared;
-                    pSub.Add(newPerson);
-                    amountEachPair += amount;
                 }
                 int count = 0;
                 count = pSub.Where(p => p.IsShared == false).Count();
@@ -173,7 +190,7 @@ namespace Services.Services
                 ResponseShortTerm = CalculateShortTerm(input)
             };
         }
-        public void SetPair(int n, List<CalculatingShortTermModel> pair, List<PersonResponseModel> p)
+        public void SetPair(int n, List<CalculatedModel> pair, List<PersonResponseModel> p)
         {
             pair.EnsureCapacity(n * (n - 1) / 2);
             int a = 0;
@@ -184,7 +201,7 @@ namespace Services.Services
                     // Add new elements to the list if necessary
                     if (a >= pair.Count)
                     {
-                        pair.Add(new CalculatingShortTermModel(p[i], p[j], 0.0));
+                        pair.Add(new CalculatedModel(p[i], p[j], 0.0));
                     }
                     else
                     {
@@ -226,7 +243,7 @@ namespace Services.Services
                 }
             }
         }
-        public void CalculateExpense(int n1, int n2, List<PersonResponseModel> pPosSub, List<PersonResponseModel> pNegSub, List<CalculatingShortTermModel> pairSub)
+        public void CalculateExpense(int n1, int n2, List<PersonResponseModel> pPosSub, List<PersonResponseModel> pNegSub, List<CalculatedModel> pairSub)
         {//tinh tien se cho ra ket qua no giua tat ca cac cap bao gom: tien cung, tien mem, tien shared va tien no
             for (int j = 0; j < n2; j++)
             {
@@ -291,7 +308,7 @@ namespace Services.Services
                 }
             }
         }
-        public List<ResponseShortTermModel> Result(List<CalculatingShortTermModel> pairSub)
+        public List<ResponseShortTermModel> Result(List<CalculatedModel> pairSub)
         {
             List<PostRecordModel> responseList = new();
             List<ResponseShortTermModel> response = new();

@@ -31,7 +31,7 @@ namespace Services.Services
             // Apply filters
             if (!string.IsNullOrWhiteSpace(reportId))
             {
-                query = query.Where(pe => pe.ReportId == reportId);
+                query = query.Where(pe => pe.Expense.ReportId == reportId);
             }
             if (!string.IsNullOrWhiteSpace(expenseId))
             {
@@ -77,7 +77,7 @@ namespace Services.Services
                 {
                     ExpenseId = model.ExpenseId,
                     PersonId = item.Id,
-                    ReportId = model.ReportId,
+                    //ReportId = model.ReportId,
                     IsShared = item.IsShared,
                     Amount = item.Amount,
                 };
@@ -92,7 +92,7 @@ namespace Services.Services
             {
                 ExpenseId = model.ExpenseId,
                 PersonId = model.PersonId,
-                ReportId = model.ReportId,
+                //ReportId = model.ReportId,
                 IsShared = model.IsShared,
                 Amount = model.Amount,
             };
@@ -134,7 +134,7 @@ namespace Services.Services
                 {
                     ExpenseId = expenseId,
                     PersonId = item.Id!,
-                    ReportId = model.ReportId,
+                    //ReportId = model.ReportId,
                     IsShared = item.IsShared,
                     Amount = item.Amount,
                     CreatedTime = DateTime.Now

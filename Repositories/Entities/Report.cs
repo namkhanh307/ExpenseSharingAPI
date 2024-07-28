@@ -13,7 +13,7 @@ public partial class Report : BaseEntity
 
     public virtual Group? Group { get; set; }
 
-    public virtual ICollection<PersonExpense> PersonExpenses { get; set; } = new List<PersonExpense>();
+    //public virtual ICollection<PersonExpense> PersonExpenses { get; set; } = new List<PersonExpense>();
 
-    public virtual ICollection<Record> Records { get; set; } = new List<Record>();
+    //public virtual ICollection<Record> Records { get; set; } = new List<Record>();
 }

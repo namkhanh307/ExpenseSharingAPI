@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Repositories.ResponseModel.CalculateModel
 {
-    public class CalculatingShortTermModel
+    public class CalculatedModel
     {
-        public CalculatingShortTermModel(PersonResponseModel _person1, PersonResponseModel _person2, double _debt)
+        public CalculatedModel(PersonResponseModel _person1, PersonResponseModel _person2, double _debt)
         {
             Person1 = _person1;
             Person2 = _person2;

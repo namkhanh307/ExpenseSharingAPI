@@ -9,7 +9,7 @@ public partial class PersonExpense
     public string PersonId { get; set; } = null!;
     public double Amount { get; set; }
     public bool IsShared { get; set; }
-    public string? ReportId { get; set; }
+    //public string? ReportId { get; set; }
 
     public string? CreatedBy { get; set; }
 
@@ -27,5 +27,5 @@ public partial class PersonExpense
 
     public virtual Person Person { get; set; } = null!;
 
-    public virtual Report? Report { get; set; }
+    //public virtual Report? Report { get; set; }
 }
