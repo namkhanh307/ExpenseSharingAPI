@@ -8,21 +8,23 @@ namespace Repositories.ResponseModel.CalculateModel
 {
     public class PersonResponseModel
     {
+        private readonly PersonResponseModel _responseModel;
         public PersonResponseModel()
         {
             
         }
-        public PersonResponseModel(string _name)
+        public PersonResponseModel(PersonResponseModel response)
         {
-            Name = _name;
+            _responseModel = response;
         }
         public PersonResponseModel(string _name, double _amount)
         {
             Name = _name;
             Amount = _amount;
         }
-        public PersonResponseModel(string _name, double _amount, bool _isAdmin, bool _isShared, double _diff, double _fixed, double _flex, double _shared)
+        public PersonResponseModel(string _id, string _name, double _amount, bool _isAdmin, bool _isShared, double _diff, double _fixed, double _flex, double _shared, string _expenseId)
         {
+            Id = _id;
             IsShared = _isShared;
             Name = _name;
             Amount = _amount;
@@ -31,10 +33,12 @@ namespace Repositories.ResponseModel.CalculateModel
             Fixed = _fixed;
             Flex = _flex;
             Shared = _shared;
+            ExpenseId = _expenseId;
 
         }
         //public string ReportId { get; set; }
-        //public string ExpenseId { get; set; }
+        public string ExpenseId { get; set; } = string.Empty;
+        public string Id { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public bool IsAdmin { get; set; }
         public bool IsShared { get; set; }

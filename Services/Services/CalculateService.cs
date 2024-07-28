@@ -17,10 +17,12 @@ namespace Services.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public CalculateService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly IRecordService _recordService;
+        public CalculateService(IUnitOfWork unitOfWork, IMapper mapper, IRecordService recordService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _recordService = recordService;
         }
         public List<ResponseShortTermModel> CalculateShortTerm(CalculatingModel model)
         {
@@ -32,7 +34,14 @@ namespace Services.Services
             //add person into p
             foreach (var item in model.PersonCalculatingModel)
             {
-                p.Add(new PersonResponseModel(item.Name));
+                PersonResponseModel person = new()
+                {
+                    Amount = item.Amount,
+                    Id = item.Id,
+                    Name = item.Name,
+                    IsShared = item.IsShared,              
+                };
+                p.Add(person);
             }
             //set pair
             int n = model.PersonCalculatingModel.Count;
@@ -72,7 +81,8 @@ namespace Services.Services
                             PersonResponseModel newPerson = new PersonResponseModel(personFromP.Name, data.Amount)
                             {
                                 Shared = data.Amount,
-                                IsShared = data.IsShared
+                                IsShared = data.IsShared,
+                                ExpenseId = expenseId,
                             };
                             pSub.Add(newPerson);
                             amountEachPair += data.Amount;
@@ -96,7 +106,7 @@ namespace Services.Services
                         if (p[i].Name.Equals(item3.Name))
                         {
                             p[i].Diff = p[i].Diff + item3.Diff;
-                            //p[i].ExpenseId = expenseId;
+                            p[i].ExpenseId = expenseId;
                         }
                     }
                 }                
@@ -176,8 +186,8 @@ namespace Services.Services
                         Name = p.Person.Name
                     };
                 })).ToList();
-                List<string>? pSub = groupPersonExpense.SelectMany(pg => pg.Select(p => p.Person.Name)).ToList();
                 string expenseId = groupPersonExpense.Select(p => p.Key).FirstOrDefault();
+                //input.PersonCalculatingModel.ForEach(p => p.Ex)
                 calculatingSubModel.PersonCalculatingSubModel = personCalculatingSubModel;
                 calculatingSubModel.ExpenseId = expenseId;
                 calculatingSubModels.Add(calculatingSubModel);
@@ -201,7 +211,7 @@ namespace Services.Services
                     // Add new elements to the list if necessary
                     if (a >= pair.Count)
                     {
-                        pair.Add(new CalculatedModel(p[i], p[j], 0.0));
+                        pair.Add(new CalculatedModel(p[i], p[j], 0.0, p[i].ExpenseId));
                     }
                     else
                     {
@@ -233,12 +243,12 @@ namespace Services.Services
             {//truong hop 2 mang chenh lech do so nguoi le
                 if (n1 > n2)
                 {
-                    pNegSub.Add(new PersonResponseModel("newname", 0, false, false, 0, 0, 0, 0));
+                    pNegSub.Add(new PersonResponseModel("newId", "newname", 0, false, false, 0, 0, 0, 0, "newExpenseId"));
                     n2++;
                 }
                 else if (n1 < n2)
                 {
-                    pPosSub.Add(new PersonResponseModel("newname", 0, false, false, 0, 0, 0, 0));
+                    pPosSub.Add(new PersonResponseModel("newId", "newname", 0, false, false, 0, 0, 0, 0, "newExpenseId"));
                     n1++;
                 }
             }
@@ -261,7 +271,8 @@ namespace Services.Services
                             {//chieu thuan
                                 if (pPosSub[j].Equals(pairSub[k].Person2))
                                 {//check cap dang xet = cap trong mang pair
-                                    pairSub[k].Debt = pPosSub[j].Diff + pairSub[k].Debt;//set tien no + them tien check lech 
+                                    pairSub[k].Debt = pPosSub[j].Diff + pairSub[k].Debt;//set tien no + them tien check lech \
+                                    pairSub[k].ExpenseId = pPosSub[j].ExpenseId;
                                     break;
                                 }
                             }
@@ -270,6 +281,8 @@ namespace Services.Services
                                 if (pNegSub[i].Equals(pairSub[k].Person2))
                                 {//check cap dang xet = cap trong mang pair
                                     pairSub[k].Debt = -pPosSub[j].Diff + pairSub[k].Debt;//set tien no + them tien check lech
+                                    pairSub[k].ExpenseId = pNegSub[i].ExpenseId;
+
                                     break;
                                 }
                             }
@@ -290,6 +303,8 @@ namespace Services.Services
                                 if (pPosSub[j].Equals(pairSub[k].Person2))
                                 {
                                     pairSub[k].Debt = Math.Abs(pNegSub[i].Diff + pairSub[k].Debt);
+                                    pairSub[k].ExpenseId = pPosSub[j].ExpenseId;
+
                                     break;
                                 }
                             }
@@ -298,6 +313,7 @@ namespace Services.Services
                                 if (pNegSub[i].Equals(pairSub[k].Person2))
                                 {
                                     pairSub[k].Debt = pNegSub[i].Diff + pairSub[k].Debt;
+                                    pairSub[k].ExpenseId = pNegSub[i].ExpenseId;
                                     break;
                                 }
                             }
@@ -317,33 +333,53 @@ namespace Services.Services
                 if (pairSub[i].Debt > 0)
                 {
                     response.Add(new ResponseShortTermModel(pairSub[i].Person1.Name, pairSub[i].Person2.Name, Math.Round(pairSub[i].Debt, 2)));
-                    PostRecordModel postRecordModel = new()
+                    PostRecordModel neg = new()
                     {
                         Amount = Math.Round(pairSub[i].Debt, 2),
-                        ExpenseId = null,
+                        ExpenseId = pairSub[i].ExpenseId,
                         InvoiceImage = null,
                         IsPaid = false,
-                        PersonId = null,
-                        ReportId = null,
+                        PersonId = pairSub[i].Person1.Id,
                     };
-                    responseList.Add(postRecordModel);
+                    PostRecordModel pos = new()
+                    {
+                        Amount = Math.Round(pairSub[i].Debt, 2),
+                        ExpenseId = pairSub[i].ExpenseId,
+                        InvoiceImage = null,
+                        IsPaid = false,
+                        PersonId = pairSub[i].Person2.Id,
+                    };
+                    responseList.Add(neg);
+                    responseList.Add(pos);
                     //Console.WriteLine($"{pairSub[i].Person1.Name} will pay {pairSub[i].Person2.Name}: {pairSub[i].Debt}k VND");
                 }
                 else if (pairSub[i].Debt < 0)
                 {
                     response.Add(new ResponseShortTermModel(pairSub[i].Person2.Name, pairSub[i].Person1.Name, Math.Round(Math.Abs(pairSub[i].Debt), 2)));
-                    PostRecordModel postRecordModel = new()
+                    PostRecordModel neg = new()
                     {
                         Amount = Math.Round(pairSub[i].Debt, 2),
-                        ExpenseId = null,
+                        ExpenseId = pairSub[i].ExpenseId,
                         InvoiceImage = null,
                         IsPaid = false,
-                        PersonId = null,
-                        ReportId = null,
+                        PersonId = pairSub[i].Person2.Id,
                     };
-                    responseList.Add(postRecordModel);
+                    PostRecordModel pos = new()
+                    {
+                        Amount = Math.Round(Math.Abs(pairSub[i].Debt), 2),
+                        ExpenseId = pairSub[i].ExpenseId,
+                        InvoiceImage = null,
+                        IsPaid = false,
+                        PersonId = pairSub[i].Person1.Id
+                    };
+                    responseList.Add(neg);
+                    responseList.Add(pos);
                     //Console.WriteLine($"{pairSub[i].Person2.Name} will pay {pairSub[i].Person1.Name}: {Math.Abs(pairSub[i].Debt)}k VND");
-                }
+                }  
+            }
+            foreach (var item in responseList)
+            {
+                _recordService.PostRecord(item);
             }
             return response;
         }

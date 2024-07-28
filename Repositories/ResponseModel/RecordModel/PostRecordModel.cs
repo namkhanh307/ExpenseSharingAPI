@@ -8,8 +8,6 @@ namespace Repositories.ResponseModel.RecordModel
 
         public string ExpenseId { get; set; }
 
-        public string ReportId { get; set; }
-
         public IFormFile InvoiceImage { get; set; }
 
         public double? Amount { get; set; }

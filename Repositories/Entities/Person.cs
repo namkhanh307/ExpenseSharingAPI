@@ -16,7 +16,8 @@ public partial class Person : BaseEntity
     [JsonIgnore]
     public virtual ICollection<PersonGroup> PersonGroups { get; set; } = new List<PersonGroup>();
 
-    public virtual ICollection<Record> Records { get; set; } = new List<Record>();
+    public virtual ICollection<Record> RecordPays { get; set; } = new List<Record>();
+    public virtual ICollection<Record> RecordReceives { get; set; } = new List<Record>();
     public virtual ICollection<Friend> Friends { get; set; } = new List<Friend>();
     public virtual ICollection<Friend> FriendOf { get; set; } = new List<Friend>();
     public virtual ICollection<FriendRequest> FriendRequestsSent { get; set; } = new List<FriendRequest>();

@@ -24,7 +24,7 @@ namespace Core.Infrastructure
 
         public static async Task<string> UploadFile(IFormFile file, string id)
         {
-            if (file.Length > 0)
+            if (file != null)
             {
                 try
                 {
@@ -45,7 +45,7 @@ namespace Core.Infrastructure
             }
             else
             {
-                return "Upload failed, file is empty.";
+                return null;
             }
         }
     }

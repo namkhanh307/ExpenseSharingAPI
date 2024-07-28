@@ -331,14 +331,24 @@ namespace Repositories.Migrations
                     b.Property<DateTime>("LastUpdatedTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("PersonId")
+                    b.Property<string>("PersonPayId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("PersonReceiveId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ReportId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ExpenseId");
 
-                    b.HasIndex("PersonId");
+                    b.HasIndex("PersonPayId");
+
+                    b.HasIndex("PersonReceiveId");
+
+                    b.HasIndex("ReportId");
 
                     b.ToTable("Records");
                 });
@@ -467,16 +477,28 @@ namespace Repositories.Migrations
             modelBuilder.Entity("Repositories.Entities.Record", b =>
                 {
                     b.HasOne("Repositories.Entities.Expense", "Expense")
-                        .WithMany("Records")
+                        .WithMany()
                         .HasForeignKey("ExpenseId");
 
-                    b.HasOne("Repositories.Entities.Person", "Person")
+                    b.HasOne("Repositories.Entities.Person", "PersonPay")
+                        .WithMany("RecordPays")
+                        .HasForeignKey("PersonPayId");
+
+                    b.HasOne("Repositories.Entities.Person", "PersonReceive")
+                        .WithMany("RecordReceives")
+                        .HasForeignKey("PersonReceiveId");
+
+                    b.HasOne("Repositories.Entities.Report", "Report")
                         .WithMany("Records")
-                        .HasForeignKey("PersonId");
+                        .HasForeignKey("ReportId");
 
                     b.Navigation("Expense");
 
-                    b.Navigation("Person");
+                    b.Navigation("PersonPay");
+
+                    b.Navigation("PersonReceive");
+
+                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("Repositories.Entities.Report", b =>
@@ -491,8 +513,6 @@ namespace Repositories.Migrations
             modelBuilder.Entity("Repositories.Entities.Expense", b =>
                 {
                     b.Navigation("PersonExpenses");
-
-                    b.Navigation("Records");
                 });
 
             modelBuilder.Entity("Repositories.Entities.Group", b =>
@@ -516,12 +536,16 @@ namespace Repositories.Migrations
 
                     b.Navigation("PersonGroups");
 
-                    b.Navigation("Records");
+                    b.Navigation("RecordPays");
+
+                    b.Navigation("RecordReceives");
                 });
 
             modelBuilder.Entity("Repositories.Entities.Report", b =>
                 {
                     b.Navigation("Expenses");
+
+                    b.Navigation("Records");
                 });
 #pragma warning restore 612, 618
         }

@@ -37,9 +37,9 @@ namespace Services.Services
             var newRecord = new Record()
             {
                 Id = id,
-                ExpenseId = model.ExpenseId,
-                PersonId = model.PersonId,
+                PersonPayId = model.PersonId,
                 InvoiceImage = fileName,
+                Amount = model.Amount,
                 //ReportId = model.ReportId,
                 IsPaid = false,
                 CreatedTime = DateTime.Now,

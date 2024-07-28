@@ -50,9 +50,9 @@ public partial class ExpenseSharingContext : DbContext
                 .WithOne(pe => pe.Expense)
                 .HasForeignKey(pe => pe.ExpenseId);
 
-            entity.HasMany(e => e.Records)
-                .WithOne(r => r.Expense)
-                .HasForeignKey(r => r.ExpenseId);
+            //entity.HasMany(e => e.Records)
+            //    .WithOne(r => r.Expense)
+            //    .HasForeignKey(r => r.ExpenseId);
         });
 
         // Group configuration
@@ -98,10 +98,12 @@ public partial class ExpenseSharingContext : DbContext
                 .WithOne(pg => pg.Person)
                 .HasForeignKey(pg => pg.PersonId);
 
-            entity.HasMany(p => p.Records)
-                .WithOne(r => r.Person)
-                .HasForeignKey(r => r.PersonId);
-
+            entity.HasMany(p => p.RecordPays)
+                .WithOne(r => r.PersonPay)
+                .HasForeignKey(r => r.PersonPayId);
+            entity.HasMany(p => p.RecordReceives)
+                .WithOne(r => r.PersonReceive)
+                .HasForeignKey(r => r.PersonReceiveId);
             entity.HasMany(p => p.Friends)
                 .WithOne(f => f.Person)
                 .HasForeignKey(f => f.PersonId)
@@ -139,17 +141,19 @@ public partial class ExpenseSharingContext : DbContext
         {
             entity.HasKey(r => r.Id);
 
-            entity.HasOne(r => r.Person)
-                .WithMany(p => p.Records)
-                .HasForeignKey(r => r.PersonId);
+            entity.HasOne(r => r.PersonPay)
+                .WithMany(p => p.RecordPays)
+                .HasForeignKey(r => r.PersonPayId);
+            entity.HasOne(r => r.PersonReceive)
+                .WithMany(p => p.RecordReceives)
+                .HasForeignKey(r => r.PersonReceiveId);
+            //entity.HasOne(r => r.Expense)
+            //    .WithMany(e => e.Records)
+            //    .HasForeignKey(r => r.ExpenseId);
 
-            entity.HasOne(r => r.Expense)
-                .WithMany(e => e.Records)
-                .HasForeignKey(r => r.ExpenseId);
-
-            //entity.HasOne(r => r.Report)
-            //    .WithMany(rp => rp.Records)
-            //    .HasForeignKey(r => r.ReportId);
+            entity.HasOne(r => r.Report)
+                .WithMany(rp => rp.Records)
+                .HasForeignKey(r => r.ReportId);
         });
 
         // Report configuration

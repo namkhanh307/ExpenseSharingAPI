@@ -12,7 +12,7 @@ namespace Repositories.Entities
         public string ReceiverId { get; set; }
         public DateTime RequestDate { get; set; }
         public string Status { get; set; }
-        public Person Sender { get; set; }
-        public Person Receiver { get; set; }
+        public virtual Person Sender { get; set; }
+        public virtual Person Receiver { get; set; }
     }
 }
