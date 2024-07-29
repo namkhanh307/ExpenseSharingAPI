@@ -10,6 +10,5 @@ namespace Repositories.ResponseModel.CalculateModel
     {
         public List<PersonCalculatingModel> PersonCalculatingSubModel { get; set; }
         public string ExpenseId { get; set; }
-        public string ReportId { get; set; }
     }
 }

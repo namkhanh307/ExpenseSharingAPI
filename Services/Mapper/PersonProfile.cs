@@ -16,6 +16,8 @@ namespace Services.Mapper
             CreateMap<Person, GetPersonModel>()
             .ForMember(dest => dest.IsAdmin, opt => opt.MapFrom(src => src.PersonGroups.FirstOrDefault().IsAdmin));
             CreateMap<Person, PersonCalculatingModel>().ReverseMap();
+            CreateMap<PersonResponseModel, PersonCalculatingModel>().ReverseMap();
+
         }
 
     }

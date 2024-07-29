@@ -9,6 +9,7 @@ namespace Repositories.ResponseModel.CalculateModel
     public class PersonCalculatingModel
     {
         public string? Id { get; set; }
+        public string ExpenseId { get; set; }
         public string? Name { get; set; }
         public double Amount { get; set; }
         public bool IsShared { get; set; } = true;
