@@ -415,4 +415,5 @@ Services/obj/Debug/net8.0/Services.AssemblyInfoInputs.cache
 !*/appsettings.json
 /Repositories/Migrations
 Repositories/Migrations/ExpenseSharingContextModelSnapshot.cs
-/Repositories/Migrations
+Repositories/Migrations/ExpenseSharingContextModelSnapshot.cs
+Repositories/Migrations/ExpenseSharingContextModelSnapshot.cs
