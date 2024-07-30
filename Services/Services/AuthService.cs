@@ -31,8 +31,7 @@ namespace Services.Services
         public GetPersonModel GetInfo()
         {
             var idUser = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
-            Guid.TryParse(idUser, out var id);
-            return _mapper.Map<GetPersonModel>(_unitOfWork.GetRepository<Person>().GetById(id));
+            return _mapper.Map<GetPersonModel>(_unitOfWork.GetRepository<Person>().GetById(idUser));
         }
 
         public GetLogInModel LogIn(PostLogInModel request)

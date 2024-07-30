@@ -46,7 +46,8 @@ namespace Services.Services
             {
                 SenderId = CurrentUserId,
                 ReceiverId = receivedId,
-                Status = "pending"
+                Status = "pending",
+                CreatedBy = CurrentUserId,
             };
 
             _unitOfWork.GetRepository<FriendRequest>().Insert(newFriendRequest);
@@ -99,6 +100,8 @@ namespace Services.Services
             if (friendRequest != null)
             {
                 friendRequest.Status = "rejected";
+                friendRequest.DeletedBy = CurrentUserId;
+                friendRequest.DeletedTime = DateTime.Now;
                 _unitOfWork.GetRepository<FriendRequest>().Update(friendRequest);
                 _unitOfWork.Save();
             }

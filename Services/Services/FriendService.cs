@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core.Infrastructure;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Repositories.Entities;
 using Repositories.IRepositories;
@@ -30,7 +31,17 @@ namespace Services.Services
 
         public List<GetFriendModel> GetFriends()
         {
-            return _mapper.Map<List<GetFriendModel>>(_unitOfWork.GetRepository<Friend>().Entities.Where(g => !g.DeletedTime.HasValue && g.PersonId.Equals(currentUserId)).ToList());
+            var friends = _unitOfWork.GetRepository<Friend>().Entities
+                                    .Where(g => !g.DeletedTime.HasValue && g.PersonId.Equals(currentUserId))
+                                    .Include(f => f.FriendPerson)
+                                    .ToList();
+            var result = friends.Select(f => new GetFriendModel
+            {
+                FriendId = f.FriendId,
+                FriendName = f.FriendPerson.Name
+            }).ToList();
+
+            return result;
         }
 
         public void PostFriend(PostFriendModel model)

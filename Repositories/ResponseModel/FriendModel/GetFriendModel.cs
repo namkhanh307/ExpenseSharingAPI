@@ -9,5 +9,6 @@ namespace Repositories.ResponseModel.FriendModel
     public class GetFriendModel
     {
         public string FriendId { get; set; }
+        public string FriendName { get; set;}
     }
 }

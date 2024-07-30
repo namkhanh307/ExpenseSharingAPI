@@ -46,7 +46,7 @@ namespace API.Middleware
             {
                 _logger.LogError(ex, "An unexpected error occurred.");
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                var result = JsonSerializer.Serialize(new { error = $"An unexpected error occurred. Detail{ex.Message}" });
+                var result = JsonSerializer.Serialize(new { error = $"An unexpected error occurred. Detail: {ex.Message}" });
                 context.Response.ContentType = "application/json";
                 await context.Response.WriteAsync(result);
             }
