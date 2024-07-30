@@ -26,17 +26,17 @@ namespace Services.Services
             _contextAccessor = httpContextAccessor;
         }
 
+        private string currentUserId => Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
+
         public List<GetFriendModel> GetFriends()
         {
-            string idUser = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
-            return _mapper.Map<List<GetFriendModel>>(_unitOfWork.GetRepository<Friend>().Entities.Where(g => !g.DeletedTime.HasValue&& g.PersonId==idUser).ToList());
+            return _mapper.Map<List<GetFriendModel>>(_unitOfWork.GetRepository<Friend>().Entities.Where(g => !g.DeletedTime.HasValue && g.PersonId.Equals(currentUserId)).ToList());
         }
 
         public void PostFriend(PostFriendModel model)
         {
-            string idUser = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
             var friend = _mapper.Map<Friend>(model);
-            friend.PersonId = idUser;
+            friend.PersonId = currentUserId;
             friend.CreatedTime = DateTime.Now;
             _unitOfWork.GetRepository<Friend>().Insert(friend);
             _unitOfWork.Save();
@@ -44,7 +44,6 @@ namespace Services.Services
 
         public void DeleteFriend(string id)
         {
-            string currentUserId = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
             var existedFriend = _unitOfWork.GetRepository<Friend>().Entities.Where(g => g.PersonId.Equals(currentUserId) && g.FriendId.Equals(id)).FirstOrDefault();
             if (existedFriend == null)
             {

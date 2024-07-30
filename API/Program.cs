@@ -77,6 +77,7 @@ namespace API
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped<IFriendService, FriendService>();
+            builder.Services.AddScoped<IFriendRequestService, FriendRequestService>();
 
             //Add Automapper
             builder.Services.AddAutoMapper(typeof(GroupProfile).Assembly);
@@ -87,6 +88,7 @@ namespace API
             builder.Services.AddAutoMapper(typeof(ReportProfile).Assembly);
             builder.Services.AddAutoMapper(typeof(PersonProfile).Assembly);
             builder.Services.AddAutoMapper(typeof(FriendProfile).Assembly);
+            builder.Services.AddAutoMapper(typeof(FriendRequestProfile).Assembly);
 
             //Add Http Context
             builder.Services.AddHttpContextAccessor();
