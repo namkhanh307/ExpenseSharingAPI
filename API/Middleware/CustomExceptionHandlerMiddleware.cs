@@ -1,13 +1,9 @@
-﻿
-using Core.Infrastructure;
+﻿using Core.Infrastructure;
 using Repositories.IRepositories;
 using System.Text.Json;
 
 namespace API.Middleware
 {
-
-
-
     public class CustomExceptionHandlerMiddleware
     {
         private readonly RequestDelegate _next;
