@@ -52,6 +52,8 @@ namespace Services.Services
                 {
                     ExpenseId = group.Key,
                     ExpenseName = firstExpense.Name,
+                    ExpenseAmount = firstExpense.Amount,
+                    ExpenseCreatedTime = firstExpense.CreatedTime,
                     Persons = group.Select(pe => {
                         return new GetPersonExpenseSub(){
                             Amount = pe.Amount,
