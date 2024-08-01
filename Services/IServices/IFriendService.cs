@@ -12,8 +12,8 @@ namespace Services.IServices
 {
     public interface IFriendService
     {
-        List<GetFriendModel> GetFriends();
-        void PostFriend(PostFriendModel model);
-        void DeleteFriend(string id);
+        Task<List<GetFriendModel>> GetFriends();
+        Task PostFriend(PostFriendModel model);
+        Task DeleteFriend(string id);
     }
 }

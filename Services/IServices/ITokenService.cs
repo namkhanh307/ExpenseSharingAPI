@@ -11,6 +11,6 @@ namespace Services.IServices
     public interface ITokenService
     {
         GetTokenModel GenerateTokens(Person person);
-
+        
     }
 }

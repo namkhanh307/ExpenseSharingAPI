@@ -66,11 +66,12 @@ namespace Services.Services
                 signingCredentials: creds
             );
             var refreshTokenString = new JwtSecurityTokenHandler().WriteToken(refreshToken);
+
             // Return the tokens and user information
             return new GetTokenModel
             {
                 AccessToken = accessTokenString,
-                RefreshToken = refreshTokenString            
+                RefreshToken = refreshTokenString
             };
         }
     }

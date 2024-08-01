@@ -7,14 +7,10 @@ namespace Repositories.Entities;
 
 public partial class ExpenseSharingContext : DbContext
 {
-    public ExpenseSharingContext()
-    {
-    }
+    public ExpenseSharingContext() {}
 
     public ExpenseSharingContext(DbContextOptions<ExpenseSharingContext> options)
-        : base(options)
-    {
-    }
+        : base(options) {}
 
     public virtual DbSet<Expense> Expenses { get; set; }
 
@@ -29,8 +25,13 @@ public partial class ExpenseSharingContext : DbContext
     public virtual DbSet<Record> Records { get; set; }
 
     public virtual DbSet<Report> Reports { get; set; }
+
     public virtual DbSet<Friend> Friends { get; set; }
+
     public virtual DbSet<FriendRequest> FriendRequests { get; set; }
+
+    public virtual DbSet<GroupCode> GroupCodes { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlServer("Server=ASUS\\SQLSERVER;Database=ExpenseSharing;UID=sa;PWD=12345;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -67,6 +68,11 @@ public partial class ExpenseSharingContext : DbContext
             entity.HasMany(g => g.Reports)
                 .WithOne(r => r.Group)
                 .HasForeignKey(r => r.GroupId);
+
+            entity.HasMany(g => g.GroupCodes)
+                .WithOne(g => g.Group)
+                .HasForeignKey(g => g.groupId);
+
         });
 
         // Person configuration
@@ -86,6 +92,7 @@ public partial class ExpenseSharingContext : DbContext
         //        .WithOne(r => r.Person)
         //        .HasForeignKey(r => r.PersonId);
         //});
+
         modelBuilder.Entity<Person>(entity =>
         {
             entity.HasKey(p => p.Id);
@@ -144,9 +151,11 @@ public partial class ExpenseSharingContext : DbContext
             entity.HasOne(r => r.PersonPay)
                 .WithMany(p => p.RecordPays)
                 .HasForeignKey(r => r.PersonPayId);
+
             entity.HasOne(r => r.PersonReceive)
                 .WithMany(p => p.RecordReceives)
                 .HasForeignKey(r => r.PersonReceiveId);
+
             //entity.HasOne(r => r.Expense)
             //    .WithMany(e => e.Records)
             //    .HasForeignKey(r => r.ExpenseId);
@@ -191,6 +200,16 @@ public partial class ExpenseSharingContext : DbContext
                 .WithMany(p => p.FriendRequestsReceived)
                 .HasForeignKey(fr => fr.ReceiverId)
                 .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        //GroupCode
+        modelBuilder.Entity<GroupCode>(entity =>
+        {
+            entity.HasKey(gc => gc.Id);
+
+            entity.HasOne(g => g.Group)
+                .WithMany(g => g.GroupCodes)
+                .HasForeignKey(g => g.groupId);
         });
     }
 }

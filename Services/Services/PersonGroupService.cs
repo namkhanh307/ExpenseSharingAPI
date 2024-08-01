@@ -11,6 +11,7 @@ using Repositories.ResponseModel.PersonGroupModel;
 using Repositories.ResponseModel.PersonModel;
 using Services.IServices;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Services.Services
 {
@@ -18,8 +19,9 @@ namespace Services.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public readonly IAuthService _authService;
+        private readonly IAuthService _authService;
         private readonly IHttpContextAccessor _contextAccessor;
+        private string CurrentUserId => Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
         public PersonGroupService(IUnitOfWork unitOfWork, IMapper mapper, IAuthService authService, IHttpContextAccessor contextAccessor)
         {
             _unitOfWork = unitOfWork;
@@ -28,19 +30,19 @@ namespace Services.Services
             _contextAccessor = contextAccessor;
         }
 
-        public List<GetPersonGroupModel> GetPersonGroups(string? groupId)
+        public async Task<List<GetPersonGroupModel>> GetPersonGroups(string? groupId)
         {
             var query = _unitOfWork.GetRepository<PersonGroup>()
-                                   .Entities.Where(pg => !pg.DeletedTime.HasValue)
-                                   .Include(pg => pg.Person)
-                                   .AsQueryable();
+                                    .Entities.Where(pg => !pg.DeletedTime.HasValue)
+                                    .Include(pg => pg.Person)
+                                    .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(groupId))
             {
                 query = query.Where(pg => pg.GroupId == groupId);
             }
 
-            var groupQuery = query.GroupBy(pg => pg.GroupId).ToList();
+            var groupQuery = await query.GroupBy(pg => pg.GroupId).ToListAsync();
 
             var responseList = groupQuery.Select(g => new GetPersonGroupModel
             {
@@ -51,76 +53,131 @@ namespace Services.Services
             return responseList;
         }
 
-        public List<GetGroupModel> GetAllGroupsByPersonId(string personId)
+        public async Task<List<GetGroupModel>> GetAllGroupsByPersonId(string personId)
         {
-            var query = _unitOfWork.GetRepository<PersonGroup>()
-                                .Entities.Where(pg => !pg.DeletedTime.HasValue && pg.PersonId.Equals(personId) )
+            var query = await _unitOfWork.GetRepository<PersonGroup>()
+                                .Entities.Where(pg => !pg.DeletedTime.HasValue && pg.PersonId.Equals(personId))
                                 .Include(p => p.Group)
                                 .Select(p => p.Group)
-                                .ToList();
+                                .ToListAsync();
 
             return _mapper.Map<List<GetGroupModel>>(query);
         }
 
-        public void PostPersonGroup(PostPersonGroupModel model)
+        public async Task PostPersonGroup(PostPersonGroupModel model)
         {
             var personGroup = _mapper.Map<PersonGroup>(model);
             personGroup.CreatedTime = DateTime.Now;
-            _unitOfWork.GetRepository<PersonGroup>().Insert(personGroup);
-            _unitOfWork.Save();
+            await _unitOfWork.GetRepository<PersonGroup>().InsertAsync(personGroup);
+            await _unitOfWork.SaveAsync();
         }
 
-        public void PutPersonGroup(string groupId, string personId, PutPersonGroupModel model)
+        private string GenerateAccessCode(int length = 10)
         {
-            var existedPersonGroup = _unitOfWork.GetRepository<PersonGroup>().Entities.Where(pg => pg.GroupId == groupId && pg.PersonId == personId).FirstOrDefault();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+        public async Task<string> GenerateAccessCode(string groupId)
+        {
+            var checkCode = await _unitOfWork.GetRepository<GroupCode>()
+                            .Entities.Where(c => c.groupId == groupId && c.expiredTime > DateTime.Now)
+                            .FirstOrDefaultAsync();
+
+            if (checkCode != null)
+            {
+                return checkCode.accessCode;
+            }
+
+            var accessCode = GenerateAccessCode();
+            var newGroupCode = new GroupCode()
+            {
+                groupId = groupId,
+                accessCode = accessCode,
+                expiredTime = DateTime.Now.AddMinutes(5),
+            };
+            await _unitOfWork.GetRepository<GroupCode>().InsertAsync(newGroupCode);
+            await _unitOfWork.SaveAsync();
+
+            return accessCode;
+        }
+
+        public async Task JoinGroup(string groupId, string accessCode) 
+        {
+            var personIdList = await _unitOfWork.GetRepository<PersonGroup>()
+                                                .Entities
+                                                .Where(g => g.GroupId == groupId)
+                                                .Select(g => g.PersonId).ToListAsync();
+            if (personIdList.Contains(CurrentUserId))
+            {
+                throw new Exception("You're already joined this group!");
+            }
+
+            var newPersonGroup = new PostPersonGroupModel()
+            {
+                PersonId = CurrentUserId,
+                GroupId = groupId,
+                IsAdmin = false,
+            };
+            await PostPersonGroup(newPersonGroup);
+        }
+
+        public async Task PutPersonGroup(string groupId, string personId, PutPersonGroupModel model)
+        {
+            var existedPersonGroup = await _unitOfWork.GetRepository<PersonGroup>().Entities.Where(pg => pg.GroupId == groupId && pg.PersonId == personId).FirstOrDefaultAsync();
             if (existedPersonGroup == null)
             {
                 throw new Exception($"PersonGroup with personID {personId} or groupID {groupId} doesn't exist!");
             }
             _mapper.Map(model, existedPersonGroup);
             existedPersonGroup.LastUpdatedTime = DateTime.Now;
-            _unitOfWork.GetRepository<PersonGroup>().Update(existedPersonGroup);
-            _unitOfWork.Save();
+            await _unitOfWork.GetRepository<PersonGroup>().UpdateAsync(existedPersonGroup);
+            await _unitOfWork.SaveAsync();
         }
-        public void DeletePersonGroup(string groupId, string? personId, bool? wantToOut)
-        {
-            var currentUserId = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
-            Guid.TryParse(currentUserId, out var id);
 
-            var currentPersonGroup = _unitOfWork.GetRepository<PersonGroup>()
-                        .Entities.Where(p => p.PersonId.Equals(currentUserId) && p.GroupId.Equals(groupId))
-                        .FirstOrDefault()
-                        ?? throw new Exception($"");      
+        public async Task DeletePersonGroup(string groupId, string? personId, bool? wantToOut)
+        {
+            var currentPersonGroup = await _unitOfWork.GetRepository<PersonGroup>()
+                                                    .Entities.Where(p => p.PersonId.Equals(CurrentUserId) && p.GroupId.Equals(groupId))
+                                                    .FirstOrDefaultAsync()
+                                                    ?? throw new Exception($"");      
 
             if (wantToOut.Equals(true))
             {
                 if (currentPersonGroup.IsAdmin.Equals(true))
                 {
-                    var existedPersonGroup = _unitOfWork.GetRepository<PersonGroup>().Entities.Where(pg => pg.GroupId == groupId && pg.PersonId == personId).FirstOrDefault()
-                                            ?? throw new Exception($"PersonGroup with personID {personId} or groupID {groupId} doesn't exist!");
+                    var existedPersonGroup = await _unitOfWork
+                        .GetRepository<PersonGroup>()
+                        .Entities.Where(pg => pg.GroupId == groupId && pg.PersonId == personId)
+                        .FirstOrDefaultAsync()
+                        ?? throw new Exception($"PersonGroup with personID {personId} or groupID {groupId} doesn't exist!");
 
                     currentPersonGroup.IsAdmin = false;
                     existedPersonGroup.IsAdmin = true;
                 }
 
                 currentPersonGroup.DeletedTime = DateTime.Now;
-                currentPersonGroup.DeletedBy = currentUserId;
-                _unitOfWork.GetRepository<PersonGroup>().Update(currentPersonGroup);
-                _unitOfWork.Save();
+                currentPersonGroup.DeletedBy = CurrentUserId;
+                await _unitOfWork.GetRepository<PersonGroup>().UpdateAsync(currentPersonGroup);
+                await _unitOfWork.SaveAsync();
             }
             else if (currentPersonGroup.IsAdmin.Equals(true))
             {
-                var existedPersonGroup = _unitOfWork.GetRepository<PersonGroup>().Entities.Where(pg => pg.GroupId == groupId && pg.PersonId == personId).FirstOrDefault()
-                                            ?? throw new Exception($"PersonGroup with personID {personId} or groupID {groupId} doesn't exist!");
+                var existedPersonGroup = await _unitOfWork
+                    .GetRepository<PersonGroup>().Entities
+                    .Where(pg => pg.GroupId == groupId && pg.PersonId == personId).FirstOrDefaultAsync()
+                    ?? throw new Exception($"PersonGroup with personID {personId} or groupID {groupId} doesn't exist!");
 
                 existedPersonGroup.DeletedTime = DateTime.Now;
-                existedPersonGroup.DeletedBy = currentUserId;
-                _unitOfWork.GetRepository<PersonGroup>().Update(existedPersonGroup);
-                _unitOfWork.Save();
+                existedPersonGroup.DeletedBy = CurrentUserId;
+                await _unitOfWork.GetRepository<PersonGroup>().UpdateAsync(existedPersonGroup);
+                await _unitOfWork.SaveAsync();
             }
             else
             {
-                throw new ErrorException(StatusCodes.Status401Unauthorized, ResponseCodeConstants.BADREQUEST, "Xoa khong thanh cong!");
+                throw new Exception("PersonGroup deleted fail!");
             }
         }
     }

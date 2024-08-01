@@ -14,4 +14,6 @@ public partial class Group : BaseEntity
     public virtual ICollection<PersonGroup> PersonGroups { get; set; } = new List<PersonGroup>();
 
     public virtual ICollection<Report> Reports { get; set; } = new List<Report>();
+
+    public virtual ICollection<GroupCode> GroupCodes { get; set; } = new List<GroupCode>(); 
 }

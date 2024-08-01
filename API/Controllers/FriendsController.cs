@@ -10,35 +10,32 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FriendsController : ControllerBase
+    public class FriendsController(IFriendService friendService) : ControllerBase
     {
-        private readonly IFriendService _friendService;
-        public FriendsController(IFriendService friendService)
-        {
-            _friendService = friendService;
-        }
+        private readonly IFriendService _friendService = friendService;
+
         [HttpGet] 
-        public IActionResult GetFriends()
+        public async Task<IActionResult> GetFriends()
         {
-            var result = _friendService.GetFriends();
+            var result = await _friendService.GetFriends();
             return Ok(new BaseResponseModel<List<GetFriendModel>>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
                 data: result));
         }
         [HttpPost]
-        public IActionResult PostFriend(PostFriendModel model)
+        public async Task<IActionResult> PostFriend(PostFriendModel model)
         {
-            _friendService.PostFriend(model);
+            await _friendService.PostFriend(model);
             return Ok(new BaseResponseModel<string>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
-                data: "Add friend successfully!"));
+                data: "Friend added successfully!"));
         }
         [HttpDelete]
-        public IActionResult DeleteFriend(string id)
+        public async Task<IActionResult> DeleteFriend(string id)
         {
-            _friendService.DeleteFriend(id);
+            await _friendService.DeleteFriend(id);
             return Ok(new BaseResponseModel<string>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,

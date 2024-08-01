@@ -17,49 +17,49 @@ namespace API.Controllers
             _personGroupService = personGroupService;
         }
         [HttpGet("GetPersonGroups")]
-        public IActionResult GetPersonGroups(string? groupId)
+        public async Task<IActionResult> GetPersonGroups(string? groupId)
         {
-            var result = _personGroupService.GetPersonGroups(groupId);
+            var result = await _personGroupService.GetPersonGroups(groupId);
             return Ok(new BaseResponseModel<List<GetPersonGroupModel>>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
                data: result));
         }
         [HttpGet("GetAllGroupsByPersonId")]
-        public IActionResult GetAllGroupsByPersonId(string personId)
+        public async Task<IActionResult> GetAllGroupsByPersonId(string personId)
         {
-            var result = _personGroupService.GetAllGroupsByPersonId(personId);
+            var result = await _personGroupService.GetAllGroupsByPersonId(personId);
             return Ok(new BaseResponseModel<List<GetGroupModel>>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
                data: result));
         }
         [HttpPost]
-        public IActionResult PostPersonGroup(PostPersonGroupModel model)
+        public async Task<IActionResult> PostPersonGroup(PostPersonGroupModel model)
         {
-            _personGroupService.PostPersonGroup(model);
+            await _personGroupService.PostPersonGroup(model);
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
                data: "Them thanh vien vao nhom thanh cong"));
         }
         [HttpPut]
-        public IActionResult PutPersonGroup(string groupId, string personId, PutPersonGroupModel model)
+        public async Task<IActionResult> PutPersonGroup(string groupId, string personId, PutPersonGroupModel model)
         {
-            _personGroupService.PutPersonGroup(groupId, personId, model);
+            await _personGroupService.PutPersonGroup(groupId, personId, model);
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "Chinh sua thanh vien trong nhom thanh cong"));
+               data: "PersonGroup modified successfully!"));
         }
         [HttpDelete]
-        public IActionResult DeletePersonGroup(string groupId, string? personId, bool? wantToOut)
+        public async Task<IActionResult> DeletePersonGroup(string groupId, string? personId, bool? wantToOut)
         {
-            _personGroupService.DeletePersonGroup(groupId, personId, wantToOut);
+            await _personGroupService.DeletePersonGroup(groupId, personId, wantToOut);
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "Xoa thanh vien khoi nhom thanh cong"));
+               data: "PersonGroup deleted successfully!"));
         }
     }
 }

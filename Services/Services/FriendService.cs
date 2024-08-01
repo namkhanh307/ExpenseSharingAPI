@@ -29,41 +29,45 @@ namespace Services.Services
 
         private string currentUserId => Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
 
-        public List<GetFriendModel> GetFriends()
+        public async Task<List<GetFriendModel>> GetFriends()
         {
-            var friends = _unitOfWork.GetRepository<Friend>().Entities
-                                    .Where(g => !g.DeletedTime.HasValue && g.PersonId.Equals(currentUserId))
+            var friends = await _unitOfWork.GetRepository<Friend>().Entities
+                                    .Where(g => !g.DeletedTime.HasValue &&
+                                                (g.PersonId.Equals(currentUserId) || g.FriendId.Equals(currentUserId)))
+                                    .Include(f => f.Person)
                                     .Include(f => f.FriendPerson)
-                                    .ToList();
+                                    .ToListAsync();
+
             var result = friends.Select(f => new GetFriendModel
             {
-                FriendId = f.FriendId,
-                FriendName = f.FriendPerson.Name
+                FriendId = f.PersonId.Equals(currentUserId) ? f.FriendId : f.PersonId,
+                FriendName = f.PersonId.Equals(currentUserId) ? f.FriendPerson.Name : f.Person.Name
             }).ToList();
 
             return result;
         }
 
-        public void PostFriend(PostFriendModel model)
+
+        public async Task PostFriend(PostFriendModel model)
         {
             var friend = _mapper.Map<Friend>(model);
             friend.PersonId = currentUserId;
             friend.CreatedTime = DateTime.Now;
-            _unitOfWork.GetRepository<Friend>().Insert(friend);
-            _unitOfWork.Save();
+            await _unitOfWork.GetRepository<Friend>().InsertAsync(friend);
+            await _unitOfWork.SaveAsync();
         }
 
-        public void DeleteFriend(string id)
+        public async Task DeleteFriend(string id)
         {
-            var existedFriend = _unitOfWork.GetRepository<Friend>().Entities.Where(g => g.PersonId.Equals(currentUserId) && g.FriendId.Equals(id)).FirstOrDefault();
+            var existedFriend = await _unitOfWork.GetRepository<Friend>().Entities.Where(g => g.PersonId.Equals(currentUserId) && g.FriendId.Equals(id)).FirstOrDefaultAsync();
             if (existedFriend == null)
             {
                 throw new Exception($"You don't have friend who id is {id}!");
             }
             existedFriend.DeletedTime = DateTime.Now;
             existedFriend.DeletedBy = currentUserId;
-            _unitOfWork.GetRepository<Friend>().Update(existedFriend);
-            _unitOfWork.Save();
+            await _unitOfWork.GetRepository<Friend>().UpdateAsync(existedFriend);
+            await _unitOfWork.SaveAsync();
         }
     }
 }
