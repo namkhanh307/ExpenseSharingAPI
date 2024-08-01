@@ -10,8 +10,8 @@ namespace Services.IServices
 {
     public interface IAuthService
     {
-        GetPersonModel GetInfo();
-        GetLogInModel LogIn(PostLogInModel model);
-        void SignUp(PostSignUpModel model);
+        Task<GetPersonModel> GetInfo();
+        Task<GetLogInModel> LogIn(PostLogInModel model);
+        Task SignUp(PostSignUpModel model);
     }
 }

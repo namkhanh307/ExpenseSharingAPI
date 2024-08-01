@@ -3,13 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Repositories.Entities;
 using Repositories.IRepositories;
 using Repositories.ResponseModel.CalculateModel;
-using Repositories.ResponseModel.PersonGroupModel;
-using Repositories.ResponseModel.PersonModel;
 using Repositories.ResponseModel.RecordModel;
 using Services.IServices;
-using System.Collections.Generic;
-using System.Text.Json;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Services.Services
 {
@@ -24,7 +19,7 @@ namespace Services.Services
             _mapper = mapper;
             _recordService = recordService;
         }
-        public List<ResponseShortTermModel> CalculateShortTerm(CalculatingModel model)
+        public async Task<List<ResponseShortTermModel>> CalculateShortTerm(CalculatingModel model)
         {
             List<CalculatedModel> pair = new();
             List<PersonResponseModel> p = new();
@@ -45,7 +40,7 @@ namespace Services.Services
             }
             //set pair
             int n = model.PersonCalculatingModel.Count;
-            SetPair(n, pair, p);
+            await SetPair(n, pair, p);
             //verify psub
             foreach (var item in model.CalculatingSubModel)
             {
@@ -111,11 +106,11 @@ namespace Services.Services
                     }
                 }                
             }
-            SetP(n, p, pPos, pNeg);
-            CalculateExpense(pPos.Count, pNeg.Count, pPos, pNeg, pair);
-            return Result(pair);
+            await SetP(n, p, pPos, pNeg);
+            await CalculateExpense(pPos.Count, pNeg.Count, pPos, pNeg, pair);
+            return await Result(pair);
         }
-        public ResponseLongTermModel CalculateLongTerm(string reportId)
+        public async Task<ResponseLongTermModel> CalculateLongTerm(string reportId)
         {
             var report = _unitOfWork.GetRepository<Report>().GetById(reportId);
             var expenseQuery = _unitOfWork.GetRepository<Expense>().Entities.Where(f => f.ReportId == reportId && !f.DeletedTime.HasValue).ToList();
@@ -197,137 +192,148 @@ namespace Services.Services
             //Console.WriteLine(JsonSerializer.Serialize(persons));
             return new ResponseLongTermModel()
             {
-                ResponseShortTerm = CalculateShortTerm(input)
+                ResponseShortTerm = await CalculateShortTerm(input)
             };
         }
-        public void SetPair(int n, List<CalculatedModel> pair, List<PersonResponseModel> p)
+        public async Task SetPair(int n, List<CalculatedModel> pair, List<PersonResponseModel> p)
         {
-            pair.EnsureCapacity(n * (n - 1) / 2);
-            int a = 0;
-            for (int i = 0; i < n - 1; i++)
+            await Task.Run(() =>
             {
-                for (int j = i + 1; j < n; j++)
+                pair.EnsureCapacity(n * (n - 1) / 2);
+                int a = 0;
+                for (int i = 0; i < n - 1; i++)
                 {
-                    // Add new elements to the list if necessary
-                    if (a >= pair.Count)
+                    for (int j = i + 1; j < n; j++)
                     {
-                        pair.Add(new CalculatedModel(p[i], p[j], 0.0, p[i].ExpenseId));
+                        // Add new elements to the list if necessary
+                        if (a >= pair.Count)
+                        {
+                            pair.Add(new CalculatedModel(p[i], p[j], 0.0, p[i].ExpenseId));
+                        }
+                        else
+                        {
+                            pair[a].Person1 = p[i];
+                            pair[a].Person2 = p[j];
+                        }
+                        a++;
                     }
-                    else
-                    {
-                        pair[a].Person1 = p[i];
-                        pair[a].Person2 = p[j];
-                    }
-                    a++;
                 }
-            }
+            });
         }
-        public void SetP(int nSub, List<PersonResponseModel> pSub, List<PersonResponseModel> pPosSub, List<PersonResponseModel> pNegSub)
+
+        public async Task SetP(int nSub, List<PersonResponseModel> pSub, List<PersonResponseModel> pPosSub, List<PersonResponseModel> pNegSub)
         {//chia 2 mang de tinh toan
-            int n1 = 0;
-            int n2 = 0;
-            for (int i = 0; i < nSub; i++)
+            await Task.Run(() =>
             {
-                if (pSub[i].Diff > 0)
+                int n1 = 0;
+                int n2 = 0;
+                for (int i = 0; i < nSub; i++)
                 {
-                    pPosSub.Add(pSub[i]); //pPos bao gom nhung thanh vien duoc nhan tien
-                    n1++;
-                }
-                else if (pSub[i].Diff < 0)
-                {
-                    pNegSub.Add(pSub[i]);//pNeg bao gom nhung thanh vien phai tra tien
-                    n2++;
-                }
-            }
-            while (n1 != n2)
-            {//truong hop 2 mang chenh lech do so nguoi le
-                if (n1 > n2)
-                {
-                    pNegSub.Add(new PersonResponseModel("newId", "newname", 0, false, false, 0, 0, 0, 0, "newExpenseId"));
-                    n2++;
-                }
-                else if (n1 < n2)
-                {
-                    pPosSub.Add(new PersonResponseModel("newId", "newname", 0, false, false, 0, 0, 0, 0, "newExpenseId"));
-                    n1++;
-                }
-            }
-        }
-        public void CalculateExpense(int n1, int n2, List<PersonResponseModel> pPosSub, List<PersonResponseModel> pNegSub, List<CalculatedModel> pairSub)
-        {//tinh tien se cho ra ket qua no giua tat ca cac cap bao gom: tien cung, tien mem, tien shared va tien no
-            for (int j = 0; j < n2; j++)
-            {
-                for (int i = 0; i < n1; i++)
-                {
-                    if (pPosSub[j].Diff <= Math.Abs(pNegSub[i].Diff))
-                    {//check neu 1 trong 2 nguoi trong cap dang xet co so tien check lech = 0 se skip
-                        if (pPosSub[j].Diff == 0 || pNegSub[i].Diff == 0)
-                        {
-                            continue;
-                        }
-                        for (int k = 0; k < pairSub.Count; k++)
-                        {
-                            if (pNegSub[i].Equals(pairSub[k].Person1))
-                            {//chieu thuan
-                                if (pPosSub[j].Equals(pairSub[k].Person2))
-                                {//check cap dang xet = cap trong mang pair
-                                    pairSub[k].Debt = pPosSub[j].Diff + pairSub[k].Debt;//set tien no + them tien check lech \
-                                    pairSub[k].ExpenseId = pPosSub[j].ExpenseId;
-                                    break;
-                                }
-                            }
-                            else if (pPosSub[j].Equals(pairSub[k].Person1))
-                            {//chieu nguoc 
-                                if (pNegSub[i].Equals(pairSub[k].Person2))
-                                {//check cap dang xet = cap trong mang pair
-                                    pairSub[k].Debt = -pPosSub[j].Diff + pairSub[k].Debt;//set tien no + them tien check lech
-                                    pairSub[k].ExpenseId = pNegSub[i].ExpenseId;
-
-                                    break;
-                                }
-                            }
-                        }
-                        pNegSub[i].Diff = pNegSub[i].Diff + pPosSub[j].Diff;
-                        pPosSub[j].Diff = 0;
-                    }
-                    else
+                    if (pSub[i].Diff > 0)
                     {
-                        if (pPosSub[j].Diff == 0 || pNegSub[i].Diff == 0)
-                        {
-                            continue;
-                        }
-                        for (int k = 0; k < pairSub.Count; k++)
-                        {
-                            if (pNegSub[i].Equals(pairSub[k].Person1))
-                            {//chieu thuan 
-                                if (pPosSub[j].Equals(pairSub[k].Person2))
-                                {
-                                    pairSub[k].Debt = Math.Abs(pNegSub[i].Diff + pairSub[k].Debt);
-                                    pairSub[k].ExpenseId = pPosSub[j].ExpenseId;
-
-                                    break;
-                                }
-                            }
-                            else if (pPosSub[j].Equals(pairSub[k].Person1))
-                            {//chieu nguoc
-                                if (pNegSub[i].Equals(pairSub[k].Person2))
-                                {
-                                    pairSub[k].Debt = pNegSub[i].Diff + pairSub[k].Debt;
-                                    pairSub[k].ExpenseId = pNegSub[i].ExpenseId;
-                                    break;
-                                }
-                            }
-                        }
-                        pPosSub[j].Diff = pNegSub[i].Diff + pPosSub[j].Diff;
-                        pNegSub[i].Diff = 0;
+                        pPosSub.Add(pSub[i]); //pPos bao gom nhung thanh vien duoc nhan tien
+                        n1++;
+                    }
+                    else if (pSub[i].Diff < 0)
+                    {
+                        pNegSub.Add(pSub[i]);//pNeg bao gom nhung thanh vien phai tra tien
+                        n2++;
                     }
                 }
-            }
+                while (n1 != n2)
+                {//truong hop 2 mang chenh lech do so nguoi le
+                    if (n1 > n2)
+                    {
+                        pNegSub.Add(new PersonResponseModel("newId", "newname", 0, false, false, 0, 0, 0, 0, "newExpenseId"));
+                        n2++;
+                    }
+                    else if (n1 < n2)
+                    {
+                        pPosSub.Add(new PersonResponseModel("newId", "newname", 0, false, false, 0, 0, 0, 0, "newExpenseId"));
+                        n1++;
+                    }
+                }
+            });
         }
-        public List<ResponseShortTermModel> Result(List<CalculatedModel> pairSub)
+        public async Task CalculateExpense(int n1, int n2, List<PersonResponseModel> pPosSub, List<PersonResponseModel> pNegSub, List<CalculatedModel> pairSub)
+        {//tinh tien se cho ra ket qua no giua tat ca cac cap bao gom: tien cung, tien mem, tien shared va tien no
+            await Task.Run(() =>
+            {
+                for (int j = 0; j < n2; j++)
+                {
+                    for (int i = 0; i < n1; i++)
+                    {
+                        if (pPosSub[j].Diff <= Math.Abs(pNegSub[i].Diff))
+                        {//check neu 1 trong 2 nguoi trong cap dang xet co so tien check lech = 0 se skip
+                            if (pPosSub[j].Diff == 0 || pNegSub[i].Diff == 0)
+                            {
+                                continue;
+                            }
+                            for (int k = 0; k < pairSub.Count; k++)
+                            {
+                                if (pNegSub[i].Equals(pairSub[k].Person1))
+                                {//chieu thuan
+                                    if (pPosSub[j].Equals(pairSub[k].Person2))
+                                    {//check cap dang xet = cap trong mang pair
+                                        pairSub[k].Debt = pPosSub[j].Diff + pairSub[k].Debt;//set tien no + them tien check lech \
+                                        pairSub[k].ExpenseId = pPosSub[j].ExpenseId;
+                                        break;
+                                    }
+                                }
+                                else if (pPosSub[j].Equals(pairSub[k].Person1))
+                                {//chieu nguoc 
+                                    if (pNegSub[i].Equals(pairSub[k].Person2))
+                                    {//check cap dang xet = cap trong mang pair
+                                        pairSub[k].Debt = -pPosSub[j].Diff + pairSub[k].Debt;//set tien no + them tien check lech
+                                        pairSub[k].ExpenseId = pNegSub[i].ExpenseId;
+
+                                        break;
+                                    }
+                                }
+                            }
+                            pNegSub[i].Diff = pNegSub[i].Diff + pPosSub[j].Diff;
+                            pPosSub[j].Diff = 0;
+                        }
+                        else
+                        {
+                            if (pPosSub[j].Diff == 0 || pNegSub[i].Diff == 0)
+                            {
+                                continue;
+                            }
+                            for (int k = 0; k < pairSub.Count; k++)
+                            {
+                                if (pNegSub[i].Equals(pairSub[k].Person1))
+                                {//chieu thuan 
+                                    if (pPosSub[j].Equals(pairSub[k].Person2))
+                                    {
+                                        pairSub[k].Debt = Math.Abs(pNegSub[i].Diff + pairSub[k].Debt);
+                                        pairSub[k].ExpenseId = pPosSub[j].ExpenseId;
+
+                                        break;
+                                    }
+                                }
+                                else if (pPosSub[j].Equals(pairSub[k].Person1))
+                                {//chieu nguoc
+                                    if (pNegSub[i].Equals(pairSub[k].Person2))
+                                    {
+                                        pairSub[k].Debt = pNegSub[i].Diff + pairSub[k].Debt;
+                                        pairSub[k].ExpenseId = pNegSub[i].ExpenseId;
+                                        break;
+                                    }
+                                }
+                            }
+                            pPosSub[j].Diff = pNegSub[i].Diff + pPosSub[j].Diff;
+                            pNegSub[i].Diff = 0;
+                        }
+                    }
+                }              
+            });
+        }
+        public async Task<List<ResponseShortTermModel>> Result(List<CalculatedModel> pairSub)
         {
             List<PostRecordModel> responseList = new();
             List<ResponseShortTermModel> response = new();
+            string reportId =  _unitOfWork.GetRepository<Expense>().GetById(pairSub.FirstOrDefault().ExpenseId).ReportId;
             for (int i = 0; i < pairSub.Count; i++)
             {
                 if (pairSub[i].Debt > 0)
@@ -340,21 +346,27 @@ namespace Services.Services
                     response.Add(new ResponseShortTermModel(pairSub[i].Person2.Name, pairSub[i].Person1.Name, Math.Round(Math.Abs(pairSub[i].Debt), 2)));               
                     //Console.WriteLine($"{pairSub[i].Person2.Name} will pay {pairSub[i].Person1.Name}: {Math.Abs(pairSub[i].Debt)}k VND");
                 }
-                PostRecordModel neg = new()
+                if (pairSub[i].Debt != 0)
                 {
-                    Amount = Math.Round(pairSub[i].Debt, 2),
-                    InvoiceImage = null,
-                    IsPaid = false,
-                    ReportId = null,
-                    PersonPayId = pairSub[i].Person1.Id,
-                    PersonReceiveId = pairSub[i].Person2.Id,
-                };
-                responseList.Add(neg);
+                    PostRecordModel neg = new()
+                    {
+                        Amount = Math.Abs(Math.Round(pairSub[i].Debt, 2)),
+                        InvoiceImage = null,
+                        IsPaid = false,
+                        ReportId = reportId,
+                        PersonPayId = pairSub[i].Person1.Id,
+                        PersonReceiveId = pairSub[i].Person2.Id,
+
+                    };
+                    responseList.Add(neg);
+                }             
             }
+            await _recordService.DeleteRecordFromReport(reportId);
             foreach (var item in responseList)
             {
-                _recordService.PostRecord(item);
+                await _recordService.PostRecord(item);
             }
+
             return response;
         }
     }

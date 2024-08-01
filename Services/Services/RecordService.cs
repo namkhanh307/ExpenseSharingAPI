@@ -41,7 +41,7 @@ namespace Services.Services
                 PersonReceiveId = model.PersonReceiveId,
                 InvoiceImage = fileName,
                 Amount = model.Amount,
-                //ReportId = model.ReportId,
+                ReportId = model.ReportId,
                 IsPaid = false,
                 CreatedTime = DateTime.Now,
                 CreatedBy = idUser
@@ -83,8 +83,17 @@ namespace Services.Services
             }
             await FileUploadHelper.DeleteFile(existedRecord.InvoiceImage);
             existedRecord.DeletedTime = DateTime.Now;
-            _unitOfWork.GetRepository<Record>().Update(existedRecord);
-            _unitOfWork.Save();
+            await _unitOfWork.GetRepository<Record>().UpdateAsync(existedRecord);
+            await _unitOfWork.SaveAsync();
         }
+        public async Task DeleteRecordFromReport(string reportId)
+        {
+            var existedRecord = _unitOfWork.GetRepository<Record>().Entities.Where(r => r.ReportId == reportId && !r.DeletedTime.HasValue).ToList();
+            //await FileUploadHelper.DeleteFile(existedRecord.InvoiceImage);
+            existedRecord.ForEach(r => { r.DeletedTime = DateTime.Now;});
+            await _unitOfWork.GetRepository<Record>().UpdateRangeAsync(existedRecord);
+            await _unitOfWork.SaveAsync();
+        }
+
     }
 }

@@ -9,7 +9,7 @@ namespace Services.IServices
 {
     public interface ICalculateService
     {
-        ResponseLongTermModel CalculateLongTerm(string reportId);
-        List<ResponseShortTermModel> CalculateShortTerm(CalculatingModel model);
+        Task<ResponseLongTermModel> CalculateLongTerm(string reportId);
+        Task<List<ResponseShortTermModel>> CalculateShortTerm(CalculatingModel model);
     }
 }

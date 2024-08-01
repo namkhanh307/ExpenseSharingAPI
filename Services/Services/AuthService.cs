@@ -28,13 +28,13 @@ namespace Services.Services
             _tokenService = tokenService;
 
         }
-        public GetPersonModel GetInfo()
+        public async Task<GetPersonModel> GetInfo()
         {
             var idUser = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
-            return _mapper.Map<GetPersonModel>(_unitOfWork.GetRepository<Person>().GetById(idUser));
+            return  _mapper.Map<GetPersonModel>(await _unitOfWork.GetRepository<Person>().GetByIdAsync(idUser));
         }
 
-        public GetLogInModel LogIn(PostLogInModel request)
+        public async Task<GetLogInModel> LogIn(PostLogInModel request)
         {
             var person = _unitOfWork.GetRepository<Person>().Entities.FirstOrDefault(p => p.Phone == request.Phone);
             if (person == null) 
@@ -45,7 +45,7 @@ namespace Services.Services
             {
                 throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Phone number or password are incorrect!");
             }
-            var token = _tokenService.GenerateTokens(person);
+            var token = await _tokenService.GenerateTokens(person);
             return new GetLogInModel()
             {
                 Person = _mapper.Map<GetPersonModel>(person),
@@ -53,7 +53,7 @@ namespace Services.Services
             };
         }
 
-        public void SignUp(PostSignUpModel model)
+        public async Task SignUp(PostSignUpModel model)
         {
             var person = _unitOfWork.GetRepository<Person>().Entities.FirstOrDefault(p => p.Phone == model.Phone);
             if (person != null)
@@ -71,8 +71,8 @@ namespace Services.Services
                 Password = model.Password,
                 CreatedTime =  DateTime.Now
             };
-            _unitOfWork.GetRepository<Person>().Insert(newPerson);
-            _unitOfWork.Save();
+            await _unitOfWork.GetRepository<Person>().InsertAsync(newPerson);
+            await _unitOfWork.SaveAsync();
         }
     }
 }
