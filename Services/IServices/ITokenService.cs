@@ -10,7 +10,6 @@ namespace Services.IServices
 {
     public interface ITokenService
     {
-        Task<GetTokenModel> GenerateTokens(Person person);
-
+        GetTokenModel GenerateTokens(Person person);
     }
 }

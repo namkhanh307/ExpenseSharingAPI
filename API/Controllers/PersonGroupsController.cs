@@ -9,13 +9,10 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PersonGroupsController : ControllerBase
+    public class PersonGroupsController(IPersonGroupService personGroupService) : ControllerBase
     {
-        private readonly IPersonGroupService _personGroupService;
-        public PersonGroupsController(IPersonGroupService personGroupService)
-        {
-            _personGroupService = personGroupService;
-        }
+        private readonly IPersonGroupService _personGroupService = personGroupService;
+
         [HttpGet("GetPersonGroups")]
         public async Task<IActionResult> GetPersonGroups(string? groupId)
         {

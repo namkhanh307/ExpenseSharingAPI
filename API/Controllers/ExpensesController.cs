@@ -9,18 +9,14 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ExpensesController : ControllerBase
+    public class ExpensesController(IExpenseService expenseService) : ControllerBase
     {
-        private readonly IExpenseService _expenseService;
-        public ExpensesController(IExpenseService expenseService)
-        {
-            _expenseService = expenseService;
-        }
+        private readonly IExpenseService _expenseService = expenseService;
 
         [HttpGet]
-        public IActionResult GetExpenses(string? reportId, string? type, DateTime? fromDate, DateTime? endDate, string? expenseName)
+        public async Task<IActionResult> GetExpenses(string? reportId, string? type, DateTime? fromDate, DateTime? endDate, string? expenseName)
         {
-            var result = _expenseService.GetExpenses(reportId, type, fromDate, endDate, expenseName);
+            List<GetExpenseModel> result = await _expenseService.GetExpenses(reportId, type, fromDate, endDate, expenseName);
             return Ok(new BaseResponseModel<List<GetExpenseModel>>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,

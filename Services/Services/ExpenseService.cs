@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core.Infrastructure;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Entities;
 using Repositories.IRepositories;
 using Repositories.ResponseModel.ExpenseModel;
@@ -10,32 +11,23 @@ using System.Text.RegularExpressions;
 
 namespace Services.Services
 {
-    public class ExpenseService : IExpenseService
+    public class ExpenseService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor contextAccessor) : IExpenseService
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
-        private readonly IPersonExpenseService _personExpenseService;
-        private readonly IHttpContextAccessor _contextAccessor;
-        public ExpenseService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor contextAccessor, IPersonExpenseService personExpenseService)
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
+        private readonly IHttpContextAccessor _contextAccessor = contextAccessor;
+
+        public async Task<List<GetExpenseModel>> GetExpenses(string? reportId, string? type, DateTime? fromDate, DateTime? endDate, string? expenseName)
         {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
-            _contextAccessor = contextAccessor;
-            _personExpenseService = personExpenseService;   
-        }
+            List<Expense> query = await _unitOfWork.GetRepository<Expense>().Entities.Where(g => !g.DeletedTime.HasValue).ToListAsync();
 
-        public List<GetExpenseModel> GetExpenses(string? reportId, string? type, DateTime? fromDate, DateTime? endDate, string? expenseName)
-        {
-            var query = _unitOfWork.GetRepository<Expense>().Entities.Where(g => !g.DeletedTime.HasValue).AsQueryable();
+            _ = query.Where(e => string.IsNullOrWhiteSpace(reportId) || e.ReportId == reportId)
+                .Where(e => string.IsNullOrWhiteSpace(type) || e.Type == type)
+                .Where(e => fromDate == null || e.CreatedTime >= fromDate)
+                .Where(e => endDate == null || e.CreatedTime <= endDate)
+                .Where(e => string.IsNullOrWhiteSpace(expenseName) || e.Name!.Contains(expenseName));
 
-            query = query
-                    .Where(e => string.IsNullOrWhiteSpace(reportId) || e.ReportId == reportId)
-                    .Where(e => string.IsNullOrWhiteSpace(type) || e.Type == type)
-                    .Where(e => fromDate == null || e.CreatedTime >= fromDate)
-                    .Where(e => endDate == null || e.CreatedTime <= endDate)
-                    .Where(e => string.IsNullOrWhiteSpace(expenseName) || e.Name.Contains(expenseName));
-
-            return _mapper.Map<List<GetExpenseModel>>(query.ToList());
+            return _mapper.Map<List<GetExpenseModel>>(query);
         }
         public async Task PostExpense(PostExpenseModel model)
         {
@@ -112,7 +104,10 @@ namespace Services.Services
             {
                 existedExpense.DeletedBy = currentUserId;
                 existedExpense.DeletedTime = DateTime.Now;
-                await FileUploadHelper.DeleteFile(existedExpense.InvoiceImage);
+                if (existedExpense.InvoiceImage != null)
+                {
+                    await FileUploadHelper.DeleteFile(existedExpense.InvoiceImage);
+                }
                 _unitOfWork.GetRepository<Expense>().Update(existedExpense);
                 _unitOfWork.Save();
             }
@@ -121,7 +116,5 @@ namespace Services.Services
                 throw new Exception($"You don't have permission to delete this expense!");
             }
         }
-
-
     }
 }

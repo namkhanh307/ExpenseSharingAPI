@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Entities;
 using Repositories.IRepositories;
 using Repositories.ResponseModel.ExpenseModel;
@@ -7,24 +8,19 @@ using Services.IServices;
 
 namespace Services.Services
 {
-    public class ReportService : IReportService
+    public class ReportService(IUnitOfWork unitOfWork, IMapper mapper) : IReportService
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
-        public ReportService(IUnitOfWork unitOfWork, IMapper mapper)
-        {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
-        }
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
 
-        public List<GetReportModel> GetReports(string? groupId)
+        public async Task<List<GetReportModel>> GetReports(string? groupId)
         {
-            var reports = _unitOfWork.GetRepository<Report>().Entities.Where(g => !g.DeletedTime.HasValue).ToList();
+            List<Report> reports = await _unitOfWork.GetRepository<Report>().Entities.Where(g => !g.DeletedTime.HasValue).ToListAsync();
             if(!string.IsNullOrWhiteSpace(groupId))
             {
                 reports = reports.Where(r => r.GroupId == groupId).ToList();
             }
-            List<GetReportModel> result = new List<GetReportModel>();
+            List<GetReportModel> result = [];
             foreach (var report in reports)
             {
                 GetReportModel response = new()
@@ -39,37 +35,37 @@ namespace Services.Services
             return result;
         }
 
-        public void PostReport(PostReportModel model)
+        public async Task PostReport(PostReportModel model)
         {
             var report = _mapper.Map<Report>(model);
             report.CreatedTime = DateTime.Now;
-            _unitOfWork.GetRepository<Report>().Insert(report);
-            _unitOfWork.Save();
+            await _unitOfWork.GetRepository<Report>().InsertAsync(report);
+            await _unitOfWork.SaveAsync();
         }
 
-        public void PutReport(string id, PutReportModel model)
+        public async Task PutReport(string id, PutReportModel model)
         {
-            var existedReport = _unitOfWork.GetRepository<Report>().GetById(id);
+            Report? existedReport = await _unitOfWork.GetRepository<Report>().GetByIdAsync(id);
             if (existedReport == null)
             {
                 throw new Exception($"Report with ID {id} doesn't exist!");
             }
             _mapper.Map(model, existedReport);
             existedReport.LastUpdatedTime = DateTime.Now;
-            _unitOfWork.GetRepository<Report>().Update(existedReport);
-            _unitOfWork.Save();
+            await _unitOfWork.GetRepository<Report>().UpdateAsync(existedReport);
+            await _unitOfWork.SaveAsync();
         }
 
-        public void DeleteReport(string id)
+        public async Task DeleteReport(string id)
         {
-            var existedReport = _unitOfWork.GetRepository<Report>().GetById(id);
+            Report? existedReport = await _unitOfWork.GetRepository<Report>().GetByIdAsync(id);
             if (existedReport == null)
             {
                 throw new Exception($"Report with ID {id} doesn't exist!");
             }
             existedReport.DeletedTime = DateTime.Now;
-            _unitOfWork.GetRepository<Report>().Update(existedReport);
-            _unitOfWork.Save();
+            await _unitOfWork.GetRepository<Report>().UpdateAsync(existedReport);
+            await _unitOfWork.SaveAsync();
         }
     }
 }

@@ -28,16 +28,16 @@ namespace Services.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<GetTokenModel> GenerateTokens(Person person)  
+        public GetTokenModel GenerateTokens(Person person)  
         {
             DateTime now = DateTime.Now;
 
             // Common claims for both tokens
-            List<Claim> claims = new List<Claim>
-            {
+            List<Claim> claims =
+            [
                 new Claim("id", person.Id.ToString()),
                 new Claim("exp", now.Ticks.ToString())
-            };
+            ];
 
             var keyString = _configuration.GetSection("JWT:SecretKey").Value ?? string.Empty;
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyString));

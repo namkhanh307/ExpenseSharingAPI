@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core.Infrastructure;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Entities;
 using Repositories.IRepositories;
 using Repositories.ResponseModel.ExpenseModel;
@@ -9,23 +10,17 @@ using Services.IServices;
 
 namespace Services.Services
 {
-    public class RecordService : IRecordService
+    public class RecordService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContextAccessor) : IRecordService
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        public RecordService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContextAccessor)
-        {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
-            _httpContextAccessor = httpContextAccessor;
-        }
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
-        public List<GetRecordModel> GetRecord(string? recordId, string? reportId)
+        public async Task<List<GetRecordModel>> GetRecord(string? recordId, string? reportId)
         {
-            var records = _unitOfWork.GetRepository<Record>().Entities
+            List<Record> records = await _unitOfWork.GetRepository<Record>().Entities
                         .Where(g => !g.DeletedTime.HasValue && (reportId == null || g.ReportId == reportId) && (recordId == null || g.Id == recordId))
-                        .ToList();
+                        .ToListAsync();
             return _mapper.Map<List<GetRecordModel>>(records);
         }
 
@@ -81,7 +76,10 @@ namespace Services.Services
             {
                 throw new Exception($"Group with ID {id} doesn't exist!");
             }
-            await FileUploadHelper.DeleteFile(existedRecord.InvoiceImage);
+            if (existedRecord.InvoiceImage != null)
+            {
+                await FileUploadHelper.DeleteFile(existedRecord.InvoiceImage);
+            }
             existedRecord.DeletedTime = DateTime.Now;
             await _unitOfWork.GetRepository<Record>().UpdateAsync(existedRecord);
             await _unitOfWork.SaveAsync();

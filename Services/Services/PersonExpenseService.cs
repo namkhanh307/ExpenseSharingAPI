@@ -9,23 +9,18 @@ using Services.IServices;
 
 namespace Services.Services
 {
-    public class PersonExpenseService : IPersonExpenseService
+    public class PersonExpenseService(IUnitOfWork unitOfWork) : IPersonExpenseService
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
-        public PersonExpenseService(IUnitOfWork unitOfWork, IMapper mapper)
-        {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
-        }
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public List<GetPersonExpenseModel> GetPersonExpenses(string? reportId, string? expenseId)
+        public async Task<List<GetPersonExpenseModel>> GetPersonExpenses(string? reportId, string? expenseId)
         {
-            // Fetch the main query
-            var query = _unitOfWork.GetRepository<PersonExpense>().Entities
+            // Fetch and filter the main query
+            IQueryable<PersonExpense> query = _unitOfWork.GetRepository<PersonExpense>().Entities
                 .Where(pe => !pe.DeletedTime.HasValue)
                 .Include(pe => pe.Person)
                 .Include(pe => pe.Expense)
+                .ThenInclude(e => e.Report)
                 .AsQueryable();
 
             // Apply filters
@@ -38,78 +33,78 @@ namespace Services.Services
                 query = query.Where(pe => pe.ExpenseId == expenseId);
             }
 
-            // Execute query and group results
-            var groupedResults = query.ToList()
-                                      .GroupBy(pe => pe.ExpenseId)
-                                      .ToList();
+            // Execute query and fetch data
+            var personExpenses = await query.ToListAsync();
+
+            // Group results in-memory
+            var groupedResults = personExpenses
+                .GroupBy(pe => pe.ExpenseId);
 
             // Prepare response
             var responseList = groupedResults.Select(group =>
             {
                 var firstExpense = group.First().Expense;
-                var affordedBy = _unitOfWork.GetRepository<Person>().GetById(firstExpense.CreatedBy);
                 return new GetPersonExpenseModel
                 {
                     ExpenseId = group.Key,
                     ExpenseName = firstExpense.Name,
-                    Persons = group.Select(pe => {
-                        return new GetPersonExpenseSub(){
-                            Amount = pe.Amount,
-                            IsShared = pe.IsShared,
-                            Name = pe.Person.Name,
-                            Id = pe.PersonId,
-                            Phone = pe.Person.Phone,
-                        };
+                    Persons = group.Select(pe => new GetPersonExpenseSub
+                    {
+                        Amount = pe.Amount,
+                        IsShared = pe.IsShared,
+                        Name = pe.Person.Name,
+                        Id = pe.PersonId,
+                        Phone = pe.Person.Phone,
                     }).ToList(),
                     ReportId = firstExpense.ReportId,
-                    ReportName = firstExpense.Report == null ? "Fix null" : firstExpense.Report.Name
+                    ReportName = firstExpense.Report?.Name ?? "Fix null"
                 };
             }).ToList();
-
             return responseList;
         }
 
-        public void PostPersonExpense(PostPersonExpenseModel model)
+
+        public async Task PostPersonExpense(PostPersonExpenseModel model)
         {
             foreach (var item in model.Persons)
             {
-                var personExpense = new PersonExpense()
+                var personExpense = new PersonExpense
                 {
                     ExpenseId = model.ExpenseId,
                     PersonId = item.Id,
                     //ReportId = model.ReportId,
                     IsShared = item.IsShared,
                     Amount = item.Amount,
+                    CreatedTime = DateTime.Now
                 };
-                personExpense.CreatedTime = DateTime.Now;
-                _unitOfWork.GetRepository<PersonExpense>().Insert(personExpense);
+                await _unitOfWork.GetRepository<PersonExpense>().InsertAsync(personExpense);
             }           
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsync();
         }
-        public void PostPersonExpenseForDeveloping(PostPersonExpenseForDevModel model)
+        public async Task PostPersonExpenseForDeveloping(PostPersonExpenseForDevModel model)
         {
-            var personExpense = new PersonExpense()
+            var personExpense = new PersonExpense
             {
                 ExpenseId = model.ExpenseId,
                 PersonId = model.PersonId,
                 //ReportId = model.ReportId,
                 IsShared = model.IsShared,
                 Amount = model.Amount,
+                CreatedTime = DateTime.Now
             };
-            personExpense.CreatedTime = DateTime.Now;
-            _unitOfWork.GetRepository<PersonExpense>().Insert(personExpense);
-            _unitOfWork.Save();       
+            await _unitOfWork.GetRepository<PersonExpense>().InsertAsync(personExpense);
+            await _unitOfWork.SaveAsync();       
         }
 
-        public void PutPersonExpense(string expenseId, PutPersonExpenseModel model)
+        public async Task PutPersonExpense(string expenseId, PutPersonExpenseModel model)
         {
             // Fetch existing PersonExpense entities
-            var existedPersonExpenses = _unitOfWork.GetRepository<PersonExpense>()
-                                                   .Entities
-                                                   .Where(e => e.ExpenseId == expenseId && !e.DeletedTime.HasValue)
-                                                   .ToList();
+            List<PersonExpense> existedPersonExpenses = await _unitOfWork.GetRepository<PersonExpense>()
+                                                            .Entities
+                                                            .Where(e => e.ExpenseId == expenseId && !e.DeletedTime.HasValue)
+                                                            .ToListAsync();
 
-            if (existedPersonExpenses == null || !existedPersonExpenses.Any())
+            if (existedPersonExpenses == null || existedPersonExpenses.Count == 0)
             {
                 throw new Exception($"This expense with Id {expenseId} doesn't have any person sharing with!");
             }
@@ -117,11 +112,11 @@ namespace Services.Services
             // Mark existing PersonExpense entities as deleted
             foreach (var item in existedPersonExpenses)
             {
-                _unitOfWork.PersonExpenseRepository.DeletePersonExpense(item.PersonId, item.ExpenseId);
+                await _unitOfWork.PersonExpenseRepository.DeletePersonExpense(item.PersonId, item.ExpenseId);
             }
 
             // Save changes and detach the updated entities
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsync();
             foreach (var item in existedPersonExpenses)
             {
                 _unitOfWork.GetRepository<PersonExpense>().Detach(item);
@@ -140,23 +135,23 @@ namespace Services.Services
                     CreatedTime = DateTime.Now
                 };
 
-                _unitOfWork.GetRepository<PersonExpense>().Insert(personExpense);
+                await _unitOfWork.GetRepository<PersonExpense>().InsertAsync(personExpense);
             }
 
             // Save all changes
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsync();
         }
 
-        public void DeletePersonExpense(string expenseId, string personId)
+        public async Task DeletePersonExpense(string expenseId, string personId)
         {
-            var existedPersonExpense = _unitOfWork.GetRepository<PersonExpense>().Entities.Where(pe => pe.ExpenseId == expenseId && pe.PersonId == personId).FirstOrDefault();
+            PersonExpense? existedPersonExpense = _unitOfWork.GetRepository<PersonExpense>().Entities.Where(pe => pe.ExpenseId == expenseId && pe.PersonId == personId).FirstOrDefault();
             if (existedPersonExpense == null)
             {
                 throw new Exception($"PersonExpense with expenseId {expenseId} or personId {personId} doesn't exist!");
             }
             existedPersonExpense.DeletedTime = DateTime.Now;
-            _unitOfWork.GetRepository<PersonExpense>().Update(existedPersonExpense);
-            _unitOfWork.Save();
+            await _unitOfWork.GetRepository<PersonExpense>().UpdateAsync(existedPersonExpense);
+            await _unitOfWork.SaveAsync();
         }
     }
 }

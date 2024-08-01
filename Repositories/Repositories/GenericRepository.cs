@@ -23,7 +23,7 @@ namespace Repositories.Repositories
 
         public void Delete(object id)
         {
-            T entity = _dbSet.Find(id);//tim theo khoa chinh
+            T entity = _dbSet.Find(id); //tim theo khoa chinh
             if (entity != null)
             {
                 _dbSet.Remove(entity);

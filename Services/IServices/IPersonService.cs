@@ -5,9 +5,9 @@ namespace Services.IServices
 {
     public interface IPersonService
     {
-        void DeletePerson(string id);
-        List<GetPersonModel> GetPersons(string? id);
-        void PostPerson(PostPersonModel model);
-        void PutPerson(string id, PutPersonModel model);
+        Task<List<GetPersonModel>> GetPersons(string? id);
+        Task PostPerson(PostPersonModel model);
+        Task PutPerson(string id, PutPersonModel model);
+        Task DeletePerson(string id);
     }
 }

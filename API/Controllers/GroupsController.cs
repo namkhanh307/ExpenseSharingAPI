@@ -9,13 +9,10 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GroupsController : ControllerBase
+    public class GroupsController(IGroupService groupService) : ControllerBase
     {
-        private readonly IGroupService _groupService;
-        public GroupsController(IGroupService groupService)
-        {
-            _groupService = groupService;
-        }
+        private readonly IGroupService _groupService = groupService;
+
         [HttpGet]
         public IActionResult GetGroups()
         {

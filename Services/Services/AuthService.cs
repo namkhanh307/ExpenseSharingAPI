@@ -14,29 +14,22 @@ using System.Threading.Tasks;
 
 namespace Services.Services
 {
-    public class AuthService : IAuthService
+    public class AuthService(IHttpContextAccessor contextAccessor, IUnitOfWork unitOfWork, IMapper mapper, ITokenService tokenService) : IAuthService
     {
-        private readonly IHttpContextAccessor _contextAccessor;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
-        private readonly ITokenService _tokenService;
-        public AuthService(IHttpContextAccessor contextAccessor, IUnitOfWork unitOfWork, IMapper mapper, ITokenService tokenService)
-        {
-            _contextAccessor = contextAccessor;
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
-            _tokenService = tokenService;
+        private readonly IHttpContextAccessor _contextAccessor = contextAccessor;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
+        private readonly ITokenService _tokenService = tokenService;
 
-        }
         public async Task<GetPersonModel> GetInfo()
         {
             var idUser = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
-            return  _mapper.Map<GetPersonModel>(await _unitOfWork.GetRepository<Person>().GetByIdAsync(idUser));
+            return _mapper.Map<GetPersonModel>(await _unitOfWork.GetRepository<Person>().GetByIdAsync(idUser));
         }
 
         public async Task<GetLogInModel> LogIn(PostLogInModel request)
         {
-            var person = _unitOfWork.GetRepository<Person>().Entities.FirstOrDefault(p => p.Phone == request.Phone);
+            Person? person = _unitOfWork.GetRepository<Person>().Entities.FirstOrDefault(p => p.Phone == request.Phone);
             if (person == null) 
             {
                 throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.UnAuthorized, "You don't have an account, please sign up!");
@@ -45,7 +38,7 @@ namespace Services.Services
             {
                 throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Phone number or password are incorrect!");
             }
-            var token = await _tokenService.GenerateTokens(person);
+            var token = _tokenService.GenerateTokens(person);
             return new GetLogInModel()
             {
                 Person = _mapper.Map<GetPersonModel>(person),
@@ -55,7 +48,7 @@ namespace Services.Services
 
         public async Task SignUp(PostSignUpModel model)
         {
-            var person = _unitOfWork.GetRepository<Person>().Entities.FirstOrDefault(p => p.Phone == model.Phone);
+            Person? person = _unitOfWork.GetRepository<Person>().Entities.FirstOrDefault(p => p.Phone == model.Phone);
             if (person != null)
             {
                 throw new ErrorException(StatusCodes.Status409Conflict, ErrorCode.Conflicted, "Số tài khoản này đã được đăng ký!");

@@ -24,9 +24,9 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetFriendRequest()
+        public async Task<IActionResult> GetFriendRequest()
         {
-            var result = _friendRequestService.GetFriendRequest();
+            var result = await _friendRequestService.GetFriendRequest();
             return Ok(new BaseResponseModel<List<GetFriendRequestModel>>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
@@ -40,7 +40,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
-                data: "Friend request added successfully!"));
+                data: "Friend request added SUCCESSFULLY!"));
         }
 
         [HttpPut]
@@ -50,7 +50,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
-                data: "Friend request accepted successfully!"));
+                data: "Friend request accepted SUCCESSFULLY!"));
         }
 
         [HttpDelete]
@@ -60,7 +60,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
-                data: "Friend request deleted successfully!"));
+                data: "Friend request deleted SUCCESSFULLY!"));
         }
     }
 }

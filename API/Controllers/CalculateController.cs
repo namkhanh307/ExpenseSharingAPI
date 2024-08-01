@@ -16,7 +16,7 @@ namespace API.Controllers
         {
             _calculateService = calculateService;
         }
-        [HttpPost("shortTerm")]
+        [HttpPost("ShortTerm")]
         public async Task<IActionResult> CalculateShortTerm([FromBody]CalculatingModel model)
         {
             var result = await _calculateService.CalculateShortTerm(model);
@@ -25,7 +25,7 @@ namespace API.Controllers
                 code: ResponseCodeConstants.SUCCESS,
                 data: result));
         }
-        [HttpPost("longTerm")]
+        [HttpPost("LongTerm")]
         public async Task<IActionResult> CalculateLongTerm(string reportId)
         {
             var result = await _calculateService.CalculateLongTerm(reportId);

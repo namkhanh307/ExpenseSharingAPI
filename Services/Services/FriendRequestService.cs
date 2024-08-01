@@ -14,33 +14,24 @@ using System.Threading.Tasks;
 
 namespace Services.Services
 {
-    public class FriendRequestService : IFriendRequestService
+    public class FriendRequestService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor contextAccessor) : IFriendRequestService
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
-        private readonly IHttpContextAccessor _contextAccessor;
-        private readonly ILogger<FriendRequestService> _logger;
-
-        public FriendRequestService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor contextAccessor, ILogger<FriendRequestService> logger)
-        {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
-            _contextAccessor = contextAccessor;
-            _logger = logger;
-        }
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
+        private readonly IHttpContextAccessor _contextAccessor = contextAccessor;
 
         private string CurrentUserId => Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
 
-        public List<GetFriendRequestModel> GetFriendRequest()
+        public async Task<List<GetFriendRequestModel>> GetFriendRequest()
         {
-            var result = _unitOfWork.GetRepository<FriendRequest>()
-                .Entities
-                .Where(p => p.SenderId == CurrentUserId)
-                .ToList();
+            IEnumerable<FriendRequest> result = await _unitOfWork.GetRepository<FriendRequest>()
+                                            .Entities
+                                            .Where(p => p.SenderId == CurrentUserId)
+                                            .ToListAsync();
             return _mapper.Map<List<GetFriendRequestModel>>(result);
         }
 
-        public void PostFriendRequest(string receivedId)
+        public async Task PostFriendRequest(string receivedId)
         {
             var newFriendRequest = new FriendRequest
             {
@@ -50,15 +41,16 @@ namespace Services.Services
                 CreatedBy = CurrentUserId,
             };
 
-            _unitOfWork.GetRepository<FriendRequest>().Insert(newFriendRequest);
-            _unitOfWork.Save();
+            await _unitOfWork.GetRepository<FriendRequest>().InsertAsync(newFriendRequest);
+            await _unitOfWork.SaveAsync();
         }
 
-        public void AcceptFriendRequest(string id)
+        public async Task AcceptFriendRequest(string id)
         {
-            var friendRequest = _unitOfWork.GetRepository<FriendRequest>()
+            FriendRequest? friendRequest = await _unitOfWork
+                .GetRepository<FriendRequest>()
                 .Entities
-                .FirstOrDefault(fr => fr.Id == id && fr.Status == "pending");
+                .FirstOrDefaultAsync(fr => fr.Id == id && fr.Status == "pending");
 
             if (friendRequest != null)
             {
@@ -80,7 +72,7 @@ namespace Services.Services
 
         public void DeleteFriendRequest(string id)
         {
-            var friendRequest = _unitOfWork.GetRepository<FriendRequest>()
+            FriendRequest? friendRequest = _unitOfWork.GetRepository<FriendRequest>()
                 .Entities
                 .FirstOrDefault(fr => fr.Id == id && fr.Status == "pending");
 
@@ -93,7 +85,7 @@ namespace Services.Services
 
         public void RejectFriendRequest(string id)
         {
-            var friendRequest = _unitOfWork.GetRepository<FriendRequest>()
+            FriendRequest? friendRequest = _unitOfWork.GetRepository<FriendRequest>()
                 .Entities
                 .FirstOrDefault(fr => fr.Id == id && fr.Status == "pending");
 

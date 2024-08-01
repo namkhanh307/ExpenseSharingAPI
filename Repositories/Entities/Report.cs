@@ -7,7 +7,7 @@ public partial class Report : BaseEntity
 {
     public string? Name { get; set; }
 
-    public string? GroupId { get; set; }
+    public string GroupId { get; set; }
 
     public virtual ICollection<Expense> Expenses { get; set; } = new List<Expense>();
 

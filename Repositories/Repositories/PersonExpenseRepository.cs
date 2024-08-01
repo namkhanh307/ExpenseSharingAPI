@@ -4,17 +4,13 @@ using Repositories.IRepositories;
 
 namespace Repositories.Repositories
 {
-    public class PersonExpenseRepository : IPersonExpenseRepository
+    public class PersonExpenseRepository(ExpenseSharingContext context) : IPersonExpenseRepository
     {
-        private readonly ExpenseSharingContext _context;
+        private readonly ExpenseSharingContext _context = context;
 
-        public PersonExpenseRepository(ExpenseSharingContext context) : base()
+        public async Task DeletePersonExpense(string personId, string expenseId)
         {
-            _context = context;
-        }
-        public void DeletePersonExpense(string personId, string expenseId)
-        {
-            var result = _context.PersonExpenses.Where(pe => pe.ExpenseId == expenseId && pe.PersonId == personId).FirstOrDefault();    
+            PersonExpense? result = await _context.PersonExpenses.Where(pe => pe.ExpenseId == expenseId && pe.PersonId == personId).FirstOrDefaultAsync();    
             if (result != null)
             {
                 _context.Remove(result);

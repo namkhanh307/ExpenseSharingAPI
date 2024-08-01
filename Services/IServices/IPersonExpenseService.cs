@@ -5,10 +5,10 @@ namespace Services.IServices
 {
     public interface IPersonExpenseService
     {
-        void DeletePersonExpense(string expenseId, string personId);
-        List<GetPersonExpenseModel> GetPersonExpenses(string? reportId, string? expenseId);
-        void PostPersonExpense(PostPersonExpenseModel model);
-        void PostPersonExpenseForDeveloping(PostPersonExpenseForDevModel model);
-        void PutPersonExpense(string expenseId, PutPersonExpenseModel model);
+        Task<List<GetPersonExpenseModel>> GetPersonExpenses(string? reportId, string? expenseId);
+        Task PostPersonExpense(PostPersonExpenseModel model);
+        Task PostPersonExpenseForDeveloping(PostPersonExpenseForDevModel model);
+        Task PutPersonExpense(string expenseId, PutPersonExpenseModel model);
+        Task DeletePersonExpense(string expenseId, string personId);
     }
 }

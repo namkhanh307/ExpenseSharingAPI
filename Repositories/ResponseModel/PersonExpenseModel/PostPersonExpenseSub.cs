@@ -8,7 +8,7 @@ namespace Repositories.ResponseModel.PersonExpenseModel
 {
     public class PostPersonExpenseSub
     {
-        public string? Id { get; set; }
+        public string Id { get; set; }
         public double Amount { get; set; }
         public bool IsShared { get; set; }
     }

@@ -9,9 +9,9 @@ namespace Services.IServices
 {
     public interface IFriendRequestService
     {
-        public List<GetFriendRequestModel> GetFriendRequest();
-        public void PostFriendRequest(string receivedId);
-        public void AcceptFriendRequest(string id);
+        public Task<List<GetFriendRequestModel>> GetFriendRequest();
+        public Task PostFriendRequest(string receivedId);
+        public Task AcceptFriendRequest(string id);
         public void RejectFriendRequest(string id);
     }
 }

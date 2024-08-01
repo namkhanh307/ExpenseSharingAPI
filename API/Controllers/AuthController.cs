@@ -9,23 +9,20 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class AuthController(IAuthService authService) : ControllerBase
     {
-        public readonly IAuthService _authService;
-        public AuthController(IAuthService authService)
-        {
-            _authService = authService;
-        }
-        [HttpPost("signup")]
+        public readonly IAuthService _authService = authService;
+
+        [HttpPost("SignUp")]
         public async Task<IActionResult> SignUp(PostSignUpModel model)  
         {
             await _authService.SignUp(model);
             return Ok(new BaseResponseModel<string>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
-                data: "Dang ky thanh cong!"));
+                data: "Sign up SUCCESSFULLY!"));
         }
-        [HttpPost("login")]
+        [HttpPost("LogIn")]
         public async Task<IActionResult> LogIn(PostLogInModel model)
         {
             var result = await _authService.LogIn(model);
@@ -34,7 +31,7 @@ namespace API.Controllers
                            code: ResponseCodeConstants.SUCCESS,
                            data: result));
         }
-        [HttpGet("getinfo")]
+        [HttpGet("GetInfo")]
         public async Task<IActionResult> GetInfo()
         {
             var result = await _authService.GetInfo();

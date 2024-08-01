@@ -162,6 +162,7 @@ namespace Services.Services
                 Console.WriteLine(JsonSerializer.Serialize("------------------------"));
                 //Console.WriteLine(JsonSerializer.Serialize(pSub));z
             }*/
+
             List<CalculatingSubModel> calculatingSubModels = new();
             foreach (var se in expenseQuery)
             {
@@ -333,7 +334,7 @@ namespace Services.Services
         {
             List<PostRecordModel> responseList = new();
             List<ResponseShortTermModel> response = new();
-            string reportId =  _unitOfWork.GetRepository<Expense>().GetById(pairSub.FirstOrDefault().ExpenseId).ReportId;
+            string reportId = _unitOfWork.GetRepository<Expense>().GetById(pairSub.FirstOrDefault().ExpenseId).ReportId;
             for (int i = 0; i < pairSub.Count; i++)
             {
                 if (pairSub[i].Debt > 0)
@@ -361,7 +362,10 @@ namespace Services.Services
                     responseList.Add(neg);
                 }             
             }
-            await _recordService.DeleteRecordFromReport(reportId);
+            if (reportId != null)
+            {
+                await _recordService.DeleteRecordFromReport(reportId);
+            }
             foreach (var item in responseList)
             {
                 await _recordService.PostRecord(item);
