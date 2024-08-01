@@ -28,7 +28,7 @@ namespace Services.Services
             _unitOfWork = unitOfWork;
         }
 
-        public GetTokenModel GenerateTokens(Person person)  
+        public async Task<GetTokenModel> GenerateTokens(Person person)  
         {
             DateTime now = DateTime.Now;
 

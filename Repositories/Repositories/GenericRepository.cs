@@ -121,8 +121,19 @@ namespace Repositories.Repositories
 
         public async Task UpdateAsync(T obj)
         {
-             _dbSet.Attach(obj);
-             _context.Entry(obj).State = EntityState.Modified;
+            _dbSet.Attach(obj);
+            _context.Entry(obj).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateRangeAsync(List<T> entities)
+        {
+            foreach (var entity in entities)
+            {
+                _dbSet.Attach(entity);
+                _context.Entry(entity).State = EntityState.Modified;
+            }
+            await _context.SaveChangesAsync();
         }
     }
 }

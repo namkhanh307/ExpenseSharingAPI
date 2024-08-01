@@ -17,27 +17,27 @@ namespace API.Controllers
             _authService = authService;
         }
         [HttpPost("signup")]
-        public IActionResult SignUp(PostSignUpModel model)  
+        public async Task<IActionResult> SignUp(PostSignUpModel model)  
         {
-            _authService.SignUp(model);
+            await _authService.SignUp(model);
             return Ok(new BaseResponseModel<string>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
                 data: "Dang ky thanh cong!"));
         }
         [HttpPost("login")]
-        public IActionResult LogIn(PostLogInModel model)
+        public async Task<IActionResult> LogIn(PostLogInModel model)
         {
-            var result = _authService.LogIn(model);
+            var result = await _authService.LogIn(model);
             return Ok(new BaseResponseModel<GetLogInModel>(
                            statusCode: StatusCodes.Status200OK,
                            code: ResponseCodeConstants.SUCCESS,
                            data: result));
         }
         [HttpGet("getinfo")]
-        public IActionResult GetInfo()
+        public async Task<IActionResult> GetInfo()
         {
-            var result = _authService.GetInfo();
+            var result = await _authService.GetInfo();
             return Ok(new BaseResponseModel<GetPersonModel>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,

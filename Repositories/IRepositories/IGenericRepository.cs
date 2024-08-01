@@ -19,6 +19,7 @@ namespace Repositories.IRepositories
         List<T> GetAllAsync();
         Task InsertAsync(T obj);
         Task UpdateAsync(T obj);
+        Task UpdateRangeAsync(List<T> obj); 
         Task DeleteAsync(object id);
         Task SaveAsync();
         Task<T> FindAsync(Expression<Func<T, bool>> predicate);

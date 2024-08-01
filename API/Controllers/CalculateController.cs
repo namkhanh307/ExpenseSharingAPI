@@ -17,18 +17,18 @@ namespace API.Controllers
             _calculateService = calculateService;
         }
         [HttpPost("shortTerm")]
-        public IActionResult CalculateShortTerm([FromBody]CalculatingModel model)
+        public async Task<IActionResult> CalculateShortTerm([FromBody]CalculatingModel model)
         {
-            var result = _calculateService.CalculateShortTerm(model);
+            var result = await _calculateService.CalculateShortTerm(model);
             return Ok(new BaseResponseModel<List<ResponseShortTermModel>>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
                 data: result));
         }
         [HttpPost("longTerm")]
-        public IActionResult CalculateLongTerm(string reportId)
+        public async Task<IActionResult> CalculateLongTerm(string reportId)
         {
-            var result = _calculateService.CalculateLongTerm(reportId);
+            var result = await _calculateService.CalculateLongTerm(reportId);
             return Ok(new BaseResponseModel<ResponseLongTermModel>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,

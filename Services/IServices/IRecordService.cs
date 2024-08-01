@@ -9,5 +9,6 @@ namespace Services.IServices
         Task PostRecord(PostRecordModel model);
         Task PutRecord(string id, PutRecordModel model);
         Task DeleteRecord(string id);
+        Task DeleteRecordFromReport(string reportId);
     }
 }
