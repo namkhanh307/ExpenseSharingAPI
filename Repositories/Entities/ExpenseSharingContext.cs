@@ -31,7 +31,7 @@ public partial class ExpenseSharingContext : DbContext
     public virtual DbSet<Report> Reports { get; set; }
     public virtual DbSet<Friend> Friends { get; set; }
     public virtual DbSet<FriendRequest> FriendRequests { get; set; }
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlServer("Server=ASUS\\SQLSERVER;Database=ExpenseSharing;UID=sa;PWD=12345;TrustServerCertificate=True");
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlServer("Server=(local);Database=ExpenseSharing;UID=sa;PWD=12345;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
