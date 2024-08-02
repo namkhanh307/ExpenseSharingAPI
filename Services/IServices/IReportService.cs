@@ -5,9 +5,9 @@ namespace Services.IServices
 {
     public interface IReportService
     {
-        void DeleteReport(string id);
-        List<GetReportModel> GetReports(string? groupId);
-        void PostReport(PostReportModel model);
-        void PutReport(string id, PutReportModel model);
+        Task DeleteReport(string id);
+        Task<List<GetReportModel>> GetReports(string? groupId);
+        Task PostReport(PostReportModel model);
+        Task PutReport(string id, PutReportModel model);
     }
 }

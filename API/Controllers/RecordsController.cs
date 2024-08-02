@@ -20,18 +20,18 @@ namespace API.Controllers
             _env = env;
         }
         [HttpGet("GetRecords")]
-        public IActionResult GetRecords(string? reportId)
+        public async Task<IActionResult> GetRecords(string? reportId)
         {
-            var result = _recordService.GetRecord(null, reportId);
+            var result = await _recordService.GetRecord(null, reportId);
             return Ok(new BaseResponseModel<List<GetRecordModel>>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
                data: result));
         }
         [HttpGet("GetRecordDetails")]
-        public IActionResult GetRecordDetails(string recordId)
+        public async Task<IActionResult> GetRecordDetails(string recordId)
         {
-            var result = _recordService.GetRecord(recordId, null);
+            var result = await _recordService.GetRecord(recordId, null);
             return Ok(new BaseResponseModel<List<GetRecordModel>>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
@@ -57,9 +57,9 @@ namespace API.Controllers
                data: "Chinh sua ban ghi thanh cong"));
         }
         [HttpDelete]
-        public IActionResult DeleteRecord(string id)
+        public async Task<IActionResult> DeleteRecord(string id)
         {
-            _recordService.DeleteRecord(id);
+            await _recordService.DeleteRecord(id);
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,

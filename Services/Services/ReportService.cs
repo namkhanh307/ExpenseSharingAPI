@@ -17,7 +17,7 @@ namespace Services.Services
             _mapper = mapper;
         }
 
-        public List<GetReportModel> GetReports(string? groupId)
+        public async Task<List<GetReportModel>> GetReports(string? groupId)
         {
             var reports = _unitOfWork.GetRepository<Report>().Entities.Where(g => !g.DeletedTime.HasValue).ToList();
             if(!string.IsNullOrWhiteSpace(groupId))
@@ -39,7 +39,7 @@ namespace Services.Services
             return result;
         }
 
-        public void PostReport(PostReportModel model)
+        public async Task PostReport(PostReportModel model)
         {
             var report = _mapper.Map<Report>(model);
             report.CreatedTime = DateTime.Now;
@@ -47,7 +47,7 @@ namespace Services.Services
             _unitOfWork.Save();
         }
 
-        public void PutReport(string id, PutReportModel model)
+        public async Task PutReport(string id, PutReportModel model)
         {
             var existedReport = _unitOfWork.GetRepository<Report>().GetById(id);
             if (existedReport == null)
@@ -60,7 +60,7 @@ namespace Services.Services
             _unitOfWork.Save();
         }
 
-        public void DeleteReport(string id)
+        public async Task DeleteReport(string id)
         {
             var existedReport = _unitOfWork.GetRepository<Report>().GetById(id);
             if (existedReport == null)

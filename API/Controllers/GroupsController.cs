@@ -17,36 +17,36 @@ namespace API.Controllers
             _groupService = groupService;
         }
         [HttpGet]
-        public IActionResult GetGroups()
+        public async Task<IActionResult> GetGroups()
         {
-            var result = _groupService.GetGroups();
+            var result = await _groupService.GetGroups();
             return Ok(new BaseResponseModel<List<GetGroupModel>>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
                data: result));
         }
         [HttpPost]
-        public IActionResult PostGroup(PostGroupModel model)
+        public async Task<IActionResult> PostGroup(PostGroupModel model)
         {
-            _groupService.PostGroup(model);
+            await _groupService.PostGroup(model);
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
                data: "Tao nhom thanh cong"));
         }
         [HttpPut]
-        public IActionResult PutGroup(string id, PutGroupModel model)
+        public async Task<IActionResult> PutGroup(string id, PutGroupModel model)
         {
-            _groupService.PutGroup(id, model);
+            await _groupService.PutGroup(id, model);
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
                data: "Chinh sua nhom thanh cong"));
         }
         [HttpDelete]
-        public IActionResult DeleteGroup(string id)
+        public async Task<IActionResult> DeleteGroup(string id)
         {
-            _groupService.DeleteGroup(id);
+            await _groupService.DeleteGroup(id);
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Entities;
 using Repositories.IRepositories;
 using Repositories.ResponseModel.ExpenseModel;
@@ -17,12 +18,12 @@ namespace Services.Services
             _mapper = mapper;
         }
 
-        public List<GetGroupModel> GetGroups()
+        public async Task<List<GetGroupModel>> GetGroups()
         {
-            return _mapper.Map<List<GetGroupModel>>(_unitOfWork.GetRepository<Group>().Entities.Where(g => !g.DeletedTime.HasValue).ToList());        
+            return _mapper.Map<List<GetGroupModel>>(await _unitOfWork.GetRepository<Group>().Entities.Where(g => !g.DeletedTime.HasValue).ToListAsync());        
         }
 
-        public void PostGroup(PostGroupModel model)
+        public async Task PostGroup(PostGroupModel model)
         {
             var group = _mapper.Map<Group>(model);
             group.CreatedTime = DateTime.Now;
@@ -30,7 +31,7 @@ namespace Services.Services
             _unitOfWork.Save();
         }
 
-        public void PutGroup(string id, PutGroupModel model)
+        public async Task PutGroup(string id, PutGroupModel model)
         {
             var existedGroup = _unitOfWork.GetRepository<Group>().GetById(id);
             if (existedGroup == null)
@@ -42,7 +43,7 @@ namespace Services.Services
             _unitOfWork.GetRepository<Group>().Update(existedGroup);
             _unitOfWork.Save();
         }
-        public void DeleteGroup(string id)
+        public async Task DeleteGroup(string id)
         {
             var existedGroup = _unitOfWork.GetRepository<Group>().GetById(id);
             if (existedGroup == null)

@@ -28,7 +28,7 @@ namespace Services.Services
             _contextAccessor = contextAccessor;
         }
 
-        public List<GetPersonGroupModel> GetPersonGroups(string? groupId)
+        public async Task<List<GetPersonGroupModel>> GetPersonGroups(string? groupId)
         {
             var query = _unitOfWork.GetRepository<PersonGroup>()
                                    .Entities.Where(pg => !pg.DeletedTime.HasValue)
@@ -51,7 +51,7 @@ namespace Services.Services
             return responseList;
         }
 
-        public List<GetGroupModel> GetAllGroupsByPersonId(string personId)
+        public async Task<List<GetGroupModel>> GetAllGroupsByPersonId(string personId)
         {
             var query = _unitOfWork.GetRepository<PersonGroup>()
                                 .Entities.Where(pg => !pg.DeletedTime.HasValue && pg.PersonId.Equals(personId) )
@@ -62,7 +62,7 @@ namespace Services.Services
             return _mapper.Map<List<GetGroupModel>>(query);
         }
 
-        public void PostPersonGroup(PostPersonGroupModel model)
+        public async Task PostPersonGroup(PostPersonGroupModel model)
         {
             var personGroup = _mapper.Map<PersonGroup>(model);
             personGroup.CreatedTime = DateTime.Now;
@@ -70,7 +70,7 @@ namespace Services.Services
             _unitOfWork.Save();
         }
 
-        public void PutPersonGroup(string groupId, string personId, PutPersonGroupModel model)
+        public async Task PutPersonGroup(string groupId, string personId, PutPersonGroupModel model)
         {
             var existedPersonGroup = _unitOfWork.GetRepository<PersonGroup>().Entities.Where(pg => pg.GroupId == groupId && pg.PersonId == personId).FirstOrDefault();
             if (existedPersonGroup == null)
@@ -82,7 +82,7 @@ namespace Services.Services
             _unitOfWork.GetRepository<PersonGroup>().Update(existedPersonGroup);
             _unitOfWork.Save();
         }
-        public void DeletePersonGroup(string groupId, string? personId, bool? wantToOut)
+        public async Task DeletePersonGroup(string groupId, string? personId, bool? wantToOut)
         {
             var currentUserId = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
             Guid.TryParse(currentUserId, out var id);

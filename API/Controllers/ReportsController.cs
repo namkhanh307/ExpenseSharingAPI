@@ -17,36 +17,36 @@ namespace API.Controllers
             _reportService = reportService;
         }
         [HttpGet]
-        public IActionResult GetReports(string? groupId)
+        public async Task<IActionResult> GetReports(string? groupId)
         {
-            var result = _reportService.GetReports(groupId);
+            var result = await _reportService.GetReports(groupId);
             return Ok(new BaseResponseModel<List<GetReportModel>>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
                 data: result));
         }
         [HttpPost]
-        public IActionResult PostReport(PostReportModel model)
+        public async Task<IActionResult> PostReport(PostReportModel model)
         {
-            _reportService.PostReport(model);
+            await _reportService.PostReport(model);
             return Ok(new BaseResponseModel<string>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
                 data: "Them bao cong thanh cong"));
         }
         [HttpPut]
-        public IActionResult PutReport(string id, PutReportModel model)
+        public async Task<IActionResult> PutReport(string id, PutReportModel model)
         {
-            _reportService.PutReport(id, model);
+            await _reportService.PutReport(id, model);
             return Ok(new BaseResponseModel<string>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
                 data: "Chinh sua bao cao thanh cong"));
         }
         [HttpDelete]
-        public IActionResult DeleteReport(string id)
+        public async Task<IActionResult> DeleteReport(string id)
         {
-            _reportService.DeleteReport(id);
+            await _reportService.DeleteReport(id);
             return Ok(new BaseResponseModel<string>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,

@@ -20,7 +20,7 @@ namespace Services.Services
             _mapper = mapper;
         }
 
-        public GetPersonExpenseModel GetPersonExpenses(string? reportId, string? expenseId)
+        public async Task<GetPersonExpenseModel> GetPersonExpenses(string? reportId, string? expenseId)
         {
             // Fetch the main query
             var query = _unitOfWork.GetRepository<PersonExpense>().Entities
@@ -88,7 +88,7 @@ namespace Services.Services
             return responseList;
         }
 
-        public void PostPersonExpense(PostPersonExpenseModel model)
+        public async Task PostPersonExpense(PostPersonExpenseModel model)
         {
             foreach (var item in model.Persons)
             {
@@ -105,7 +105,7 @@ namespace Services.Services
             }           
             _unitOfWork.Save();
         }
-        public void PostPersonExpenseForDeveloping(PostPersonExpenseForDevModel model)
+        public async Task PostPersonExpenseForDeveloping(PostPersonExpenseForDevModel model)
         {
             var personExpense = new PersonExpense()
             {
@@ -120,7 +120,7 @@ namespace Services.Services
             _unitOfWork.Save();       
         }
 
-        public void PutPersonExpense(string expenseId, PutPersonExpenseModel model)
+        public async Task PutPersonExpense(string expenseId, PutPersonExpenseModel model)
         {
             // Fetch existing PersonExpense entities
             var existedPersonExpenses = _unitOfWork.GetRepository<PersonExpense>()
@@ -166,7 +166,7 @@ namespace Services.Services
             _unitOfWork.Save();
         }
 
-        public void DeletePersonExpense(string expenseId, string personId)
+        public async Task DeletePersonExpense(string expenseId, string personId)
         {
             var existedPersonExpense = _unitOfWork.GetRepository<PersonExpense>().Entities.Where(pe => pe.ExpenseId == expenseId && pe.PersonId == personId).FirstOrDefault();
             if (existedPersonExpense == null)

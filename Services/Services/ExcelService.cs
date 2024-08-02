@@ -31,7 +31,7 @@ namespace Services.Services
             using (var workbook = new XLWorkbook())
             {
                 IXLWorksheet worksheet = workbook.Worksheets.Add("LongTerm");
-                GetPersonExpenseModel result = _personExpenseService.GetPersonExpenses(reportId, null);
+                GetPersonExpenseModel result = await _personExpenseService.GetPersonExpenses(reportId, null);
                 worksheet.Cell("A1").Value = result.ReportName;
                 worksheet.Column("A").Width = 20;
                 worksheet.Cell("A3").Value = "ExpenseName";

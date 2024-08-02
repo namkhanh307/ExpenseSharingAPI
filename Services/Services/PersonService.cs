@@ -16,7 +16,7 @@ namespace Services.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public List<GetPersonModel> GetPersons(string? id)
+        public async Task<List<GetPersonModel>> GetPersons(string? id)
         {
             var response = _unitOfWork.GetRepository<Person>().Entities.Where(g => !g.DeletedTime.HasValue).ToList();
             if(!string.IsNullOrWhiteSpace(id))
@@ -26,7 +26,7 @@ namespace Services.Services
             return _mapper.Map<List<GetPersonModel>>(response);
         }
 
-        public void PostPerson(PostPersonModel model)
+        public async Task PostPerson(PostPersonModel model)
         {
             var person = _mapper.Map<Person>(model);
             person.CreatedTime = DateTime.Now;
@@ -34,7 +34,7 @@ namespace Services.Services
             _unitOfWork.Save();
         }
 
-        public void PutPerson(string id, PutPersonModel model)
+        public async Task PutPerson(string id, PutPersonModel model)
         {
             var existedPerson = _unitOfWork.GetRepository<Person>().GetById(id);
             if (existedPerson == null)
@@ -47,7 +47,7 @@ namespace Services.Services
             _unitOfWork.Save();
         }
 
-        public void DeletePerson(string id)
+        public async Task DeletePerson(string id)
         {
             var existedPerson = _unitOfWork.GetRepository<Person>().GetById(id);
             if (existedPerson == null)

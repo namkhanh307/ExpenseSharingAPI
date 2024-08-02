@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core.Infrastructure;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Entities;
 using Repositories.IRepositories;
 using Repositories.ResponseModel.ExpenseModel;
@@ -21,11 +22,11 @@ namespace Services.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public List<GetRecordModel> GetRecord(string? recordId, string? reportId)
+        public async Task<List<GetRecordModel>> GetRecord(string? recordId, string? reportId)
         {
-            var records = _unitOfWork.GetRepository<Record>().Entities
+            var records = await _unitOfWork.GetRepository<Record>().Entities
                         .Where(g => !g.DeletedTime.HasValue && (reportId == null || g.ReportId == reportId) && (recordId == null || g.Id == recordId))
-                        .ToList();
+                        .ToListAsync();
             return _mapper.Map<List<GetRecordModel>>(records);
         }
 
@@ -94,6 +95,5 @@ namespace Services.Services
             await _unitOfWork.GetRepository<Record>().UpdateRangeAsync(existedRecord);
             await _unitOfWork.SaveAsync();
         }
-
     }
 }

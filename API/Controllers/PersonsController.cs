@@ -17,36 +17,36 @@ namespace API.Controllers
             _personService = personService;
         }
         [HttpGet]
-        public IActionResult GetPersons(string? id)
+        public async Task<IActionResult> GetPersons(string? id)
         {
-            var result = _personService.GetPersons(id);
+            var result = await _personService.GetPersons(id);
             return Ok(new BaseResponseModel<List<GetPersonModel>>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
                data: result));
         }
         [HttpPost]
-        public IActionResult PostPerson(PostPersonModel model)
+        public async Task<IActionResult> PostPerson(PostPersonModel model)
         {
-            _personService.PostPerson(model);
+            await _personService.PostPerson(model);
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
                data: "Them thanh vien thanh cong"));
         }
         [HttpPut]
-        public IActionResult PutPerson(string id, PutPersonModel model)
+        public async Task<IActionResult> PutPerson(string id, PutPersonModel model)
         {
-            _personService.PutPerson(id, model);
+            await _personService.PutPerson(id, model);
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
                data: "Chinh sua thanh vien thanh cong"));
         }
         [HttpDelete]
-        public IActionResult DeletePerson(string id)
+        public async Task<IActionResult> DeletePerson(string id)
         {
-            _personService.DeletePerson(id);
+            await _personService.DeletePerson(id);
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,

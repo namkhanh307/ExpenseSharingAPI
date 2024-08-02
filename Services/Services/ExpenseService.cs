@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core.Infrastructure;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Entities;
 using Repositories.IRepositories;
 using Repositories.ResponseModel.ExpenseModel;
@@ -24,7 +25,7 @@ namespace Services.Services
             _personExpenseService = personExpenseService;   
         }
 
-        public List<GetExpenseModel> GetExpenses(string? reportId, string? type, DateTime? fromDate, DateTime? endDate, string? expenseName)
+        public async Task<List<GetExpenseModel>> GetExpenses(string? reportId, string? type, DateTime? fromDate, DateTime? endDate, string? expenseName)
         {
             var query = _unitOfWork.GetRepository<Expense>().Entities.Where(g => !g.DeletedTime.HasValue).AsQueryable();
 
@@ -35,13 +36,12 @@ namespace Services.Services
                     .Where(e => endDate == null || e.CreatedTime <= endDate)
                     .Where(e => string.IsNullOrWhiteSpace(expenseName) || e.Name.Contains(expenseName));
 
-            return _mapper.Map<List<GetExpenseModel>>(query.ToList());
+            return _mapper.Map<List<GetExpenseModel>>(await query.ToListAsync());
         }
         public async Task PostExpense(PostExpenseModel model)
         {
             string idUser = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
             var expenseId = Guid.NewGuid().ToString("N");
-
             string? fileName = await FileUploadHelper.UploadFile(model.InvoiceImage, expenseId);
             var newExpense = new Expense()
             {

@@ -18,9 +18,9 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetExpenses(string? reportId, string? type, DateTime? fromDate, DateTime? endDate, string? expenseName)
+        public async Task<IActionResult> GetExpenses(string? reportId, string? type, DateTime? fromDate, DateTime? endDate, string? expenseName)
         {
-            var result = _expenseService.GetExpenses(reportId, type, fromDate, endDate, expenseName);
+            var result = await _expenseService.GetExpenses(reportId, type, fromDate, endDate, expenseName);
             return Ok(new BaseResponseModel<List<GetExpenseModel>>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
@@ -45,9 +45,9 @@ namespace API.Controllers
                data: "Expense changed successfully!"));
         }
         [HttpDelete]
-        public IActionResult DeleteExpense(string id)
+        public async Task<IActionResult> DeleteExpense(string id)
         {
-            _expenseService.DeleteExpense(id);
+            await _expenseService.DeleteExpense(id);
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
