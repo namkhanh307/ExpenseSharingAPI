@@ -41,17 +41,17 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "Them thanh vien vao nhom thanh cong"));
+               data: "Thêm thành viên vào nhóm thành công"));
         }
-        [HttpPut]
-        public async Task<IActionResult> PutPersonGroup(string groupId, string personId, PutPersonGroupModel model)
-        {
-            await _personGroupService.PutPersonGroup(groupId, personId, model);
-            return Ok(new BaseResponseModel<string>(
-               statusCode: StatusCodes.Status200OK,
-               code: ResponseCodeConstants.SUCCESS,
-               data: "Chinh sua thanh vien trong nhom thanh cong"));
-        }
+        //[HttpPut]
+        //public async Task<IActionResult> PutPersonGroup(string groupId, string personId, PutPersonGroupModel model)
+        //{
+        //    await _personGroupService.PutPersonGroup(groupId, personId, model);
+        //    return Ok(new BaseResponseModel<string>(
+        //       statusCode: StatusCodes.Status200OK,
+        //       code: ResponseCodeConstants.SUCCESS,
+        //       data: "Chỉnh sửa chi tiêu thành công"));
+        //}
         [HttpDelete]
         public async Task<IActionResult> DeletePersonGroup(string groupId, string? personId, bool? wantToOut)
         {
@@ -59,7 +59,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "Xoa thanh vien khoi nhom thanh cong"));
+               data: "Xóa thành viên khỏi nhóm thành công"));
         }
     }
 }

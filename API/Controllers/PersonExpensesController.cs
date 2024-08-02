@@ -1,7 +1,5 @@
 ﻿using Core.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
-using Repositories.Entities;
-using Repositories.ResponseModel.GroupModel;
 using Repositories.ResponseModel.PersonExpenseModel;
 using Services.IServices;
 
@@ -32,7 +30,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "Tao chi tieu cho thanh vien thanh cong"));
+               data: "Tạo mới chi tiêu cho thành viên thành công"));
         }
         [HttpPost("forDeveloping")]
         public async Task<IActionResult> PostPersonExpenseForDeveloping(PostPersonExpenseForDevModel model)
@@ -41,7 +39,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "Tao chi tieu cho thanh vien thanh cong"));
+               data: "Tạo mới chi tiêu cho thành viên thành công"));
         }
         [HttpPut]
         public async Task<IActionResult> PutPersonExpense(string expenseId, PutPersonExpenseModel model)
@@ -50,16 +48,16 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "Chinh sua chi tieu cho thanh vien thanh cong"));
+               data: "Chỉnh sửa chi tiêu cho thành viên thành công"));
         }
         [HttpDelete]
         public async Task<IActionResult> DeletePersonExpense(string expenseId, string personId)
         {
-            _personExpenseService.DeletePersonExpense(expenseId, personId);
+            await _personExpenseService.DeletePersonExpense(expenseId, personId);
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "Xoa chi tieu cho thanh vien thanh cong"));
+               data: "Xóa chi tiêu cho thành viên thành công"));
         }
     }
 }
