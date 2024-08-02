@@ -20,7 +20,7 @@ namespace API.Controllers
         public IActionResult GetPersonExpenses(string? reportId, string? expenseId)
         {
             var result = _personExpenseService.GetPersonExpenses(reportId, expenseId);
-            return Ok(new BaseResponseModel<List<GetPersonExpenseModel>>(
+            return Ok(new BaseResponseModel<GetPersonExpenseModel>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
                data: result));

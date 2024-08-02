@@ -4,6 +4,7 @@ using Repositories.Entities;
 using Repositories.IRepositories;
 using Repositories.ResponseModel.ExpenseModel;
 using Repositories.ResponseModel.PersonExpenseModel;
+using Repositories.ResponseModel.PersonGroupModel;
 using Repositories.ResponseModel.PersonModel;
 using Services.IServices;
 
@@ -19,7 +20,7 @@ namespace Services.Services
             _mapper = mapper;
         }
 
-        public List<GetPersonExpenseModel> GetPersonExpenses(string? reportId, string? expenseId)
+        public GetPersonExpenseModel GetPersonExpenses(string? reportId, string? expenseId)
         {
             // Fetch the main query
             var query = _unitOfWork.GetRepository<PersonExpense>().Entities
@@ -42,20 +43,39 @@ namespace Services.Services
             var groupedResults = query.ToList()
                                       .GroupBy(pe => pe.ExpenseId)
                                       .ToList();
+            Group group = query.FirstOrDefault().Expense.Report.Group;
+            IQueryable<PersonGroup> personGroups = group.PersonGroups.AsQueryable();
+            List<GetPersonModel> personList = personGroups
+                .Select(pg => new GetPersonModel
+                {
+                    Id = pg.Person.Id,
+                    Name = pg.Person.Name,
+                    Phone = pg.Person.Phone,
+                    Password = pg.Person.Password,
+                    IsAdmin = pg.IsAdmin
+                })
+                .ToList();
+            var report = group.Reports.FirstOrDefault();
 
+            GetPersonExpenseModel responseList = new();
+            responseList.Persons = personList;
+            responseList.ReportName = report.Name;
+            responseList.ReportId = reportId;
             // Prepare response
-            var responseList = groupedResults.Select(group =>
+            var personExpenseSub = groupedResults.Select(group =>
             {
                 var firstExpense = group.First().Expense;
-                var affordedBy = _unitOfWork.GetRepository<Person>().GetById(firstExpense.CreatedBy);
-                return new GetPersonExpenseModel
+
+                //var affordedBy = _unitOfWork.GetRepository<Person>().GetById(firstExpense.CreatedBy);
+                return new GetPersonExpenseSubSub
                 {
                     ExpenseId = group.Key,
                     ExpenseName = firstExpense.Name,
                     ExpenseAmount = firstExpense.Amount,
                     ExpenseCreatedTime = firstExpense.CreatedTime,
-                    Persons = group.Select(pe => {
-                        return new GetPersonExpenseSub(){
+                    PersonExpenseSub = group.Select(pe => {
+                        return new GetPersonExpenseSubSubModel()
+                        {
                             Amount = pe.Amount,
                             IsShared = pe.IsShared,
                             Name = pe.Person.Name,
@@ -63,11 +83,9 @@ namespace Services.Services
                             Phone = pe.Person.Phone,
                         };
                     }).ToList(),
-                    ReportId = firstExpense.ReportId,
-                    ReportName = firstExpense.Report == null ? "Fix null" : firstExpense.Report.Name
                 };
             }).ToList();
-
+            responseList.PersonSubs = personExpenseSub;
             return responseList;
         }
 

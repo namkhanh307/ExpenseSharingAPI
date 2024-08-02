@@ -31,8 +31,8 @@ namespace Services.Services
             using (var workbook = new XLWorkbook())
             {
                 IXLWorksheet worksheet = workbook.Worksheets.Add("LongTerm");
-                List<GetPersonExpenseModel> result = _personExpenseService.GetPersonExpenses(reportId, null);
-                worksheet.Cell("A1").Value = result.FirstOrDefault().ReportName;
+                GetPersonExpenseModel result = _personExpenseService.GetPersonExpenses(reportId, null);
+                worksheet.Cell("A1").Value = result.ReportName;
                 worksheet.Column("A").Width = 20;
                 worksheet.Cell("A3").Value = "ExpenseName";
                 worksheet.Cell("B3").Value = "Amount";
@@ -40,22 +40,23 @@ namespace Services.Services
                 worksheet.Cell("D3").Value = "Created Date";
                 int currentRow = 4;
                 string currentColumn = "E";
-                foreach (var item in result)
+                int row = 3;
+                //if (string.IsNullOrEmpty(worksheet.Cell("E3").GetValue<string>()))
+                //{
+                foreach (var item in result.Persons)
                 {
-                    if (string.IsNullOrEmpty(worksheet.Cell("E3").GetValue<string>()))
-                    {
-                        foreach (var item1 in item.Persons)
-                        {
-                            worksheet.Cell($"{currentColumn}3").Value = item1.Name;
-                            currentColumn = GetNextColumn(currentColumn);
-                        }
-                    }
+                    worksheet.Cell($"{currentColumn}{row}").Value = item.Name;//E3
+                    currentColumn = GetNextColumn(currentColumn);
+                }
+                foreach (var item in result.PersonSubs)
+                {
                     worksheet.Cell($"A{currentRow}").Value = item.ExpenseName;
                     worksheet.Cell($"B{currentRow}").Value = item.ExpenseAmount;
                     worksheet.Cell($"C{currentRow}").Value = "NOT HANDLING!";
-                    worksheet.Cell($"D{currentRow}").Value = item.ExpenseCreatedTime;
+                    worksheet.Cell($"D{currentRow}").Value = item.ExpenseCreatedTime;             
                     currentRow++;
                 }
+
                 using (var stream = new MemoryStream())
                 {
                     workbook.SaveAs(stream);
