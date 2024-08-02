@@ -53,8 +53,7 @@ namespace Services.Services
                     Phone = pg.Person.Phone,
                     Password = pg.Person.Password,
                     IsAdmin = pg.IsAdmin
-                })
-                .ToList();
+                }).OrderBy(pg => pg.Name).ToList();
             var report = group.Reports.FirstOrDefault();
 
             GetPersonExpenseModel responseList = new();
@@ -82,7 +81,7 @@ namespace Services.Services
                             Id = pe.PersonId,
                             Phone = pe.Person.Phone,
                         };
-                    }).ToList(),
+                    }).OrderBy(pg => pg.Name).ToList(),
                 };
             }).ToList();
             responseList.PersonSubs = personExpenseSub;

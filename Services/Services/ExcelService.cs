@@ -53,7 +53,15 @@ namespace Services.Services
                     worksheet.Cell($"A{currentRow}").Value = item.ExpenseName;
                     worksheet.Cell($"B{currentRow}").Value = item.ExpenseAmount;
                     worksheet.Cell($"C{currentRow}").Value = "NOT HANDLING!";
-                    worksheet.Cell($"D{currentRow}").Value = item.ExpenseCreatedTime;             
+                    worksheet.Cell($"D{currentRow}").Value = item.ExpenseCreatedTime;
+                    currentColumn = "E";
+                    double amount = item.ExpenseAmount.Value;
+                    foreach (var item1 in item.PersonExpenseSub)
+                    {
+                        int count = item.PersonExpenseSub.Count;
+                        worksheet.Cell($"{currentColumn}{currentRow}").Value = item1.Amount > 0 ? Math.Round(amount - (amount / count), 2) : Math.Round(-amount / count, 2);
+                        currentColumn = GetNextColumn(currentColumn);                          
+                    }
                     currentRow++;
                 }
 
