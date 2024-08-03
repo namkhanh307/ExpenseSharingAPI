@@ -43,22 +43,22 @@ namespace Services.Services
                 int row = 3;
                 //if (string.IsNullOrEmpty(worksheet.Cell("E3").GetValue<string>()))
                 //{
-                foreach (var item in result.Persons)//in ra tat ca cac thanh vien trong nhom
+                foreach (var item in result.Persons!)//in ra tat ca cac thanh vien trong nhom
                 {
                     worksheet.Cell($"{currentColumn}{row}").Value = item.Name;//E3
                     currentColumn = GetNextColumn(currentColumn);
                 }
-                foreach (var item in result.PersonSubs)//lap qua tung chi tieu
+                foreach (var item in result.PersonSubs!)//lap qua tung chi tieu
                 {
                     worksheet.Cell($"A{currentRow}").Value = item.ExpenseName;
                     worksheet.Cell($"B{currentRow}").Value = item.ExpenseAmount;
-                    string paidByNames = string.Join(", ", item.ExpenesePaidBy.Select(name => name.Trim()));
+                    string paidByNames = string.Join(", ", item.ExpenesePaidBy!.Select(name => name.Trim()));
                     worksheet.Cell($"C{currentRow}").Value = paidByNames;
                     worksheet.Cell($"D{currentRow}").Value = item.ExpenseCreatedTime;
                     currentColumn = "E";
-                    double amount = item.ExpenseAmount.Value;//so tien cua chi tieu 
-                    int countIsShared = item.PersonExpenseSub.Where(i => i.IsShared == true).Count(); //lay ra so thanh vien se chia
-                    foreach (var item1 in item.PersonExpenseSub)//lap qua tung thanh vien trong chi tieu nay
+                    double amount = item.ExpenseAmount!.Value;//so tien cua chi tieu 
+                    int countIsShared = item.PersonExpenseSub!.Where(i => i.IsShared == true).Count(); //lay ra so thanh vien se chia
+                    foreach (var item1 in item.PersonExpenseSub!)//lap qua tung thanh vien trong chi tieu nay
                     {
                         if(item1.Amount > 0 && item1.IsShared == true)//neu nguoi nay tra va co chia
                         {

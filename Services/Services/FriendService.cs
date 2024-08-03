@@ -2,16 +2,10 @@
 using Core.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Repositories.Entities;
 using Repositories.IRepositories;
 using Repositories.ResponseModel.FriendModel;
 using Services.IServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services.Services
 {
@@ -46,7 +40,6 @@ namespace Services.Services
 
             return result;
         }
-
 
         public async Task PostFriend(PostFriendModel model)
         {
