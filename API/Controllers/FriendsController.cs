@@ -1,10 +1,7 @@
 ﻿using Core.Infrastructure;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Repositories.ResponseModel.ExpenseModel;
 using Repositories.ResponseModel.FriendModel;
 using Services.IServices;
-using System.Reflection.Metadata.Ecma335;
 
 namespace API.Controllers
 {
