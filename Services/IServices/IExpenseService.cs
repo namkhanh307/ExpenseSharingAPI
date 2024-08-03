@@ -8,6 +8,6 @@ namespace Services.IServices
         Task DeleteExpense(string id);
         Task<List<GetExpenseModel?>> GetExpenses(string? reportId, string? type, DateTime? fromdate, DateTime? endDate, string? expenseName);
         Task PostExpense(PostExpenseModel model);
-        Task PutExpense(string id, PutExpenseModel model);
+        Task PutExpense(PutExpenseModel model);
     }
 }

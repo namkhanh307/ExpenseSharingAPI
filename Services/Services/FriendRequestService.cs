@@ -25,9 +25,9 @@ namespace Services.Services
         public async Task<List<GetFriendRequestModel>> GetFriendRequest()
         {
             IEnumerable<FriendRequest> result = await _unitOfWork.GetRepository<FriendRequest>()
-                                            .Entities
-                                            .Where(p => p.SenderId == CurrentUserId)
-                                            .ToListAsync();
+                    .Entities
+                    .Where(p => p.SenderId == CurrentUserId)
+                    .ToListAsync();
             return _mapper.Map<List<GetFriendRequestModel>>(result);
         }
 

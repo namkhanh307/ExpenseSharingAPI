@@ -16,8 +16,8 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetExpenses(string? reportId, string? type, DateTime? fromDate, DateTime? endDate, string? expenseName)
         {
-            List<GetExpenseModel> result = await _expenseService.GetExpenses(reportId, type, fromDate, endDate, expenseName);
-            return Ok(new BaseResponseModel<List<GetExpenseModel>>(
+            List<GetExpenseModel?> result = await _expenseService.GetExpenses(reportId, type, fromDate, endDate, expenseName);
+            return Ok(new BaseResponseModel<List<GetExpenseModel?>>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
                 data: result));
@@ -32,9 +32,9 @@ namespace API.Controllers
                data: "Thêm chi tiêu thành công"));
         }
         [HttpPut]
-        public async Task<IActionResult> PutExpense(string id, PutExpenseModel model)
+        public async Task<IActionResult> PutExpense(PutExpenseModel model)
         {
-            await _expenseService.PutExpense(id, model);
+            await _expenseService.PutExpense(model);
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,

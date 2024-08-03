@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Core.Infrastructure;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Entities;
 using Repositories.IRepositories;
@@ -8,10 +10,12 @@ using Services.IServices;
 
 namespace Services.Services
 {
-    public class PersonService(IUnitOfWork unitOfWork, IMapper mapper) : IPersonService
+    public class PersonService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContextAccessor) : IPersonService
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+        private string currentUserId => Authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
 
         public async Task<List<GetPersonModel>> GetPersons(string? id)
         {
@@ -27,6 +31,7 @@ namespace Services.Services
         {
             Person person = _mapper.Map<Person>(model);
             person.CreatedTime = DateTime.Now;
+            person.CreatedBy = person.Id;
             await _unitOfWork.GetRepository<Person>().InsertAsync(person);
             await _unitOfWork.SaveAsync();
         }
@@ -51,6 +56,7 @@ namespace Services.Services
             {
                 throw new Exception($"Person with ID {id} doesn't exist!");
             }
+            existedPerson.DeletedBy = currentUserId;
             existedPerson.DeletedTime = DateTime.Now;
             await _unitOfWork.GetRepository<Person>().UpdateAsync(existedPerson);
             await _unitOfWork.SaveAsync();

@@ -2,6 +2,7 @@
 using Core.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Repositories.Entities;
 using Repositories.IRepositories;
 using Repositories.ResponseModel.ExpenseModel;
@@ -30,11 +31,13 @@ namespace Services.Services
 
             return _mapper.Map<List<GetExpenseModel>>(query);
         }
+
         public async Task PostExpense(PostExpenseModel model)
         {
             string idUser = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
             var expenseId = Guid.NewGuid().ToString("N");
-            string? fileName = await FileUploadHelper.UploadFile(model.InvoiceImage, expenseId);
+
+            string fileName = await FileUploadHelper.UploadFile(model.InvoiceImage, expenseId);
             var newExpense = new Expense()
             {
                 Id = expenseId,
@@ -51,32 +54,27 @@ namespace Services.Services
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task PutExpense(string id, PutExpenseModel model)
+        public async Task PutExpense(PutExpenseModel model)
         {
-            string fileName = await FileUploadHelper.UploadFile(model.InvoiceImage, id);
-            var existedExpense = await _unitOfWork.GetRepository<Expense>().GetByIdAsync(id);
+            var existedExpense = await _unitOfWork.GetRepository<Expense>().GetByIdAsync(model.Id);
 
             if (existedExpense == null)
             {
-                throw new Exception($"Expense with ID {id} doesn't exist!");
-            }
-
-            if (!string.IsNullOrWhiteSpace(fileName))
-            {
-                if (existedExpense.InvoiceImage != null)
-                {
-                    FileUploadHelper.DeleteFile(existedExpense.InvoiceImage);
-                }
-                existedExpense.InvoiceImage = fileName;  
-            }
-
-            if (!model.Amount.Equals(null))
-            {
-                existedExpense.Amount = model.Amount;
+                throw new Exception($"Expense with ID {model.Id} doesn't exist!");
             }
 
             _mapper.Map(model, existedExpense);
 
+            if (model.InvoiceImage != null)
+            {
+                string fileName = await FileUploadHelper.UploadFile(model.InvoiceImage, model.Id);
+                if (existedExpense.InvoiceImage != null)
+                {
+                    FileUploadHelper.DeleteFile(existedExpense.InvoiceImage);
+                }
+                existedExpense.InvoiceImage = fileName;
+            }
+            
             existedExpense.LastUpdatedTime = DateTime.Now;
             existedExpense.LastUpdatedBy = currentUserId;
             await _unitOfWork.GetRepository<Expense>().UpdateAsync(existedExpense);

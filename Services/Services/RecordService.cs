@@ -15,6 +15,7 @@ namespace Services.Services
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+        private string currentUserId => Authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
 
         public async Task<List<GetRecordModel>> GetRecord(string? recordId, string? reportId)
         {
@@ -26,7 +27,6 @@ namespace Services.Services
 
         public async Task PostRecord(PostRecordModel model)
         {
-            string idUser = Authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
             var id = Guid.NewGuid().ToString("N");
             string fileName = await FileUploadHelper.UploadFile(model.InvoiceImage, id);
             var newRecord = new Record()
@@ -39,24 +39,25 @@ namespace Services.Services
                 ReportId = model.ReportId,
                 IsPaid = false,
                 CreatedTime = DateTime.Now,
-                CreatedBy = idUser
+                CreatedBy = currentUserId
             };
             await _unitOfWork.GetRepository<Record>().InsertAsync(newRecord);
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task PutRecord(string id, PutRecordModel model)
+        public async Task PutRecord(PutRecordModel model)
         {
-            string fileName = await FileUploadHelper.UploadFile(model.InvoiceImage, id);
-            
-            var existedRecord = _unitOfWork.GetRepository<Record>().GetById(id);
+            var existedRecord = _unitOfWork.GetRepository<Record>().GetById(model.Id);
             if (existedRecord == null)
             {
-                throw new Exception($"Group with ID {id} doesn't exist!");
+                throw new Exception($"Group with ID {model.Id} doesn't exist!");
             }
 
-            if (fileName != null)
+            _mapper.Map(model, existedRecord);
+
+            if (model.InvoiceImage != null)
             {
+                string fileName = await FileUploadHelper.UploadFile(model.InvoiceImage, model.Id);
                 if (existedRecord.InvoiceImage != null)
                 {
                     FileUploadHelper.DeleteFile(existedRecord.InvoiceImage);
@@ -64,12 +65,15 @@ namespace Services.Services
                 existedRecord.InvoiceImage = fileName;
             }
 
-            existedRecord.IsPaid = model.IsPaid;
+            if (model.IsPaid != null)
+            {
+                existedRecord.IsPaid = model.IsPaid;
+            }
 
             await _unitOfWork.GetRepository<Record>().UpdateAsync(existedRecord);
             await _unitOfWork.SaveAsync();
         }
-        public async Task DeleteRecord(string id)
+        public async Task DeleteRecord(string recordId)
         {
             var existedRecord = _unitOfWork.GetRepository<Record>().GetById(id);
             if (existedRecord == null)
@@ -81,15 +85,8 @@ namespace Services.Services
                 FileUploadHelper.DeleteFile(existedRecord.InvoiceImage);
             }
             existedRecord.DeletedTime = DateTime.Now;
+            existedRecord.DeletedBy = currentUserId;
             await _unitOfWork.GetRepository<Record>().UpdateAsync(existedRecord);
-            await _unitOfWork.SaveAsync();
-        }
-        public async Task DeleteRecordFromReport(string reportId)
-        {
-            var existedRecord = _unitOfWork.GetRepository<Record>().Entities.Where(r => r.ReportId == reportId && !r.DeletedTime.HasValue).ToList();
-            //await FileUploadHelper.DeleteFile(existedRecord.InvoiceImage);
-            existedRecord.ForEach(r => { r.DeletedTime = DateTime.Now;});
-            await _unitOfWork.GetRepository<Record>().UpdateRangeAsync(existedRecord);
             await _unitOfWork.SaveAsync();
         }
     }

@@ -23,7 +23,7 @@ namespace Services.Services
         }
         public async Task PostGroup(PostGroupModel model)
         {
-            var group = _mapper.Map<Group>(model);
+            Group group = _mapper.Map<Group>(model);
             group.CreatedTime = DateTime.Now;
             group.CreatedBy = currentUserId;
             await _unitOfWork.GetRepository<Group>().InsertAsync(group);
@@ -32,17 +32,18 @@ namespace Services.Services
 
         public async Task PutGroup(string id, PutGroupModel model)
         {
-            string? fileName = await FileUploadHelper.UploadFile(model.Wallpaper, id);
-
-            var existedGroup = await _unitOfWork.GetRepository<Group>().GetByIdAsync(id);
+            Group? existedGroup = await _unitOfWork.GetRepository<Group>().GetByIdAsync(id);
 
             if (existedGroup == null)
             {
                 throw new Exception($"Group with ID {id} doesn't exist!");
             }
 
-            if (!string.IsNullOrWhiteSpace(fileName))
+            _mapper.Map(model, existedGroup);
+
+            if (model.Wallpaper != null)
             {
+                string? fileName = await FileUploadHelper.UploadFile(model.Wallpaper, id);
                 if (existedGroup.Wallpaper != null)
                 {
                     FileUploadHelper.DeleteFile(existedGroup.Wallpaper);
@@ -57,7 +58,7 @@ namespace Services.Services
         }
         public async Task DeleteGroup(string id)
         {
-            var existedGroup = await _unitOfWork.GetRepository<Group>().GetByIdAsync(id);
+            Group? existedGroup = await _unitOfWork.GetRepository<Group>().GetByIdAsync(id);
             if (existedGroup == null)
             {
                 throw new Exception($"Group with ID {id} doesn't exist!");

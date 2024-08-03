@@ -9,8 +9,8 @@ namespace Services.Mapper
         public RecordProfile()
         {
             CreateMap<Record, GetRecordModel>().ReverseMap();
-            CreateMap<Record, PutRecordModel>().ReverseMap();
             CreateMap<Record, PostRecordModel>().ReverseMap();
+            CreateMap<Record, PutRecordModel>().ReverseMap();
         }
 
     }

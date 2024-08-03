@@ -45,7 +45,7 @@ namespace Core.Infrastructure
             }
             else
             {
-                return "string";
+                return string.Empty;
             }
         }
 

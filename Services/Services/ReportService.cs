@@ -43,6 +43,7 @@ namespace Services.Services
         {
             var report = _mapper.Map<Report>(model);
             report.CreatedTime = DateTime.Now;
+            report.CreatedBy = currentUserId;
             await _unitOfWork.GetRepository<Report>().InsertAsync(report);
             await _unitOfWork.SaveAsync();
         }
