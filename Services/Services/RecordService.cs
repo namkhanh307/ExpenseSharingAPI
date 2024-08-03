@@ -92,6 +92,5 @@ namespace Services.Services
             await _unitOfWork.GetRepository<Record>().UpdateRangeAsync(existedRecord);
             await _unitOfWork.SaveAsync();
         }
-
     }
 }

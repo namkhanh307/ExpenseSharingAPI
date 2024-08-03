@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace Repositories.ResponseModel.PersonExpenseModel
 {
-    public class GetPersonExpenseSub
+    public class GetPersonExpenseSubSub
     {
-        public string Id { get; set; }
-        public string? Name { get; set; }
-        public string? Phone { get; set; }
-        public double Amount { get; set; }
-        public bool IsShared { get; set; }
+        public string? ExpenseId { get; set; }
+        public string? ExpenseName { get; set; }
+        public double? ExpenseAmount { get; set; }
+        public List<string>? ExpenesePaidBy { get; set; }
+        public DateTime ExpenseCreatedTime { get; set; }
+        public List<GetPersonExpenseSubSubModel>? PersonExpenseSub {  get; set; }     
     }
 }

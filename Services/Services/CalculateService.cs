@@ -193,7 +193,9 @@ namespace Services.Services
             //Console.WriteLine(JsonSerializer.Serialize(persons));
             return new ResponseLongTermModel()
             {
-                ResponseShortTerm = await CalculateShortTerm(input)
+                ResponseShortTerm = await CalculateShortTerm(input),
+                ReportName = report.Name, 
+                ReportId = reportId
             };
         }
         public async Task SetPair(int n, List<CalculatedModel> pair, List<PersonResponseModel> p)

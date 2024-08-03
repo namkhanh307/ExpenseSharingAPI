@@ -1,7 +1,5 @@
 ﻿using Core.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
-using Repositories.Entities;
-using Repositories.ResponseModel.GroupModel;
 using Repositories.ResponseModel.PersonExpenseModel;
 using Services.IServices;
 
@@ -14,10 +12,10 @@ namespace API.Controllers
         private readonly IPersonExpenseService _personExpenseService = personExpenseService;
 
         [HttpGet]
-        public async Task<IActionResult> GetPersonExpenses(string? reportId, string? expenseId)
+        public async Task<IActionResult> GetPersonExpenses(string reportId, string? expenseId)
         {
             var result = await _personExpenseService.GetPersonExpenses(reportId, expenseId);
-            return Ok(new BaseResponseModel<List<GetPersonExpenseModel>>(
+            return Ok(new BaseResponseModel<GetPersonExpenseModel>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
                data: result));
@@ -29,16 +27,16 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "Expense for member created succesfully!"));
+               data: "Tạo mới chi tiêu cho thành viên thành công"));
         }
-        [HttpPost("ForDeveloping")]
+        [HttpPost("forDeveloping")]
         public async Task<IActionResult> PostPersonExpenseForDeveloping(PostPersonExpenseForDevModel model)
         {
             await _personExpenseService.PostPersonExpenseForDeveloping(model);
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "Expense for member created succesfully!"));
+               data: "Tạo mới chi tiêu cho thành viên thành công"));
         }
         [HttpPut]
         public async Task<IActionResult> PutPersonExpense(string expenseId, PutPersonExpenseModel model)
@@ -47,7 +45,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "Expense for member modified succesfully!"));
+               data: "Chỉnh sửa chi tiêu cho thành viên thành công"));
         }
         [HttpDelete]
         public async Task<IActionResult> DeletePersonExpense(string expenseId, string personId)
@@ -56,7 +54,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "Expense for member deleted succesfully!"));
+               data: "Xóa chi tiêu cho thành viên thành công"));
         }
     }
 }

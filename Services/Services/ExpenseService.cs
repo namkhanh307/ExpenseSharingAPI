@@ -34,7 +34,6 @@ namespace Services.Services
         {
             string idUser = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
             var expenseId = Guid.NewGuid().ToString("N");
-
             string? fileName = await FileUploadHelper.UploadFile(model.InvoiceImage, expenseId);
             var newExpense = new Expense()
             {

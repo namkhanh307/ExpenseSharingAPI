@@ -1,7 +1,5 @@
 ﻿using Core.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
-using Repositories.Entities;
-using Repositories.ResponseModel.GroupModel;
 using Repositories.ResponseModel.ReportModel;
 using Services.IServices;
 
@@ -29,7 +27,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
-                data: "Report added SUCCESSFULLY!"));
+                data: "Thêm báo cáo mới thành công"));
         }
         [HttpPut]
         public async Task<IActionResult> PutReport(string id, PutReportModel model)
@@ -38,7 +36,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
-                data: "Report modified SUCCESSFULLY!"));
+                data: "Chỉnh sửa báo cáo mới thành công"));
         }
         [HttpDelete]
         public async Task<IActionResult> DeleteReport(string id)
@@ -47,7 +45,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
-                data: "Report deleted SUCCESSFULLY!"));
+                data: "Xóa báo cáo thành công"));
         }
     }
 }

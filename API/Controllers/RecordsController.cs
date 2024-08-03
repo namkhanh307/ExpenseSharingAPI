@@ -1,8 +1,5 @@
 ﻿using Core.Infrastructure;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Repositories.Entities;
-using Repositories.ResponseModel.GroupModel;
 using Repositories.ResponseModel.RecordModel;
 using Services.IServices;
 
@@ -39,7 +36,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "Record added SUCCESSFULLY!"));
+               data: "Tạo mới bản ghi thành công"));
         }
 
         [HttpPut]
@@ -49,7 +46,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "Record modified SUCCESSFULLY!"));
+               data: "Chỉnh sửa bản ghi thành công"));
         }
         [HttpDelete]
         public async Task<IActionResult> DeleteRecord(string id)
@@ -58,7 +55,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "Record deleted SUCCESSFULLY!"));
+               data: "Xóa bản ghi thành công"));
         }
     }
 }

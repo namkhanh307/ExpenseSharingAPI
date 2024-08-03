@@ -21,7 +21,6 @@ namespace Services.Services
         {
             return _mapper.Map<List<GetGroupModel>>(await _unitOfWork.GetRepository<Group>().Entities.Where(g => !g.DeletedTime.HasValue).ToListAsync());        
         }
-
         public async Task PostGroup(PostGroupModel model)
         {
             var group = _mapper.Map<Group>(model);

@@ -38,7 +38,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "Added person to group SUCCESSFULLY!"));
+               data: "Thêm thành viên vào nhóm thành công"));
         }
         [HttpPost("GetAccessCode")]
         public async Task<IActionResult> GetAccessCode(string groupId)
@@ -56,7 +56,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: $"Join group {groupId} SUCCESSFULLY!"));
+               data: "Tham gia nhóm thành công"));
         }
         [HttpPut]
         public async Task<IActionResult> PutPersonGroup(string groupId, string personId, PutPersonGroupModel model)
@@ -65,8 +65,17 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "PersonGroup modified successfully!"));
+               data: "Chỉnh sửa thành công"));
         }
+        //[HttpPut]
+        //public async Task<IActionResult> PutPersonGroup(string groupId, string personId, PutPersonGroupModel model)
+        //{
+        //    await _personGroupService.PutPersonGroup(groupId, personId, model);
+        //    return Ok(new BaseResponseModel<string>(
+        //       statusCode: StatusCodes.Status200OK,
+        //       code: ResponseCodeConstants.SUCCESS,
+        //       data: "Chỉnh sửa chi tiêu thành công"));
+        //}
         [HttpDelete]
         public async Task<IActionResult> DeletePersonGroup(string groupId, string? personId, bool? wantToOut)
         {
@@ -74,7 +83,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "PersonGroup deleted successfully!"));
+               data: "Xóa thành viên khỏi nhóm thành công"));
         }
     }
 }

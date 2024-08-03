@@ -29,7 +29,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "Person added SUCCESSFULLY!"));
+               data: "Thêm thành viên thành công"));
         }
         [HttpPut]
         public async Task<IActionResult> PutPerson(string id, PutPersonModel model)
@@ -38,7 +38,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "Person modified SUCCESSFULLY!"));
+               data: "Chỉnh sửa thành viên thành công"));
         }
         [HttpDelete]
         public async Task<IActionResult> DeletePerson(string id)
@@ -47,7 +47,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "Person deleted SUCCESSFULLY!"));
+               data: "Xóa thành viên thành công"));
         }
     }
 }

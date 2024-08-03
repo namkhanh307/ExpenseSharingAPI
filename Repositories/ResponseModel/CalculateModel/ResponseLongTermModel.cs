@@ -8,6 +8,8 @@ namespace Repositories.ResponseModel.CalculateModel
 {
     public class ResponseLongTermModel
     {
+        public string? ReportId { get; set; }
+        public string? ReportName { get; set; }
         public List<ResponseShortTermModel>? ResponseShortTerm { get; set; }
     }
 }

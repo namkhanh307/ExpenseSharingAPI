@@ -20,7 +20,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                 statusCode: StatusCodes.Status200OK,
                 code: ResponseCodeConstants.SUCCESS,
-                data: "Sign up SUCCESSFULLY!"));
+                data: "Đăng ký thành công"));
         }
         [HttpPost("LogIn")]
         public async Task<IActionResult> LogIn(PostLogInModel model)

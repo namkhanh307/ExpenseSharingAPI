@@ -29,7 +29,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "Group created SUCCESSFULLY!"));
+               data: "Tạo nhóm thành công"));
         }
         [HttpPut]
         public async Task<IActionResult> PutGroup(string id, PutGroupModel model)
@@ -38,7 +38,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "Group modified SUCCESSFULLY!"));
+               data: "Chỉnh sửa nhóm thành công"));
         }
         [HttpDelete]
         public async Task<IActionResult> DeleteGroup(string id)
@@ -47,7 +47,7 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "Group deleted SUCCESSFULLY!"));
+               data: "Xóa nhóm thành công"));
         }
     }
 }
