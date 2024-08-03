@@ -9,13 +9,10 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CalculateController : ControllerBase
+    public class CalculateController(ICalculateService calculateService) : ControllerBase
     {
-        private readonly ICalculateService _calculateService;
-        public CalculateController(ICalculateService calculateService)
-        {
-            _calculateService = calculateService;
-        }
+        private readonly ICalculateService _calculateService = calculateService;
+
         [HttpPost("ShortTerm")]
         public async Task<IActionResult> CalculateShortTerm([FromBody]CalculatingModel model)
         {

@@ -49,7 +49,7 @@ namespace Core.Infrastructure
             }
         }
 
-        public static async Task DeleteFile(string fileName)
+        public static void DeleteFile(string fileName)
         {
             string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "image", fileName);
             if (File.Exists(filePath))

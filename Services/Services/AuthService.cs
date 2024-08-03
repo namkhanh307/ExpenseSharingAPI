@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core.Infrastructure;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Entities;
 using Repositories.IRepositories;
 using Repositories.ResponseModel.AuthModel;
@@ -23,13 +24,13 @@ namespace Services.Services
 
         public async Task<GetPersonModel> GetInfo()
         {
-            var idUser = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
+            string idUser = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
             return _mapper.Map<GetPersonModel>(await _unitOfWork.GetRepository<Person>().GetByIdAsync(idUser));
         }
 
         public async Task<GetLogInModel> LogIn(PostLogInModel request)
         {
-            Person? person = _unitOfWork.GetRepository<Person>().Entities.FirstOrDefault(p => p.Phone == request.Phone);
+            Person? person = await _unitOfWork.GetRepository<Person>().Entities.FirstOrDefaultAsync(p => p.Phone == request.Phone);
             if (person == null) 
             {
                 throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.UnAuthorized, "You don't have an account, please sign up!");
@@ -48,7 +49,7 @@ namespace Services.Services
 
         public async Task SignUp(PostSignUpModel model)
         {
-            Person? person = _unitOfWork.GetRepository<Person>().Entities.FirstOrDefault(p => p.Phone == model.Phone);
+            Person? person = await _unitOfWork.GetRepository<Person>().Entities.FirstOrDefaultAsync(p => p.Phone == model.Phone);
             if (person != null)
             {
                 throw new ErrorException(StatusCodes.Status409Conflict, ErrorCode.Conflicted, "Số tài khoản này đã được đăng ký!");

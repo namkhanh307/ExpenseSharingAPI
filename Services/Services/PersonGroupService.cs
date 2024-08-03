@@ -55,7 +55,7 @@ namespace Services.Services
 
         public async Task<List<GetGroupModel>> GetAllGroupsByPersonId(string personId)
         {
-            var query = await _unitOfWork.GetRepository<PersonGroup>()
+            List<Group> query = await _unitOfWork.GetRepository<PersonGroup>()
                                 .Entities.Where(pg => !pg.DeletedTime.HasValue && pg.PersonId.Equals(personId))
                                 .Include(p => p.Group)
                                 .Select(p => p.Group)
@@ -72,7 +72,7 @@ namespace Services.Services
             await _unitOfWork.SaveAsync();
         }
 
-        private string GenerateAccessCode(int length = 10)
+        private static string GenerateAccessCode(int length = 10)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             var random = new Random();
@@ -82,9 +82,20 @@ namespace Services.Services
 
         public async Task<string> GenerateAccessCode(string groupId)
         {
-            var checkCode = await _unitOfWork.GetRepository<GroupCode>()
-                            .Entities.Where(c => c.groupId == groupId && c.expiredTime > DateTime.Now)
-                            .FirstOrDefaultAsync();
+            //Delete all codes that are expired
+            GroupCode? expiredCode = await _unitOfWork
+                .GetRepository<GroupCode>()
+                .Entities.FirstOrDefaultAsync(c => c.expiredTime <= DateTime.Now && c.groupId == groupId);
+
+            if (expiredCode != null)
+            {
+                await _unitOfWork.GetRepository<GroupCode>().DeleteAsync(expiredCode.Id);
+            }
+
+            GroupCode? checkCode = await _unitOfWork
+                .GetRepository<GroupCode>()
+                .Entities
+                .FirstOrDefaultAsync(c => c.groupId == groupId && c.expiredTime > DateTime.Now);
 
             if (checkCode != null)
             {

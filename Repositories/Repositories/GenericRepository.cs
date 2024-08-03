@@ -29,7 +29,6 @@ namespace Repositories.Repositories
                 _dbSet.Remove(entity);
             }
         }
-
         public async Task DeleteAsync(object id)
         {
             T entity = await _dbSet.FindAsync(id);
@@ -76,7 +75,6 @@ namespace Repositories.Repositories
 
         public T GetById(object id)
         {
-
             return _dbSet.Find(id);
         }
 

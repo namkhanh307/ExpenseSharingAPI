@@ -38,7 +38,25 @@ namespace API.Controllers
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,
-               data: "Them thanh vien vao nhom thanh cong"));
+               data: "Added person to group SUCCESSFULLY!"));
+        }
+        [HttpPost("GetAccessCode")]
+        public async Task<IActionResult> GetAccessCode(string groupId)
+        {
+            var accessCode = await _personGroupService.GenerateAccessCode(groupId);
+            return Ok(new BaseResponseModel<string>(
+               statusCode: StatusCodes.Status200OK,
+               code: ResponseCodeConstants.SUCCESS,
+               data: accessCode));
+        }
+        [HttpPost("JoinGroup")]
+        public async Task<IActionResult> JoinGroup(string groupId, string accessCode)
+        {
+            await _personGroupService.JoinGroup(groupId, accessCode);
+            return Ok(new BaseResponseModel<string>(
+               statusCode: StatusCodes.Status200OK,
+               code: ResponseCodeConstants.SUCCESS,
+               data: $"Join group {groupId} SUCCESSFULLY!"));
         }
         [HttpPut]
         public async Task<IActionResult> PutPersonGroup(string groupId, string personId, PutPersonGroupModel model)

@@ -59,7 +59,7 @@ namespace Services.Services
             {
                 if (existedRecord.InvoiceImage != null)
                 {
-                    await FileUploadHelper.DeleteFile(existedRecord.InvoiceImage);
+                    FileUploadHelper.DeleteFile(existedRecord.InvoiceImage);
                 }
                 existedRecord.InvoiceImage = fileName;
             }
@@ -78,7 +78,7 @@ namespace Services.Services
             }
             if (existedRecord.InvoiceImage != null)
             {
-                await FileUploadHelper.DeleteFile(existedRecord.InvoiceImage);
+                FileUploadHelper.DeleteFile(existedRecord.InvoiceImage);
             }
             existedRecord.DeletedTime = DateTime.Now;
             await _unitOfWork.GetRepository<Record>().UpdateAsync(existedRecord);

@@ -8,6 +8,10 @@ namespace Repositories.Entities
 {
     public class GroupCode
     {
+        public GroupCode()
+        {
+            Id = Guid.NewGuid().ToString("N");
+        }
         public string Id { get; set; }
         public string accessCode { get; set; }
         public string groupId { get; set; }

@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Core.Infrastructure;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Entities;
 using Repositories.IRepositories;
@@ -8,10 +10,12 @@ using Services.IServices;
 
 namespace Services.Services
 {
-    public class ReportService(IUnitOfWork unitOfWork, IMapper mapper) : IReportService
+    public class ReportService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContextAccessor) : IReportService
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+        private string currentUserId => Authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
 
         public async Task<List<GetReportModel>> GetReports(string? groupId)
         {
@@ -52,6 +56,7 @@ namespace Services.Services
             }
             _mapper.Map(model, existedReport);
             existedReport.LastUpdatedTime = DateTime.Now;
+            existedReport.LastUpdatedBy = currentUserId;
             await _unitOfWork.GetRepository<Report>().UpdateAsync(existedReport);
             await _unitOfWork.SaveAsync();
         }
@@ -64,6 +69,7 @@ namespace Services.Services
                 throw new Exception($"Report with ID {id} doesn't exist!");
             }
             existedReport.DeletedTime = DateTime.Now;
+            existedReport.DeletedBy = currentUserId;
             await _unitOfWork.GetRepository<Report>().UpdateAsync(existedReport);
             await _unitOfWork.SaveAsync();
         }

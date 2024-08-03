@@ -16,6 +16,7 @@ namespace Services.Services
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
         private readonly IHttpContextAccessor _contextAccessor = contextAccessor;
+        private string currentUserId => Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
 
         public async Task<List<GetExpenseModel>> GetExpenses(string? reportId, string? type, DateTime? fromDate, DateTime? endDate, string? expenseName)
         {
@@ -54,7 +55,7 @@ namespace Services.Services
         public async Task PutExpense(string id, PutExpenseModel model)
         {
             string fileName = await FileUploadHelper.UploadFile(model.InvoiceImage, id);
-            var existedExpense = _unitOfWork.GetRepository<Expense>().GetById(id);
+            var existedExpense = await _unitOfWork.GetRepository<Expense>().GetByIdAsync(id);
 
             if (existedExpense == null)
             {
@@ -65,7 +66,7 @@ namespace Services.Services
             {
                 if (existedExpense.InvoiceImage != null)
                 {
-                    await FileUploadHelper.DeleteFile(existedExpense.InvoiceImage);
+                    FileUploadHelper.DeleteFile(existedExpense.InvoiceImage);
                 }
                 existedExpense.InvoiceImage = fileName;  
             }
@@ -75,29 +76,30 @@ namespace Services.Services
                 existedExpense.Amount = model.Amount;
             }
 
+            _mapper.Map(model, existedExpense);
+
+            existedExpense.LastUpdatedTime = DateTime.Now;
+            existedExpense.LastUpdatedBy = currentUserId;
             await _unitOfWork.GetRepository<Expense>().UpdateAsync(existedExpense);
             await _unitOfWork.SaveAsync();
         }
 
         public async Task DeleteExpense(string expenseId)
         {
-            var currentUserId = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
-            Guid.TryParse(currentUserId, out var id);
-
-            var existedExpense = _unitOfWork.GetRepository<Expense>().GetById(expenseId)
+            var existedExpense = await _unitOfWork.GetRepository<Expense>().GetByIdAsync(expenseId)
                                  ?? throw new Exception($"Expense with ID {expenseId} doesn't exist!");
 
-            var groupId = _unitOfWork.GetRepository<Report>()
+            var groupId = await _unitOfWork.GetRepository<Report>()
                             .Entities.Where(r => r.Id == existedExpense.ReportId)
                             .Select(e => e.GroupId)
-                            .FirstOrDefault();
+                            .FirstOrDefaultAsync();
 
             bool? isAdmin = false;
             if (new[] { "0", "1" }.Contains(existedExpense.Type))
             {
-                isAdmin = _unitOfWork.GetRepository<PersonGroup>()
+                isAdmin = await _unitOfWork.GetRepository<PersonGroup>()
                         .Entities.Where(p => p.PersonId.Equals(currentUserId) && p.GroupId.Equals(groupId))
-                        .Select(p => p.IsAdmin).First();
+                        .Select(p => p.IsAdmin).FirstAsync();
             }
 
             if (isAdmin.GetValueOrDefault().Equals(true) || existedExpense.CreatedBy == currentUserId)
@@ -106,10 +108,10 @@ namespace Services.Services
                 existedExpense.DeletedTime = DateTime.Now;
                 if (existedExpense.InvoiceImage != null)
                 {
-                    await FileUploadHelper.DeleteFile(existedExpense.InvoiceImage);
+                    FileUploadHelper.DeleteFile(existedExpense.InvoiceImage);
                 }
-                _unitOfWork.GetRepository<Expense>().Update(existedExpense);
-                _unitOfWork.Save();
+                await _unitOfWork.GetRepository<Expense>().UpdateAsync(existedExpense);
+                await _unitOfWork.SaveAsync();
             }
             else
             {

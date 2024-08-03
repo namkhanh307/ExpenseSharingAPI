@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using Core.Infrastructure;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Entities;
 using Repositories.IRepositories;
 using Repositories.ResponseModel.ExpenseModel;
@@ -7,51 +10,63 @@ using Services.IServices;
 
 namespace Services.Services
 {
-    public class GroupService : IGroupService
+    public class GroupService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContextAccessor) : IGroupService
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
-        public GroupService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+        private string currentUserId => Authentication.GetUserIdFromHttpContextAccessor(_httpContextAccessor);
+
+        public async Task<List<GetGroupModel>> GetGroups()
         {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
+            return _mapper.Map<List<GetGroupModel>>(await _unitOfWork.GetRepository<Group>().Entities.Where(g => !g.DeletedTime.HasValue).ToListAsync());        
         }
 
-        public List<GetGroupModel> GetGroups()
-        {
-            return _mapper.Map<List<GetGroupModel>>(_unitOfWork.GetRepository<Group>().Entities.Where(g => !g.DeletedTime.HasValue).ToList());        
-        }
-
-        public void PostGroup(PostGroupModel model)
+        public async Task PostGroup(PostGroupModel model)
         {
             var group = _mapper.Map<Group>(model);
             group.CreatedTime = DateTime.Now;
-            _unitOfWork.GetRepository<Group>().Insert(group);
-            _unitOfWork.Save();
+            group.CreatedBy = currentUserId;
+            await _unitOfWork.GetRepository<Group>().InsertAsync(group);
+            await _unitOfWork.SaveAsync();
         }
 
-        public void PutGroup(string id, PutGroupModel model)
+        public async Task PutGroup(string id, PutGroupModel model)
         {
-            var existedGroup = _unitOfWork.GetRepository<Group>().GetById(id);
+            string? fileName = await FileUploadHelper.UploadFile(model.Wallpaper, id);
+
+            var existedGroup = await _unitOfWork.GetRepository<Group>().GetByIdAsync(id);
+
             if (existedGroup == null)
             {
                 throw new Exception($"Group with ID {id} doesn't exist!");
             }
-            _mapper.Map(model, existedGroup);
+
+            if (!string.IsNullOrWhiteSpace(fileName))
+            {
+                if (existedGroup.Wallpaper != null)
+                {
+                    FileUploadHelper.DeleteFile(existedGroup.Wallpaper);
+                }
+                existedGroup.Wallpaper = fileName;
+            }
+
             existedGroup.LastUpdatedTime = DateTime.Now;
-            _unitOfWork.GetRepository<Group>().Update(existedGroup);
-            _unitOfWork.Save();
+            existedGroup.LastUpdatedBy = currentUserId;
+            await _unitOfWork.GetRepository<Group>().UpdateAsync(existedGroup);
+            await _unitOfWork.SaveAsync();
         }
-        public void DeleteGroup(string id)
+        public async Task DeleteGroup(string id)
         {
-            var existedGroup = _unitOfWork.GetRepository<Group>().GetById(id);
+            var existedGroup = await _unitOfWork.GetRepository<Group>().GetByIdAsync(id);
             if (existedGroup == null)
             {
                 throw new Exception($"Group with ID {id} doesn't exist!");
             }
             existedGroup.DeletedTime = DateTime.Now;
-            _unitOfWork.GetRepository<Group>().Update(existedGroup);
-            _unitOfWork.Save();
+            existedGroup.DeletedBy = currentUserId;
+            await _unitOfWork.GetRepository<Group>().UpdateAsync(existedGroup);
+            await _unitOfWork.SaveAsync();
         }
     }
 }
