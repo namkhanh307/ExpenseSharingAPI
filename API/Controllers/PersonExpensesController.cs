@@ -15,7 +15,7 @@ namespace API.Controllers
             _personExpenseService = personExpenseService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetPersonExpenses(string? reportId, string? expenseId)
+        public async Task<IActionResult> GetPersonExpenses(string reportId, string? expenseId)
         {
             var result = await _personExpenseService.GetPersonExpenses(reportId, expenseId);
             return Ok(new BaseResponseModel<GetPersonExpenseModel>(

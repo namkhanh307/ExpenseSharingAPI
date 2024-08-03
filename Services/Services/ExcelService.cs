@@ -43,28 +43,42 @@ namespace Services.Services
                 int row = 3;
                 //if (string.IsNullOrEmpty(worksheet.Cell("E3").GetValue<string>()))
                 //{
-                foreach (var item in result.Persons)
+                foreach (var item in result.Persons)//in ra tat ca cac thanh vien trong nhom
                 {
                     worksheet.Cell($"{currentColumn}{row}").Value = item.Name;//E3
                     currentColumn = GetNextColumn(currentColumn);
                 }
-                foreach (var item in result.PersonSubs)
+                foreach (var item in result.PersonSubs)//lap qua tung chi tieu
                 {
                     worksheet.Cell($"A{currentRow}").Value = item.ExpenseName;
                     worksheet.Cell($"B{currentRow}").Value = item.ExpenseAmount;
-                    worksheet.Cell($"C{currentRow}").Value = "NOT HANDLING!";
+                    string paidByNames = string.Join(", ", item.ExpenesePaidBy.Select(name => name.Trim()));
+                    worksheet.Cell($"C{currentRow}").Value = paidByNames;
                     worksheet.Cell($"D{currentRow}").Value = item.ExpenseCreatedTime;
                     currentColumn = "E";
-                    double amount = item.ExpenseAmount.Value;
-                    foreach (var item1 in item.PersonExpenseSub)
+                    double amount = item.ExpenseAmount.Value;//so tien cua chi tieu 
+                    int countIsShared = item.PersonExpenseSub.Where(i => i.IsShared == true).Count(); //lay ra so thanh vien se chia
+                    foreach (var item1 in item.PersonExpenseSub)//lap qua tung thanh vien trong chi tieu nay
                     {
-                        int count = item.PersonExpenseSub.Count;
-                        worksheet.Cell($"{currentColumn}{currentRow}").Value = item1.Amount > 0 ? Math.Round(amount - (amount / count), 2) : Math.Round(-amount / count, 2);
+                        if(item1.Amount > 0 && item1.IsShared == true)//neu nguoi nay tra va co chia
+                        {
+                            worksheet.Cell($"{currentColumn}{currentRow}").Value = Math.Round(amount - (amount / countIsShared), 2);
+                        } else if(item1.Amount > 0 && item1.IsShared == false)//neu nguoi nay tra va khong chia
+                        {
+                            worksheet.Cell($"{currentColumn}{currentRow}").Value = item1.Amount;
+                        }
+                        else if (item1.Amount == 0 && item1.IsShared == true)//neu nguoi nay khong tra va co chia
+                        {
+                            worksheet.Cell($"{currentColumn}{currentRow}").Value = Math.Round(-amount / countIsShared, 2);
+                        }
+                        else
+                        {
+                            worksheet.Cell($"{currentColumn}{currentRow}").Value = "";
+                        }
                         currentColumn = GetNextColumn(currentColumn);                          
                     }
                     currentRow++;
                 }
-
                 using (var stream = new MemoryStream())
                 {
                     workbook.SaveAs(stream);

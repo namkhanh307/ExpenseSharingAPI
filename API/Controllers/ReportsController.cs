@@ -1,7 +1,5 @@
 ﻿using Core.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
-using Repositories.Entities;
-using Repositories.ResponseModel.GroupModel;
 using Repositories.ResponseModel.ReportModel;
 using Services.IServices;
 

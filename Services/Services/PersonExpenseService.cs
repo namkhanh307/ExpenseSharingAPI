@@ -20,13 +20,14 @@ namespace Services.Services
             _mapper = mapper;
         }
 
-        public async Task<GetPersonExpenseModel> GetPersonExpenses(string? reportId, string? expenseId)
+        public async Task<GetPersonExpenseModel> GetPersonExpenses(string reportId, string? expenseId)
         {
-            // Fetch the main query
+            // Fetch the main query with related entities
             var query = _unitOfWork.GetRepository<PersonExpense>().Entities
                 .Where(pe => !pe.DeletedTime.HasValue)
-                .Include(pe => pe.Person)
                 .Include(pe => pe.Expense)
+                .ThenInclude(e => e.Report)
+                .ThenInclude(r => r.Group)
                 .AsQueryable();
 
             // Apply filters
@@ -40,12 +41,22 @@ namespace Services.Services
             }
 
             // Execute query and group results
-            var groupedResults = query.ToList()
-                                      .GroupBy(pe => pe.ExpenseId)
-                                      .ToList();
-            Group group = query.FirstOrDefault().Expense.Report.Group;
-            IQueryable<PersonGroup> personGroups = group.PersonGroups.AsQueryable();
-            List<GetPersonModel> personList = personGroups
+            var groupedResults = (await query.ToListAsync())
+                                  .GroupBy(pe => pe.ExpenseId)
+                                  .ToList();
+
+            var firstGroup = groupedResults.FirstOrDefault();
+            if (firstGroup == null)
+            {
+                return null; // Handle the case where no results are found
+            }
+
+            var firstExpense = firstGroup.First().Expense;
+            var group = firstExpense.Report.Group;
+
+            var personGroups = group.PersonGroups.AsQueryable();
+
+            var personList = personGroups
                 .Select(pg => new GetPersonModel
                 {
                     Id = pg.Person.Id,
@@ -54,39 +65,40 @@ namespace Services.Services
                     Password = pg.Person.Password,
                     IsAdmin = pg.IsAdmin
                 }).OrderBy(pg => pg.Name).ToList();
-            var report = group.Reports.FirstOrDefault();
 
-            GetPersonExpenseModel responseList = new();
-            responseList.Persons = personList;
-            responseList.ReportName = report.Name;
-            responseList.ReportId = reportId;
-            // Prepare response
-            var personExpenseSub = groupedResults.Select(group =>
+            var report = group.Reports.FirstOrDefault(r => r.Id == firstExpense.ReportId);
+
+            var responseList = new GetPersonExpenseModel
             {
-                var firstExpense = group.First().Expense;
-
-                //var affordedBy = _unitOfWork.GetRepository<Person>().GetById(firstExpense.CreatedBy);
-                return new GetPersonExpenseSubSub
+                Persons = personList,
+                ReportName = report?.Name,
+                ReportId = report.Id,
+                PersonSubs = groupedResults.Select(group =>
                 {
-                    ExpenseId = group.Key,
-                    ExpenseName = firstExpense.Name,
-                    ExpenseAmount = firstExpense.Amount,
-                    ExpenseCreatedTime = firstExpense.CreatedTime,
-                    PersonExpenseSub = group.Select(pe => {
-                        return new GetPersonExpenseSubSubModel()
+                    var firstExpense = group.First().Expense;
+                    return new GetPersonExpenseSubSub
+                    {
+                        ExpenseId = group.Key,
+                        ExpenseName = firstExpense.Name,
+                        ExpenseAmount = firstExpense.Amount,
+                        ExpenesePaidBy = group.Where(pe => pe.Amount > 0).Select(pe => pe.Person.Name).ToList(),
+                        ExpenseCreatedTime = firstExpense.CreatedTime,
+                        PersonExpenseSub = group.Select(pe => new GetPersonExpenseSubSubModel
                         {
                             Amount = pe.Amount,
                             IsShared = pe.IsShared,
                             Name = pe.Person.Name,
                             Id = pe.PersonId,
                             Phone = pe.Person.Phone,
-                        };
-                    }).OrderBy(pg => pg.Name).ToList(),
-                };
-            }).ToList();
-            responseList.PersonSubs = personExpenseSub;
+                        }).OrderBy(pg => pg.Name).ToList(),
+                        //.Where(pe => pe.IsShared == true || pe.Amount > 0)
+                    };
+                }).ToList()
+            };
             return responseList;
         }
+
+
 
         public async Task PostPersonExpense(PostPersonExpenseModel model)
         {
