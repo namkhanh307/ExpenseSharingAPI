@@ -3,9 +3,7 @@ using ClosedXML.Excel;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Repositories.IRepositories;
-using Repositories.ResponseModel.CalculateModel;
 using Repositories.ResponseModel.PersonExpenseModel;
-
 
 namespace Services.Services
 {
@@ -33,19 +31,27 @@ namespace Services.Services
                 IXLWorksheet worksheet = workbook.Worksheets.Add("LongTerm");
                 GetPersonExpenseModel result = await _personExpenseService.GetPersonExpenses(reportId, null);
                 worksheet.Cell("A1").Value = result.ReportName;
+                worksheet.Range("A1:B1").Merge();
+                worksheet.Range("A1:B1").Style.Font.FontSize = 12; // Tăng kích thước chữ cho tiêu đề
                 worksheet.Column("A").Width = 20;
                 worksheet.Cell("A3").Value = "ExpenseName";
                 worksheet.Cell("B3").Value = "Amount";
                 worksheet.Cell("C3").Value = "Paid By";
                 worksheet.Cell("D3").Value = "Created Date";
+                var dataRangeTitle = worksheet.Range("A1:R28");
+                dataRangeTitle.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                dataRangeTitle.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                 int currentRow = 4;
                 string currentColumn = "E";
                 int row = 3;
                 //if (string.IsNullOrEmpty(worksheet.Cell("E3").GetValue<string>()))
                 //{
+                worksheet.Range("A3:D3").Style.Fill.BackgroundColor = XLColor.LightGray;
                 foreach (var item in result.Persons!)//in ra tat ca cac thanh vien trong nhom
                 {
+                    worksheet.Cell($"{currentColumn}{row}").Style.Fill.BackgroundColor = XLColor.LightGray;
                     worksheet.Cell($"{currentColumn}{row}").Value = item.Name;//E3
+                    worksheet.Column($"{currentColumn}").Width = 11;
                     currentColumn = GetNextColumn(currentColumn);
                 }
                 foreach (var item in result.PersonSubs!)//lap qua tung chi tieu
@@ -54,15 +60,19 @@ namespace Services.Services
                     worksheet.Cell($"B{currentRow}").Value = item.ExpenseAmount;
                     string paidByNames = string.Join(", ", item.ExpenesePaidBy!.Select(name => name.Trim()));
                     worksheet.Cell($"C{currentRow}").Value = paidByNames;
+                    worksheet.Cell($"C{currentRow}").Style.Alignment.WrapText = true;
                     worksheet.Cell($"D{currentRow}").Value = item.ExpenseCreatedTime;
+                    var dataRange = worksheet.Range($"A{currentRow}:D{currentRow}");
+                    dataRangeTitle.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    dataRangeTitle.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                     currentColumn = "E";
                     double amount = item.ExpenseAmount!.Value;//so tien cua chi tieu 
                     int countIsShared = item.PersonExpenseSub!.Where(i => i.IsShared == true).Count(); //lay ra so thanh vien se chia
                     foreach (var item1 in item.PersonExpenseSub!)//lap qua tung thanh vien trong chi tieu nay
                     {
-                        if(item1.Amount > 0 && item1.IsShared == true)//neu nguoi nay tra va co chia
+                        if (item1.Amount > 0 && item1.IsShared == true)//neu nguoi nay tra va co chia
                         {
-                            worksheet.Cell($"{currentColumn}{currentRow}").Value = Math.Round(amount - (amount / countIsShared), 2);
+                            worksheet.Cell($"{currentColumn}{currentRow}").Value = Math.Round(item1.Amount  - (amount / countIsShared), 2);
                         } else if(item1.Amount > 0 && item1.IsShared == false)//neu nguoi nay tra va khong chia
                         {
                             worksheet.Cell($"{currentColumn}{currentRow}").Value = item1.Amount;
@@ -79,6 +89,26 @@ namespace Services.Services
                     }
                     currentRow++;
                 }
+                string sumRow = (currentRow + 1).ToString();
+                int startRow = 3; // Starting row for your data
+                currentColumn = "E";
+
+                while (true) // Loop through columns until an empty column is encountered
+                {
+                    string columnLetter = currentColumn;
+                    if (worksheet.Cell($"{columnLetter}{startRow}").IsEmpty())
+                    {
+                        break;
+                    }
+
+                    string range = $"{columnLetter}{startRow+1}:{columnLetter}{currentRow - 1}";
+                    worksheet.Cell($"{columnLetter}{sumRow}").FormulaA1 = $"SUM({range})";
+                    currentColumn = GetNextColumn(currentColumn);
+                }
+                worksheet.Cell($"D{sumRow}").Value = "Total";
+                worksheet.Column("D").Width = 15;
+                worksheet.Column("C").Width = 15;
+                worksheet.Cell($"D{sumRow}").Style.Fill.BackgroundColor = XLColor.LightGray;
                 using (var stream = new MemoryStream())
                 {
                     workbook.SaveAs(stream);
