@@ -366,7 +366,7 @@ namespace Services.Services
             }
             if (reportId != null)
             {
-                await _recordService.DeleteRecord(reportId);
+                await _recordService.DeleteRecordFromReport(reportId);
             }
             foreach (var item in responseList)
             {

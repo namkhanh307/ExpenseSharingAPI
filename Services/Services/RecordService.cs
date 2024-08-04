@@ -89,5 +89,13 @@ namespace Services.Services
             await _unitOfWork.GetRepository<Record>().UpdateAsync(existedRecord);
             await _unitOfWork.SaveAsync();
         }
+        public async Task DeleteRecordFromReport(string reportId)
+        {
+            var existedRecord = _unitOfWork.GetRepository<Record>().Entities.Where(r => r.ReportId == reportId && !r.DeletedTime.HasValue).ToList();
+            //await FileUploadHelper.DeleteFile(existedRecord.InvoiceImage);
+            existedRecord.ForEach(r => { r.DeletedTime = DateTime.Now; });
+            await _unitOfWork.GetRepository<Record>().UpdateRangeAsync(existedRecord);
+            await _unitOfWork.SaveAsync();
+        }
     }
 }
