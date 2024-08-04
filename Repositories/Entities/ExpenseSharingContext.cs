@@ -34,9 +34,8 @@ public partial class ExpenseSharingContext : DbContext
     public virtual DbSet<GroupCode> GroupCodes { get; set; }
     private string? GetConnectionString()
     {
-        IConfiguration configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", true, true).Build();
+        IConfiguration configuration = new ConfigurationBuilder().SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../API")).AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
+       // IConfiguration configuration = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", true, true).Build();
         return configuration["ConnectionStrings:DefaultConnection"];
     }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlServer(GetConnectionString());

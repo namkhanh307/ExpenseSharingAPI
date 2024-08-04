@@ -1,0 +1,20 @@
+
+{
+    "region" : "us-east-1",
+    "configuration" : "Debug",
+    "framework"     : "net8.0",
+    "self-contained" : true,
+    "application"    : "ExpenseSharing",
+    "environment"    : "staging",
+    "enable-xray"    : false,
+    "enhanced-health-type" : "basic",
+    "additional-options"   : "\"aws:autoscaling:launchconfiguration,SecurityGroups\"=\"sg-0833bde09c999e265\";\"aws:ec2:vpc,Subnets\"=\"subnet-0c153694954c2f8f2\"",
+    "solution-stack"       : "64bit Amazon Linux 2 v2.8.0 running .NET Core",
+    "environment-type"     : "SingleInstance",
+    "cname"                : "expensesharing",
+    "instance-type"        : "t3a.medium",
+    "key-pair"             : "",
+    "instance-profile"     : "es-api-role-ec2",
+    "service-role"         : "es-api-role",
+    "proxy-server"         : "nginx"
+}
