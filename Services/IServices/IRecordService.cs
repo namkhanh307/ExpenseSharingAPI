@@ -7,8 +7,7 @@ namespace Services.IServices
     {
         Task<List<GetRecordModel>> GetRecord(string? recordId, string? reportId);
         Task PostRecord(PostRecordModel model);
-        Task PutRecord(string id, PutRecordModel model);
-        Task DeleteRecord(string id);
-        Task DeleteRecordFromReport(string reportId);
+        Task PutRecord(PutRecordModel model);
+        Task DeleteRecord(string recordId);
     }
 }
