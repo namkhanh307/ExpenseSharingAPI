@@ -45,19 +45,19 @@ namespace Services.Services
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task PutRecord(PutRecordModel model)
+        public async Task PutRecord(string id, PutRecordModel model)
         {
-            var existedRecord = _unitOfWork.GetRepository<Record>().GetById(model.Id);
+            var existedRecord = _unitOfWork.GetRepository<Record>().GetById(id);
             if (existedRecord == null)
             {
-                throw new Exception($"Group with ID {model.Id} doesn't exist!");
+                throw new Exception($"Group with ID {id} doesn't exist!");
             }
 
             _mapper.Map(model, existedRecord);
 
             if (model.InvoiceImage != null)
             {
-                string fileName = await FileUploadHelper.UploadFile(model.InvoiceImage, model.Id);
+                string fileName = await FileUploadHelper.UploadFile(model.InvoiceImage, id);
                 if (existedRecord.InvoiceImage != null)
                 {
                     FileUploadHelper.DeleteFile(existedRecord.InvoiceImage);
@@ -73,7 +73,7 @@ namespace Services.Services
             await _unitOfWork.GetRepository<Record>().UpdateAsync(existedRecord);
             await _unitOfWork.SaveAsync();
         }
-        public async Task DeleteRecord(string recordId)
+        public async Task DeleteRecord(string id)
         {
             var existedRecord = _unitOfWork.GetRepository<Record>().GetById(id);
             if (existedRecord == null)

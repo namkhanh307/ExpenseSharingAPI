@@ -5,7 +5,7 @@ namespace Repositories.ResponseModel.RecordModel
 {
     public class PutRecordModel
     {
-        public string? Id { get; set; }
+        //public string? Id { get; set; }
         //public string? PersonId { get; set; }
         //public string? ExpenseId { get; set; }
         //public string? ReportId { get; set; }

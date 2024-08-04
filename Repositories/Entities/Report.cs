@@ -6,8 +6,8 @@ namespace Repositories.Entities;
 public partial class Report : BaseEntity
 {
     public string? Name { get; set; }
-    public string FromDate { get; set; }
-    public string ToDate { get; set; }
+    public DateTime? FromDate { get; set; }
+    public DateTime? ToDate { get; set; }
     public string GroupId { get; set; }
     public virtual ICollection<Expense> Expenses { get; set; } = new List<Expense>();
     public virtual Group? Group { get; set; }
