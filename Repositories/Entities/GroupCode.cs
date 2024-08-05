@@ -6,16 +6,11 @@ using System.Threading.Tasks;
 
 namespace Repositories.Entities
 {
-    public class GroupCode
+    public class GroupCode : BaseEntity
     {
-        public GroupCode()
-        {
-            Id = Guid.NewGuid().ToString("N");
-        }
-        public string Id { get; set; }
-        public string accessCode { get; set; }
-        public string groupId { get; set; }
-        public DateTime expiredTime { get; set; }
-        public virtual Group Group { get; set; }
+        public string AccessCode { get; set; } = string.Empty;
+        public string GroupId { get; set; } = string.Empty;
+        public DateTime ExpiredTime { get; set; }
+        public virtual Group Group { get; set; } = new Group();
     }
 }

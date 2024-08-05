@@ -85,7 +85,7 @@ namespace Services.Services
             //Delete all codes that are expired
             GroupCode? expiredCode = await _unitOfWork
                 .GetRepository<GroupCode>()
-                .Entities.FirstOrDefaultAsync(c => c.expiredTime <= DateTime.Now && c.groupId == groupId);
+                .Entities.FirstOrDefaultAsync(c => c.ExpiredTime <= DateTime.Now && c.GroupId == groupId);
 
             if (expiredCode != null)
             {
@@ -95,19 +95,19 @@ namespace Services.Services
             GroupCode? checkCode = await _unitOfWork
                 .GetRepository<GroupCode>()
                 .Entities
-                .FirstOrDefaultAsync(c => c.groupId == groupId && c.expiredTime > DateTime.Now);
+                .FirstOrDefaultAsync(c => c.GroupId == groupId && c.ExpiredTime > DateTime.Now);
 
             if (checkCode != null)
             {
-                return checkCode.accessCode;
+                return checkCode.AccessCode;
             }
 
             var accessCode = GenerateAccessCode();
             var newGroupCode = new GroupCode()
             {
-                groupId = groupId,
-                accessCode = accessCode,
-                expiredTime = DateTime.Now.AddMinutes(5),
+                GroupId = groupId,
+                AccessCode = accessCode,
+                ExpiredTime = DateTime.Now.AddMinutes(5),
             };
             await _unitOfWork.GetRepository<GroupCode>().InsertAsync(newGroupCode);
             await _unitOfWork.SaveAsync();

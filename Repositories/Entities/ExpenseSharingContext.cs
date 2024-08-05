@@ -76,7 +76,7 @@ public partial class ExpenseSharingContext : DbContext
 
             entity.HasMany(g => g.GroupCodes)
                 .WithOne(g => g.Group)
-                .HasForeignKey(g => g.groupId);
+                .HasForeignKey(g => g.GroupId);
 
         });
 
@@ -214,7 +214,7 @@ public partial class ExpenseSharingContext : DbContext
 
             entity.HasOne(g => g.Group)
                 .WithMany(g => g.GroupCodes)
-                .HasForeignKey(g => g.groupId);
+                .HasForeignKey(g => g.GroupId);
         });
     }
 }

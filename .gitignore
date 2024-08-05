@@ -413,6 +413,5 @@ Services/obj/Debug/net8.0/Services.AssemblyInfoInputs.cache
 # Explicitly include launchSettings.json and appsettings.json
 !*/launchSettings.json
 !*/appsettings.json
-/Repositories/Migrations
 /Visual Studio 2013
 /API/wwwroot/image
