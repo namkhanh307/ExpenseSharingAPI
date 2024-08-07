@@ -2,7 +2,6 @@
 using Core.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Repositories.Entities;
 using Repositories.IRepositories;
 using Repositories.ResponseModel.ExpenseModel;
@@ -11,7 +10,8 @@ using Repositories.ResponseModel.PersonGroupModel;
 using Repositories.ResponseModel.PersonModel;
 using Services.IServices;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Services.Services
 {
@@ -21,7 +21,9 @@ namespace Services.Services
         private readonly IMapper _mapper;
         private readonly IAuthService _authService;
         private readonly IHttpContextAccessor _contextAccessor;
+
         private string CurrentUserId => Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
+
         public PersonGroupService(IUnitOfWork unitOfWork, IMapper mapper, IAuthService authService, IHttpContextAccessor contextAccessor)
         {
             _unitOfWork = unitOfWork;
@@ -66,6 +68,14 @@ namespace Services.Services
 
         public async Task PostPersonGroup(PostPersonGroupModel model)
         {
+            PersonGroup? existedPersonGroup = await _unitOfWork.GetRepository<PersonGroup>()
+                .Entities.FirstOrDefaultAsync(pg => pg.PersonId == model.PersonId && pg.GroupId == model.GroupId);
+
+            if (existedPersonGroup != null)
+            {
+                throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.Conflicted, "Người dùng đã ở trong nhóm này.");
+            }
+
             var personGroup = _mapper.Map<PersonGroup>(model);
             personGroup.CreatedTime = DateTime.Now;
             await _unitOfWork.GetRepository<PersonGroup>().InsertAsync(personGroup);
@@ -82,7 +92,7 @@ namespace Services.Services
 
         public async Task<string> GenerateAccessCode(string groupId)
         {
-            //Delete all codes that are expired
+            // Delete all codes that are expired
             GroupCode? expiredCode = await _unitOfWork
                 .GetRepository<GroupCode>()
                 .Entities.FirstOrDefaultAsync(c => c.expiredTime <= DateTime.Now && c.groupId == groupId);
@@ -115,15 +125,16 @@ namespace Services.Services
             return accessCode;
         }
 
-        public async Task JoinGroup(string groupId, string accessCode) 
+        public async Task JoinGroup(string groupId, string accessCode)
         {
-            var personIdList = await _unitOfWork.GetRepository<PersonGroup>()
+            List<string> personIdList = await _unitOfWork.GetRepository<PersonGroup>()
                                                 .Entities
                                                 .Where(g => g.GroupId == groupId)
                                                 .Select(g => g.PersonId).ToListAsync();
+
             if (personIdList.Contains(CurrentUserId))
             {
-                throw new Exception("You're already joined this group!");
+                throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.Conflicted, "Bạn đã là thành viên của nhóm này.");
             }
 
             var newPersonGroup = new PostPersonGroupModel()
@@ -137,11 +148,15 @@ namespace Services.Services
 
         public async Task PutPersonGroup(string groupId, string personId, PutPersonGroupModel model)
         {
-            var existedPersonGroup = await _unitOfWork.GetRepository<PersonGroup>().Entities.Where(pg => pg.GroupId == groupId && pg.PersonId == personId).FirstOrDefaultAsync();
+            var existedPersonGroup = await _unitOfWork.GetRepository<PersonGroup>().Entities
+                .Where(pg => pg.GroupId == groupId && pg.PersonId == personId)
+                .FirstOrDefaultAsync();
+
             if (existedPersonGroup == null)
             {
-                throw new Exception($"PersonGroup with personID {personId} or groupID {groupId} doesn't exist!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Nhóm người dùng không tồn tại.");
             }
+
             _mapper.Map(model, existedPersonGroup);
             existedPersonGroup.LastUpdatedTime = DateTime.Now;
             await _unitOfWork.GetRepository<PersonGroup>().UpdateAsync(existedPersonGroup);
@@ -150,20 +165,25 @@ namespace Services.Services
 
         public async Task DeletePersonGroup(string groupId, string? personId, bool? wantToOut)
         {
-            var currentPersonGroup = await _unitOfWork.GetRepository<PersonGroup>()
-                                                    .Entities.Where(p => p.PersonId.Equals(CurrentUserId) && p.GroupId.Equals(groupId))
-                                                    .FirstOrDefaultAsync()
-                                                    ?? throw new Exception($"");      
+            PersonGroup? currentPersonGroup = await _unitOfWork.GetRepository<PersonGroup>()
+                .Entities
+                .FirstOrDefaultAsync(p => p.PersonId.Equals(CurrentUserId) && p.GroupId.Equals(groupId));
 
-            if (wantToOut.Equals(true))
+            if (currentPersonGroup == null)
             {
-                if (currentPersonGroup.IsAdmin.Equals(true))
+                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Bạn không nằm trong nhóm này hoặc nhóm người dùng không tồn tại.");
+            }
+
+            if (wantToOut == true)
+            {
+                if (currentPersonGroup.IsAdmin == true)
                 {
                     var existedPersonGroup = await _unitOfWork
                         .GetRepository<PersonGroup>()
-                        .Entities.Where(pg => pg.GroupId == groupId && pg.PersonId == personId)
+                        .Entities
+                        .Where(pg => pg.GroupId == groupId && pg.PersonId == personId)
                         .FirstOrDefaultAsync()
-                        ?? throw new Exception($"PersonGroup with personID {personId} or groupID {groupId} doesn't exist!");
+                        ?? throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Người dùng không tồn tại trong nhóm.");
 
                     currentPersonGroup.IsAdmin = false;
                     existedPersonGroup.IsAdmin = true;
@@ -171,24 +191,26 @@ namespace Services.Services
 
                 currentPersonGroup.DeletedTime = DateTime.Now;
                 currentPersonGroup.DeletedBy = CurrentUserId;
+
                 await _unitOfWork.GetRepository<PersonGroup>().UpdateAsync(currentPersonGroup);
                 await _unitOfWork.SaveAsync();
             }
-            else if (currentPersonGroup.IsAdmin.Equals(true))
+            else if (currentPersonGroup.IsAdmin == true)
             {
                 var existedPersonGroup = await _unitOfWork
                     .GetRepository<PersonGroup>().Entities
                     .Where(pg => pg.GroupId == groupId && pg.PersonId == personId).FirstOrDefaultAsync()
-                    ?? throw new Exception($"PersonGroup with personID {personId} or groupID {groupId} doesn't exist!");
+                    ?? throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Người dùng không tồn tại trong nhóm.");
 
                 existedPersonGroup.DeletedTime = DateTime.Now;
                 existedPersonGroup.DeletedBy = CurrentUserId;
+
                 await _unitOfWork.GetRepository<PersonGroup>().UpdateAsync(existedPersonGroup);
                 await _unitOfWork.SaveAsync();
             }
             else
             {
-                throw new Exception("PersonGroup deleted fail!");
+                throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.InvalidInput, "Bạn không có quyền thực hiện hành động này.");
             }
         }
     }

@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Core.Infrastructure;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Entities;
 using Repositories.IRepositories;
@@ -10,13 +12,17 @@ using Services.IServices;
 
 namespace Services.Services
 {
-    public class PersonExpenseService(IUnitOfWork unitOfWork) : IPersonExpenseService
+    public class PersonExpenseService : IPersonExpenseService
     {
-        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
+
+        public PersonExpenseService(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
 
         public async Task<GetPersonExpenseModel> GetPersonExpenses(string reportId, string? expenseId)
         {
-            // Fetch the main query with related entities
             var query = _unitOfWork.GetRepository<PersonExpense>().Entities
                 .Where(pe => !pe.DeletedTime.HasValue)
                 .Include(pe => pe.Expense)
@@ -24,7 +30,6 @@ namespace Services.Services
                 .ThenInclude(r => r.Group)
                 .AsQueryable();
 
-            // Apply filters
             if (!string.IsNullOrWhiteSpace(reportId))
             {
                 query = query.Where(pe => pe.Expense.ReportId == reportId);
@@ -34,7 +39,6 @@ namespace Services.Services
                 query = query.Where(pe => pe.ExpenseId == expenseId);
             }
 
-            // Execute query and group results
             var groupedResults = (await query.ToListAsync())
                                   .GroupBy(pe => pe.ExpenseId)
                                   .ToList();
@@ -42,7 +46,7 @@ namespace Services.Services
             var firstGroup = groupedResults.FirstOrDefault();
             if (firstGroup == null)
             {
-                return null; // Handle the case where no results are found
+                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Không tìm thấy nhóm chi tiêu nào.");
             }
 
             var firstExpense = firstGroup.First().Expense;
@@ -85,13 +89,11 @@ namespace Services.Services
                             Id = pe.PersonId,
                             Phone = pe.Person.Phone,
                         }).OrderBy(pg => pg.Name).ToList(),
-                        //.Where(pe => pe.IsShared == true || pe.Amount > 0)
                     };
                 }).ToList()
             };
             return responseList;
         }
-
 
         public async Task PostPersonExpense(PostPersonExpenseModel model)
         {
@@ -101,33 +103,31 @@ namespace Services.Services
                 {
                     ExpenseId = model.ExpenseId,
                     PersonId = item.Id,
-                    //ReportId = model.ReportId,
                     IsShared = item.IsShared,
                     Amount = item.Amount,
                     CreatedTime = DateTime.Now
                 };
                 await _unitOfWork.GetRepository<PersonExpense>().InsertAsync(personExpense);
-            }           
+            }
             await _unitOfWork.SaveAsync();
         }
+
         public async Task PostPersonExpenseForDeveloping(PostPersonExpenseForDevModel model)
         {
             var personExpense = new PersonExpense
             {
                 ExpenseId = model.ExpenseId,
                 PersonId = model.PersonId,
-                //ReportId = model.ReportId,
                 IsShared = model.IsShared,
                 Amount = model.Amount,
                 CreatedTime = DateTime.Now
             };
             await _unitOfWork.GetRepository<PersonExpense>().InsertAsync(personExpense);
-            await _unitOfWork.SaveAsync();       
+            await _unitOfWork.SaveAsync();
         }
 
         public async Task PutPersonExpense(string expenseId, PutPersonExpenseModel model)
         {
-            // Fetch existing PersonExpense entities
             List<PersonExpense> existedPersonExpenses = await _unitOfWork.GetRepository<PersonExpense>()
                                                             .Entities
                                                             .Where(e => e.ExpenseId == expenseId && !e.DeletedTime.HasValue)
@@ -135,30 +135,27 @@ namespace Services.Services
 
             if (existedPersonExpenses == null || existedPersonExpenses.Count == 0)
             {
-                throw new Exception($"This expense with Id {expenseId} doesn't have any person sharing with!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Không tìm thấy chi tiêu của người nào.");
             }
 
-            // Mark existing PersonExpense entities as deleted
             foreach (var item in existedPersonExpenses)
             {
                 await _unitOfWork.PersonExpenseRepository.DeletePersonExpense(item.PersonId, item.ExpenseId);
             }
 
-            // Save changes and detach the updated entities
             await _unitOfWork.SaveAsync();
+
             foreach (var item in existedPersonExpenses)
             {
                 _unitOfWork.GetRepository<PersonExpense>().Detach(item);
             }
 
-            // Insert new PersonExpense entities
             foreach (var item in model.Persons)
             {
                 var personExpense = new PersonExpense()
                 {
                     ExpenseId = expenseId,
                     PersonId = item.Id!,
-                    //ReportId = model.ReportId,
                     IsShared = item.IsShared,
                     Amount = item.Amount,
                     CreatedTime = DateTime.Now
@@ -167,17 +164,20 @@ namespace Services.Services
                 await _unitOfWork.GetRepository<PersonExpense>().InsertAsync(personExpense);
             }
 
-            // Save all changes
             await _unitOfWork.SaveAsync();
         }
 
         public async Task DeletePersonExpense(string expenseId, string personId)
         {
-            PersonExpense? existedPersonExpense = _unitOfWork.GetRepository<PersonExpense>().Entities.Where(pe => pe.ExpenseId == expenseId && pe.PersonId == personId).FirstOrDefault();
+            PersonExpense? existedPersonExpense = _unitOfWork.GetRepository<PersonExpense>().Entities
+                .Where(pe => pe.ExpenseId == expenseId && pe.PersonId == personId)
+                .FirstOrDefault();
+
             if (existedPersonExpense == null)
             {
-                throw new Exception($"PersonExpense with expenseId {expenseId} or personId {personId} doesn't exist!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Chi tiêu của người này không tồn tại.");
             }
+
             existedPersonExpense.DeletedTime = DateTime.Now;
             await _unitOfWork.GetRepository<PersonExpense>().UpdateAsync(existedPersonExpense);
             await _unitOfWork.SaveAsync();

@@ -37,7 +37,7 @@ namespace Services.Services
             }
             if (person.Password != request.Password)
             {
-                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Phone number or password are incorrect!");
+                throw new ErrorException(StatusCodes.Status401Unauthorized, ErrorCode.UnAuthorized, "Phone number or password are incorrect!");
             }
             var token = _tokenService.GenerateTokens(person);
             return new GetLogInModel()
@@ -56,7 +56,7 @@ namespace Services.Services
             }
             if(model.Password != model.ConfirmedPassword)
             {
-                throw new ErrorException(StatusCodes.Status409Conflict, ErrorCode.Conflicted, "");
+                throw new ErrorException(StatusCodes.Status400BadRequest, ErrorCode.InvalidInput, "Mật khẩu và xác nhận mật khẩu không khớp!");
             }
             var newPerson = new Person()
             {

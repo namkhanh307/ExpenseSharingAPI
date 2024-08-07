@@ -78,6 +78,7 @@ namespace Core.Infrastructure
         public const string TokenInvalid = "The Token is invalid.";
         public const string Validated = "Validated.";
         public const string Conflicted = "Conflicted.";
+        public const string InvalidInput = "Invalid input!";
     }
     public class ResponseCodeConstants
     {

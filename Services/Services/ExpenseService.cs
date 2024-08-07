@@ -2,11 +2,9 @@
 using Core.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Repositories.Entities;
 using Repositories.IRepositories;
 using Repositories.ResponseModel.ExpenseModel;
-using Repositories.ResponseModel.PersonExpenseModel;
 using Services.IServices;
 using System.Text.RegularExpressions;
 
@@ -21,35 +19,36 @@ namespace Services.Services
 
         public async Task<List<GetExpenseModel>> GetExpenses(string? reportId, string? type, DateTime? fromDate, DateTime? endDate, string? expenseName)
         {
-            List<Expense> query = await _unitOfWork.GetRepository<Expense>().Entities.Where(g => !g.DeletedTime.HasValue).ToListAsync();
+            var query = _unitOfWork.GetRepository<Expense>().Entities.Where(g => !g.DeletedTime.HasValue);
 
-            _ = query.Where(e => string.IsNullOrWhiteSpace(reportId) || e.ReportId == reportId)
-                .Where(e => string.IsNullOrWhiteSpace(type) || e.Type == type)
-                .Where(e => fromDate == null || e.CreatedTime >= fromDate)
-                .Where(e => endDate == null || e.CreatedTime <= endDate)
-                .Where(e => string.IsNullOrWhiteSpace(expenseName) || e.Name!.Contains(expenseName));
+            // Apply filters
+            query = query.Where(e => string.IsNullOrWhiteSpace(reportId) || e.ReportId == reportId)
+                         .Where(e => string.IsNullOrWhiteSpace(type) || e.Type == type)
+                         .Where(e => fromDate == null || e.CreatedTime >= fromDate)
+                         .Where(e => endDate == null || e.CreatedTime <= endDate)
+                         .Where(e => string.IsNullOrWhiteSpace(expenseName) || e.Name!.Contains(expenseName));
 
-            return _mapper.Map<List<GetExpenseModel>>(query);
+            var expenses = await query.ToListAsync();
+
+            return _mapper.Map<List<GetExpenseModel>>(expenses);
         }
 
         public async Task PostExpense(PostExpenseModel model)
         {
-            string idUser = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
             var expenseId = Guid.NewGuid().ToString("N");
-
             string fileName = await FileUploadHelper.UploadFile(model.InvoiceImage, expenseId);
             var newExpense = new Expense()
             {
                 Id = expenseId,
-                Report = null,
                 Name = model.Name,
                 Type = model.Type,
                 Amount = model.Amount,
                 ReportId = model.ReportId,
                 CreatedTime = DateTime.Now,
-                CreatedBy = idUser,
+                CreatedBy = currentUserId,
                 InvoiceImage = fileName
             };
+
             await _unitOfWork.GetRepository<Expense>().InsertAsync(newExpense);
             await _unitOfWork.SaveAsync();
         }
@@ -60,7 +59,7 @@ namespace Services.Services
 
             if (existedExpense == null)
             {
-                throw new Exception($"Expense with ID {model.Id} doesn't exist!");
+                throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Chi tiêu không tồn tại!");
             }
 
             _mapper.Map(model, existedExpense);
@@ -74,7 +73,7 @@ namespace Services.Services
                 }
                 existedExpense.InvoiceImage = fileName;
             }
-            
+
             existedExpense.LastUpdatedTime = DateTime.Now;
             existedExpense.LastUpdatedBy = currentUserId;
             await _unitOfWork.GetRepository<Expense>().UpdateAsync(existedExpense);
@@ -84,7 +83,7 @@ namespace Services.Services
         public async Task DeleteExpense(string expenseId)
         {
             var existedExpense = await _unitOfWork.GetRepository<Expense>().GetByIdAsync(expenseId)
-                                 ?? throw new Exception($"Expense with ID {expenseId} doesn't exist!");
+                ?? throw new ErrorException(StatusCodes.Status404NotFound, ErrorCode.NotFound, "Chi tiêu không tồn tại!");
 
             var groupId = await _unitOfWork.GetRepository<Report>()
                             .Entities.Where(r => r.Id == existedExpense.ReportId)
@@ -96,10 +95,10 @@ namespace Services.Services
             {
                 isAdmin = await _unitOfWork.GetRepository<PersonGroup>()
                         .Entities.Where(p => p.PersonId.Equals(currentUserId) && p.GroupId.Equals(groupId))
-                        .Select(p => p.IsAdmin).FirstAsync();
+                        .Select(p => p.IsAdmin).FirstOrDefaultAsync();
             }
 
-            if (isAdmin.GetValueOrDefault().Equals(true) || existedExpense.CreatedBy == currentUserId)
+            if (isAdmin.GetValueOrDefault() || existedExpense.CreatedBy == currentUserId)
             {
                 existedExpense.DeletedBy = currentUserId;
                 existedExpense.DeletedTime = DateTime.Now;
@@ -112,8 +111,9 @@ namespace Services.Services
             }
             else
             {
-                throw new Exception($"You don't have permission to delete this expense!");
+                throw new ErrorException(StatusCodes.Status403Forbidden, ErrorCode.UnAuthorized, "Bạn không có quyền xóa chi phí này!");
             }
         }
     }
 }
+
