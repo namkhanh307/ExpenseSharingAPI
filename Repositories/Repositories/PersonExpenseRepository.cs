@@ -16,5 +16,11 @@ namespace Repositories.Repositories
                 _context.Remove(result);
             }
         }
+        public async Task UpdatePersonExpense(PersonExpense personExpense)
+        {
+            _context.PersonExpenses.Update(personExpense);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

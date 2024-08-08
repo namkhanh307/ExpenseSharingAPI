@@ -38,10 +38,19 @@ namespace API.Controllers
                code: ResponseCodeConstants.SUCCESS,
                data: "Tạo mới chi tiêu cho thành viên thành công"));
         }
-        [HttpPut]
-        public async Task<IActionResult> PutPersonExpense(string expenseId, PutPersonExpenseModel model)
+        [HttpPut("forApp")]
+        public async Task<IActionResult> PutPersonExpenseForApp(string expenseId, PutPersonExpenseModel model)
         {
             await _personExpenseService.PutPersonExpense(expenseId, model);
+            return Ok(new BaseResponseModel<string>(
+               statusCode: StatusCodes.Status200OK,
+               code: ResponseCodeConstants.SUCCESS,
+               data: "Chỉnh sửa chi tiêu cho thành viên thành công"));
+        }
+        [HttpPut("forDeveloping")]
+        public async Task<IActionResult> PutPersonExpenseForDeveloping(string expenseId, PutPersonExpenseModel model)
+        {
+            await _personExpenseService.PutPersonExpenseForDeveloping(expenseId, model);
             return Ok(new BaseResponseModel<string>(
                statusCode: StatusCodes.Status200OK,
                code: ResponseCodeConstants.SUCCESS,

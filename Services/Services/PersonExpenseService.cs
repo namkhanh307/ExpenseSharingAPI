@@ -127,7 +127,6 @@ namespace Services.Services
 
         public async Task PutPersonExpense(string expenseId, PutPersonExpenseModel model)
         {
-            // Fetch existing PersonExpense entities
             List<PersonExpense> existedPersonExpenses = await _unitOfWork.GetRepository<PersonExpense>()
                                                             .Entities
                                                             .Where(e => e.ExpenseId == expenseId && !e.DeletedTime.HasValue)
@@ -138,36 +137,56 @@ namespace Services.Services
                 throw new Exception($"This expense with Id {expenseId} doesn't have any person sharing with!");
             }
 
-            // Mark existing PersonExpense entities as deleted
             foreach (var item in existedPersonExpenses)
             {
                 await _unitOfWork.PersonExpenseRepository.DeletePersonExpense(item.PersonId, item.ExpenseId);
             }
 
-            // Save changes and detach the updated entities
             await _unitOfWork.SaveAsync();
             foreach (var item in existedPersonExpenses)
             {
                 _unitOfWork.GetRepository<PersonExpense>().Detach(item);
             }
 
-            // Insert new PersonExpense entities
             foreach (var item in model.Persons)
             {
                 var personExpense = new PersonExpense()
                 {
                     ExpenseId = expenseId,
                     PersonId = item.Id!,
-                    //ReportId = model.ReportId,
                     IsShared = item.IsShared,
                     Amount = item.Amount,
                     CreatedTime = DateTime.Now
                 };
-
                 await _unitOfWork.GetRepository<PersonExpense>().InsertAsync(personExpense);
             }
 
-            // Save all changes
+            await _unitOfWork.SaveAsync();
+        }
+        public async Task PutPersonExpenseForDeveloping(string expenseId, PutPersonExpenseModel model)
+        {
+            List<PersonExpense> existedPersonExpenses = await _unitOfWork.GetRepository<PersonExpense>()
+                                                            .Entities
+                                                            .Where(e => e.ExpenseId == expenseId && !e.DeletedTime.HasValue)
+                                                            .ToListAsync();
+
+            if (existedPersonExpenses == null || existedPersonExpenses.Count == 0)
+            {
+                throw new Exception($"This expense with Id {expenseId} doesn't have any person sharing with!");
+            }
+
+            foreach (var item in model.Persons)
+            {
+                var personExpense = new PersonExpense()
+                {
+                    ExpenseId = expenseId,
+                    PersonId = item.Id!,
+                    IsShared = item.IsShared,
+                    Amount = item.Amount,
+                    CreatedTime = DateTime.Now
+                };
+                await _unitOfWork.PersonExpenseRepository.UpdatePersonExpense(personExpense);
+            }
             await _unitOfWork.SaveAsync();
         }
 

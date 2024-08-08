@@ -9,6 +9,7 @@ using Repositories.ResponseModel.ExpenseModel;
 using Repositories.ResponseModel.PersonExpenseModel;
 using Services.IServices;
 using System.Text.RegularExpressions;
+using Group = Repositories.Entities.Group;
 
 namespace Services.Services
 {
@@ -19,29 +20,42 @@ namespace Services.Services
         private readonly IHttpContextAccessor _contextAccessor = contextAccessor;
         private string currentUserId => Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
 
-        public async Task<List<GetExpenseModel>> GetExpenses(string? reportId, string? type, DateTime? fromDate, DateTime? endDate, string? expenseName)
+        public async Task<List<GetExpenseModel?>> GetExpenses(string? reportId, string? type, DateTime? fromDate, DateTime? endDate, string? expenseName)
         {
-            List<Expense> query = await _unitOfWork.GetRepository<Expense>().Entities.Where(g => !g.DeletedTime.HasValue).ToListAsync();
-
-            _ = query.Where(e => string.IsNullOrWhiteSpace(reportId) || e.ReportId == reportId)
-                .Where(e => string.IsNullOrWhiteSpace(type) || e.Type == type)
-                .Where(e => fromDate == null || e.CreatedTime >= fromDate)
-                .Where(e => endDate == null || e.CreatedTime <= endDate)
-                .Where(e => string.IsNullOrWhiteSpace(expenseName) || e.Name!.Contains(expenseName));
-
-            return _mapper.Map<List<GetExpenseModel>>(query);
+            IQueryable<Expense> query = _unitOfWork.GetRepository<Expense>().Entities.Where(g => !g.DeletedTime.HasValue).AsQueryable();
+            if (!string.IsNullOrWhiteSpace(reportId))
+            {
+                query = query.Where(e => e.ReportId == reportId);
+            }
+            if(!string.IsNullOrEmpty(type))
+            {
+                query = query.Where(e => e.Type == type);
+            }
+            if(fromDate != null)
+            {
+                query = query.Where(e => e.CreatedTime >= fromDate);
+            }
+            if(endDate != null)
+            {
+                query = query.Where(e => e.CreatedTime <= endDate);
+            }
+            if (!string.IsNullOrEmpty(expenseName))
+            {
+                query = query.Where(e => e.Name == expenseName);
+            }        
+            return _mapper.Map<List<GetExpenseModel?>>(await query.ToListAsync());
         }
 
         public async Task PostExpense(PostExpenseModel model)
         {
             string idUser = Authentication.GetUserIdFromHttpContextAccessor(_contextAccessor);
-            var expenseId = Guid.NewGuid().ToString("N");
+            string expenseId = Guid.NewGuid().ToString("N");
 
             string fileName = await FileUploadHelper.UploadFile(model.InvoiceImage, expenseId);
-            var newExpense = new Expense()
+            Expense newExpense = new Expense()
             {
                 Id = expenseId,
-                Report = null,
+                Report = _unitOfWork.GetRepository<Report>().Entities.Where(r => r.Id == model.ReportId).FirstOrDefault(),
                 Name = model.Name,
                 Type = model.Type,
                 Amount = model.Amount,
@@ -50,6 +64,19 @@ namespace Services.Services
                 CreatedBy = idUser,
                 InvoiceImage = fileName
             };
+            ICollection<PersonGroup> personGroup = newExpense.Report.Group.PersonGroups;
+            ICollection<Person> person = personGroup.Select(pg => pg.Person).ToList();
+            foreach (var item in person)
+            {
+                var newPersonExpense = new PersonExpense()
+                {
+                    ExpenseId = expenseId,
+                    PersonId = item.Id,
+                    Amount = 0,
+                    CreatedTime = DateTime.Now,                 
+                };
+                await _unitOfWork.GetRepository<PersonExpense>().InsertAsync(newPersonExpense);
+            }      
             await _unitOfWork.GetRepository<Expense>().InsertAsync(newExpense);
             await _unitOfWork.SaveAsync();
         }
@@ -74,7 +101,25 @@ namespace Services.Services
                 }
                 existedExpense.InvoiceImage = fileName;
             }
-            
+            ICollection<PersonExpense> personExpenses = _unitOfWork.GetRepository<PersonExpense>().Entities.Where(pe => pe.ExpenseId == model.Id).ToList();
+            foreach (var item in personExpenses)
+            {
+                await _unitOfWork.PersonExpenseRepository.DeletePersonExpense(item.PersonId, item.ExpenseId);
+                await _unitOfWork.SaveAsync();
+            }
+            ICollection<PersonGroup> personGroup = existedExpense.Report.Group.PersonGroups;
+            ICollection<Person> person = personGroup.Select(pg => pg.Person).ToList();
+            foreach (var item in person)
+            {
+                var newPersonExpense = new PersonExpense()
+                {
+                    ExpenseId = model.Id,
+                    PersonId = item.Id,
+                    Amount = 0,
+                    CreatedTime = DateTime.Now,
+                };
+                await _unitOfWork.GetRepository<PersonExpense>().InsertAsync(newPersonExpense);
+            }
             existedExpense.LastUpdatedTime = DateTime.Now;
             existedExpense.LastUpdatedBy = currentUserId;
             await _unitOfWork.GetRepository<Expense>().UpdateAsync(existedExpense);

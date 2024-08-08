@@ -10,5 +10,7 @@ namespace Services.IServices
         Task PostPersonExpense(PostPersonExpenseModel model);
         Task PostPersonExpenseForDeveloping(PostPersonExpenseForDevModel model);
         Task PutPersonExpense(string expenseId, PutPersonExpenseModel model);
+        Task PutPersonExpenseForDeveloping(string expenseId, PutPersonExpenseModel model);
+
     }
 }
