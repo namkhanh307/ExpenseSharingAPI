@@ -179,7 +179,9 @@ namespace Services.Services
                     {
                         Id = p.PersonId,
                         Amount = p.Amount,
-                        Name = p.Person.Name
+                        Name = p.Person.Name,
+                        IsShared = p.IsShared,
+                        ExpenseId = p.ExpenseId
                     };
                 })).ToList();
                 string expenseId = groupPersonExpense.Select(p => p.Key).FirstOrDefault();

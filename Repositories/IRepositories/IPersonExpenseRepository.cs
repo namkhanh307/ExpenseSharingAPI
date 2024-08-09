@@ -6,7 +6,7 @@ namespace Repositories.IRepositories
     public interface IPersonExpenseRepository
     {
         Task DeletePersonExpense(string personId, string expenseId);
-        Task UpdatePersonExpense(PersonExpense personExpense)
+        Task UpdatePersonExpense(PersonExpense personExpense);
 
     }
 }
